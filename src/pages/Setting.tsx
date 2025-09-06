@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import useAppVersion from "@/hooks/use-app-version";
-import vsersionLogo from "@/assets/version-logo.png"
 import {
 	X,
 	CircleCheck,
@@ -120,9 +119,6 @@ export default function Setting() {
 						</nav>
 					</div>
 					<div className="w-full h-[55px] pt-4 pb-2 flex items-center justify-center border-[0px] border-t border-solid border-white-80% flex-shrink-0 flex-grow-0">
-						<div className="flex items-center gap-1 leading-9">
-							<img src={vsersionLogo} alt="version-logo" className="h-6" />
-						</div>
 						<div className="px-sm py-0.5 bg-bg-surface-tertiary rounded-full gap-1 flex items-center justify-center">
 							<CircleCheck className="w-4 h-4 text-bg-fill-success-primary" />
 							<div className="text-primary text-xs font-bold leading-17">

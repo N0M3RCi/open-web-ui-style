@@ -2,9 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LogOut, Settings, Check } from "lucide-react";
-import light from "@/assets/light.png";
-import dark from "@/assets/dark.png";
-import transparent from "@/assets/transparent.png";
 import { useAuthStore } from "@/store/authStore";
 import { useNavigate } from "react-router-dom";
 import { proxyFetchPut, proxyFetchGet } from "@/api/http";
@@ -37,12 +34,10 @@ export default function SettingGeneral() {
 
 	const [themeList, setThemeList] = useState<any>([
 		{
-			img: light,
 			label: "Light",
 			value: "light",
 		},
 		{
-			img: transparent,
 			label: "Transparent",
 			value: "transparent",
 		},
@@ -53,12 +48,10 @@ export default function SettingGeneral() {
 		if (platform === "darwin") {
 			setThemeList([
 				{
-					img: light,
 					label: "Light",
 					value: "light",
 				},
 				{
-					img: transparent,
 					label: "Transparent",
 					value: "transparent",
 				},
@@ -66,7 +59,6 @@ export default function SettingGeneral() {
 		} else {
 			setThemeList([
 				{
-					img: light,
 					label: "Light",
 					value: "light",
 				},
@@ -138,13 +130,13 @@ export default function SettingGeneral() {
 							className="hover:cursor-pointer group flex flex-col items-center gap-sm "
 							onClick={() => setAppearance(item.value)}
 						>
-							<img
-								src={item.img}
-								className={`rounded-lg transition-all h-[91.67px] aspect-[183/91.67] border border-solid border-transparent group-hover:border-bg-fill-info-primary ${
+							<div
+								className={`rounded-lg transition-all h-[91.67px] aspect-[183/91.67] border border-solid border-gray-200 group-hover:border-bg-fill-info-primary flex items-center justify-center bg-gray-50 ${
 									item.value == appearance ? "border-bg-fill-info-primary" : ""
 								}`}
-								alt=""
-							/>
+							>
+								<span className="text-gray-500 text-xs">{item.label} Theme</span>
+							</div>
 							<div
 								className={`text-sm leading-13 text-text-primary group-hover:underline ${
 									item.value == appearance ? "underline" : ""
