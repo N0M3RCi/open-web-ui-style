@@ -98,6 +98,7 @@ interface ChatStore {
 
 
 
+
 const chatStore = create<ChatStore>()(
 	(set, get) => ({
 		activeTaskId: null,
@@ -604,32 +605,29 @@ const chatStore = create<ChatStore>()(
 
 						// The following logic is for when the task actually starts executing (running)
 						if (taskAssigning && taskAssigning[assigneeAgentIndex]) {
-							const exist = taskAssigning[assigneeAgentIndex].tasks.find(item => item.id === task_id);
-							let taskTemp = null
-							if (task) {
-								taskTemp = JSON.parse(JSON.stringify(task))
-								taskTemp.failure_count = 0
-								taskTemp.status = "running"
-								taskTemp.toolkits = []
-								taskTemp.report = ""
-							}
-							if (exist) {
-								// Update existing task instead of adding duplicate
-								const existingIndex = taskAssigning[assigneeAgentIndex].tasks.findIndex(item => item.id === task_id);
-								if (existingIndex !== -1) {
-									taskAssigning[assigneeAgentIndex].tasks[existingIndex] = {
-										...exist,
-										status: "running",
-										failure_count: 0,
-										toolkits: [],
-										report: ""
-									};
-								}
+							// Check if task already exists in the agent's task list
+							const existingTaskIndex = taskAssigning[assigneeAgentIndex].tasks.findIndex(item => item.id === task_id);
+							
+							if (existingTaskIndex !== -1) {
+								// Task already exists, update its status
+								taskAssigning[assigneeAgentIndex].tasks[existingTaskIndex].status = "running";
 							} else {
+								// Task doesn't exist, add it
+								let taskTemp = null
+								if (task) {
+									taskTemp = JSON.parse(JSON.stringify(task))
+									taskTemp.failure_count = 0
+									taskTemp.status = "running"
+									taskTemp.toolkits = []
+									taskTemp.report = ""
+								}
 								taskAssigning[assigneeAgentIndex].tasks.push(taskTemp ?? { id: task_id, content, status: "running", });
 							}
 						}
+						
+						// Only update or add to taskRunning, never duplicate
 						if (taskRunningIndex === -1) {
+							// Task not in taskRunning, add it
 							taskRunning!.push(
 								task ?? {
 									id: task_id,
@@ -639,6 +637,7 @@ const chatStore = create<ChatStore>()(
 								}
 							);
 						} else {
+							// Task already in taskRunning, update it
 							taskRunning![taskRunningIndex] = {
 								...taskRunning![taskRunningIndex],
 								content,
@@ -812,9 +811,9 @@ const chatStore = create<ChatStore>()(
 						return
 					}
 
-					if (agentMessages.step === "error" || agentMessages.error) {
-						console.error('Model error:', agentMessages.data || agentMessages.error)
-						const errorMessage = agentMessages.data?.message || agentMessages.error || 'An error occurred while processing your request';
+					if (agentMessages.step === "error") {
+						console.error('Model error:', agentMessages.data)
+						const errorMessage = agentMessages.data.message || 'An error occurred while processing your request';
 
 						// Create a new task to avoid "Task already exists" error
 						// and completely reset the interface
@@ -1083,10 +1082,6 @@ const chatStore = create<ChatStore>()(
 				// Server closes connection
 				onclose() {
 					console.log("server closed");
-					const { setUpdateCount, setStatus, setIsPending } = get()
-					setIsPending(taskId, false);
-					setStatus(taskId, 'finished');
-					setUpdateCount();
 				},
 			});
 
