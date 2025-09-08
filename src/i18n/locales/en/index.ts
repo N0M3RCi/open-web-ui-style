@@ -1,12 +1,14 @@
-import general from "./general.json";
 import layout from "./layout.json";
 import taskHub from "./taskHub.json";
 import workforce from "./workforce.json";
 import chat from "./chat.json";
+import setting from "./setting.json";
+import update from "./update.json";
 export default {
-	general,
 	layout,	
 	'task-hub':taskHub,
 	workforce,
 	chat,
+	setting,
+	update,
 };

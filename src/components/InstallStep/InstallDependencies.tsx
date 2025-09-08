@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAuthStore } from "@/store/authStore";
 import { ProgressInstall } from "@/components/ui/progress-install";
-import { FileDown, RefreshCcw, RotateCcw } from "lucide-react";
+import { FileDown, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Permissions } from "@/components/InstallStep/Permissions";
 import { CarouselStep } from "@/components/InstallStep/Carousel";
+
 import {
 	Dialog,
 	DialogContent,
@@ -156,10 +157,10 @@ export const InstallDependencies: React.FC<{
 			<Dialog open={status === "error"}>
 				<DialogContent className="bg-white-100%">
 					<DialogHeader>
-						<DialogTitle>Installation Failed</DialogTitle>
+						<DialogTitle>{t("layout.installation-failed")}</DialogTitle>
 					</DialogHeader>
 					<DialogFooter>
-						<Button onClick={handleInstall}>Retry</Button>
+						<Button onClick={handleInstall}>{t("layout.retry")}</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
@@ -201,7 +202,7 @@ export const InstallDependencies: React.FC<{
 			<Dialog open={status === "error"}>
 				<DialogContent className="bg-white-100%">
 					<DialogHeader>
-						<DialogTitle>Installation Failed</DialogTitle>
+						<DialogTitle>{t("layout.installation-failed")}</DialogTitle>
 					</DialogHeader>
 					<DialogFooter>
 						<Button

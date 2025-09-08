@@ -379,7 +379,7 @@ export default function Workflow({
 									handleShare(chatStore.activeTaskId as string);
 								}}
 							>
-								Share
+								Share	{t("workforce.share")}
 							</Button>
 						</div>
 					)}

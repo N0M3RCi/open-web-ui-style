@@ -41,12 +41,12 @@ export default function SettingGeneral() {
 	const [themeList, setThemeList] = useState<any>([
 		{
 			img: light,
-			label: "general.light",
+			label: "setting.light",
 			value: "light",
 		},
 		{
 			img: transparent,
-			label: "general.transparent",
+			label: "setting.transparent",
 			value: "transparent",
 		},
 	]);
@@ -93,12 +93,12 @@ export default function SettingGeneral() {
 			setThemeList([
 				{
 					img: light,
-					label: "general.light",
+					label: "setting.light",
 					value: "light",
 				},
 				{
 					img: transparent,
-					label: "general.transparent",
+					label: "setting.transparent",
 					value: "transparent",
 				},
 			]);
@@ -106,7 +106,7 @@ export default function SettingGeneral() {
 			setThemeList([
 				{
 					img: light,
-					label: "general.light",
+					label: "setting.light",
 					value: "light",
 				},
 			]);
@@ -117,10 +117,10 @@ export default function SettingGeneral() {
 		<div className="space-y-8">
 			<div className="px-6 py-4 bg-surface-secondary rounded-2xl">
 				<div className="text-base font-bold leading-12 text-text-body">
-					{t("general.account")}
+					{t("setting.account")}
 				</div>
 				<div className="text-sm leading-13 mb-4">
-					{t("general.you-are-currently-signed-in-with", {
+					{t("setting.you-are-currently-signed-in-with", {
 						email: authStore.email,
 					})}
 				</div>
@@ -133,7 +133,7 @@ export default function SettingGeneral() {
 						size="xs"
 					>
 						<Settings className="w-4 h-4 text-button-primary-icon-default" />
-						{t("general.manage")}
+						{t("setting.manage")}
 					</Button>
 					<Button
 						variant="outline"
@@ -145,23 +145,23 @@ export default function SettingGeneral() {
 						}}
 					>
 						<LogOut className="w-4 h-4 text-button-tertiery-text-default" />
-						{t("general.log-out")}
+						{t("setting.log-out")}
 					</Button>
 				</div>
 			</div>
 			<div className="px-6 py-4 bg-surface-secondary rounded-2xl">
 				<div className="text-base font-bold leading-12 text-text-primary">
-					{t("general.language")}
+					{t("setting.language")}
 				</div>
 				<div className="mt-md">
 					<Select value={language} onValueChange={switchLanguage}>
 						<SelectTrigger>
-							<SelectValue placeholder={t("general.select-language")} />
+							<SelectValue placeholder={t("setting.select-language")} />
 						</SelectTrigger>
 						<SelectContent className="bg-input-bg-default border">
 							<SelectGroup>
 								<SelectItem value="system">
-									{t("general.system-default")}
+									{t("setting.system-default")}
 								</SelectItem>
 								{languageList.map((item) => (
 									<SelectItem key={item.key} value={item.key}>
@@ -175,7 +175,7 @@ export default function SettingGeneral() {
 			</div>
 			<div className="px-6 py-4 bg-surface-secondary rounded-2xl">
 				<div className="text-base font-bold leading-12 text-text-primary">
-					{t("general.appearance")}
+					{t("setting.appearance")}
 				</div>
 				<div className="flex items-center gap-md mt-md">
 					{themeList.map((item: any) => (

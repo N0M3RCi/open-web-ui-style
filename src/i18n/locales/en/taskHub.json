@@ -10,5 +10,9 @@
 	"list": "List",
 	"search-dialog": "Search Dialog",
 	"search-dialog-placeholder": "Search or ask a question",
-	"no-results": "No results found."
+	"no-results": "No results found.",
+	"search-for-a-task-or-document": "Search for a task or document",
+	"calendar": "Calendar",
+	"search-emoji": "Search Emoji",
+	"calculator": "Calculator"
 }

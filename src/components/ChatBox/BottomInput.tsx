@@ -114,8 +114,8 @@ export const BottomInput = ({
 	const handleFileSelect = async () => {
 		try {
 			const result = await window.electronAPI.selectFile({
-				title: "Select File",
-				filters: [{ name: "All Files", extensions: ["*"] }],
+				title: t("chat.select-file"),
+				filters: [{ name: t("chat.all-files"), extensions: ["*"] }],
 			});
 
 			if (result.success && result.files && result.files.length > 0) {
@@ -164,7 +164,7 @@ export const BottomInput = ({
 			!isTakeControl ? (
 				<div className="mr-2 flex items-center justify-between gap-sm z-50 bg-input-bg-default p-sm rounded-2xl border border-solid border-input-border-default">
 					<Tag variant="primary">
-						# Token{" "}
+						# {t("chat.token")}{" "}
 						{chatStore.tasks[chatStore.activeTaskId as string].tokens || 0}
 					</Tag>
 					<div className="text-black text-sm font-medium leading-17">
@@ -227,7 +227,7 @@ export const BottomInput = ({
 			  !isTakeControl ? (
 				<div className="mr-2 flex items-center justify-between gap-sm z-50 bg-input-bg-default p-sm rounded-2xl border border-solid border-input-border-default">
 					<Tag variant="primary">
-						# Token{" "}
+						# {t("chat.token")}{" "}
 						{chatStore.tasks[chatStore.activeTaskId as string].tokens || 0}
 					</Tag>
 					<div className="text-black text-sm font-medium leading-17">
@@ -282,8 +282,8 @@ export const BottomInput = ({
 							<span className="text-button-primary-icon-default text-xs font-semibold leading-17">
 								{chatStore.tasks[chatStore.activeTaskId as string].status ===
 								"pause"
-									? "start"
-									: "Pause"}
+									? t("chat.start")
+									: t("chat.pause")}
 							</span>
 						</Button>
 					) : (
@@ -304,7 +304,7 @@ export const BottomInput = ({
 							)}
 
 							<span className="text-button-primary-icon-default text-xs font-semibold leading-17">
-								Replay
+								{t("chat.replay")}
 							</span>
 						</Button>
 					)}

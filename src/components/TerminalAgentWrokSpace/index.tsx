@@ -119,7 +119,7 @@ export default function TerminalAgentWrokSpace() {
 					>
 						<ChevronLeft size={16} className="text-text-inverse-primary" />
 						<span className="text-sm text-text-inverse-primary font-bold leading-13">
-							Give back to Agent
+							{t("chat.give-back-to-agent")}
 						</span>
 					</Button>
 				</div>

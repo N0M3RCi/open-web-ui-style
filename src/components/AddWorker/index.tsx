@@ -175,12 +175,12 @@ export function AddWorker({
 		setNameError("");
 		
 		if (!workerName) {
-			setNameError("Worker name cannot be empty");
+			setNameError(t("workforce.worker-name-cannot-be-empty"));
 			return;
 		}
 
 		if (!edit && workerList.find((worker: any) => worker.name === workerName)) {
-			setNameError("Worker name already exists");
+			setNameError(t("workforce.worker-name-already-exists"));
 			return;
 		}
 		let mcpLocal: any = {};

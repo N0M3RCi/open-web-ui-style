@@ -104,7 +104,7 @@ function HeaderWin() {
 				chatStore.activeTaskId as string
 			].summaryTask.split("|")[0];
 		}
-		return "New Project";
+		return t("chat.new-project");
 	}, [
 		chatStore.activeTaskId,
 		chatStore.tasks[chatStore.activeTaskId as string]?.summaryTask,
