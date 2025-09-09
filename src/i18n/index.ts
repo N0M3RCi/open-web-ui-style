@@ -4,10 +4,9 @@ import { resources } from "./locales";
 import { getAuthStore } from "@/store/authStore";
 
 export enum LocaleEnum {
-  Chinese = "zh-cn",
-  TraditionalChinese = "zh-tw",
+  SimplifiedChinese = "zh-Hans",
+  TraditionalChinese = "zh-Hant",
   English = "en-us",
-  // TODO: other locales
   German = "de",
   Korean = "ko",
   Japanese = "ja",
@@ -15,6 +14,7 @@ export enum LocaleEnum {
   Russian = "ru",
   Italian = "it",
   Arabic = "ar",
+  Spanish = "es",
 }
 
 const { language } = getAuthStore();

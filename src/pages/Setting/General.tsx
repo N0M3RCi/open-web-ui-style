@@ -57,7 +57,7 @@ export default function SettingGeneral() {
 			label: "English",
 		},
 		{
-			key: LocaleEnum.Chinese,
+			key: LocaleEnum.SimplifiedChinese,
 			label: "简体中文",
 		},
 		{
@@ -83,6 +83,18 @@ export default function SettingGeneral() {
 		{
 			key: LocaleEnum.Russian,
 			label: "Русский",
+		},
+		{
+			key: LocaleEnum.Spanish,
+			label: "Español",
+		},
+		{
+			key: LocaleEnum.Korean,
+			label: "한국어",
+		},
+		{
+			key: LocaleEnum.Italian,
+			label: "Italiano",
 		},
 	];
 
