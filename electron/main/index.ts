@@ -312,6 +312,13 @@ function registerIpcHandlers() {
   });
   ipcMain.handle('get-app-version', () => app.getVersion());
   ipcMain.handle('get-backend-port', () => backendPort);
+  ipcMain.handle('restart-backend', () => {
+    if (backendPort) {
+      cleanupPythonProcess();
+      checkAndStartBackend();
+    }
+    return { success: true };
+  });
   ipcMain.handle('get-system-language', getSystemLanguage);
   ipcMain.handle('is-fullscreen', () => win?.isFullScreen() || false);
   ipcMain.handle('get-home-dir', () => {

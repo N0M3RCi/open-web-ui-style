@@ -1639,6 +1639,7 @@ const chatStore = create<ChatStore>()(
 			const { create } = get()
 			console.log('clearTasks')
 			fetchDelete('/task/stop-all')
+			window.ipcRenderer.invoke('restart-backend')
 			const newTaskId = create()
 			set((state) => ({
 				...state,
