@@ -10,9 +10,9 @@
 	"list": "قائمة",
 	"search-dialog": "مربع حوار البحث",
 	"search-dialog-placeholder": "ابحث أو اطرح سؤالاً",
-	"no-results": "لم يتم العثور على نتائج.",
+	"no-results": "لا توجد نتائج",
 	"search-for-a-task-or-document": "ابحث عن مهمة أو مستند",
 	"calendar": "تقويم",
-	"search-emoji": "بحث عن الرموز التعبيرية",
+	"search-emoji": "بحث إيموجي",
 	"calculator": "آلة حاسبة"
 }
