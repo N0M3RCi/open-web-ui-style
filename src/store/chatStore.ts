@@ -497,7 +497,7 @@ const chatStore = create<ChatStore>()(
 						setTaskAssigning(taskId, taskAssigning)
 						return;
 					}
-					
+
 					// Activate agent
 					if (agentMessages.step === "activate_agent" || agentMessages.step === "deactivate_agent") {
 						let taskAssigning = [...tasks[taskId].taskAssigning]
@@ -607,7 +607,7 @@ const chatStore = create<ChatStore>()(
 						if (taskAssigning && taskAssigning[assigneeAgentIndex]) {
 							// Check if task already exists in the agent's task list
 							const existingTaskIndex = taskAssigning[assigneeAgentIndex].tasks.findIndex(item => item.id === task_id);
-							
+
 							if (existingTaskIndex !== -1) {
 								// Task already exists, update its status
 								taskAssigning[assigneeAgentIndex].tasks[existingTaskIndex].status = "running";
@@ -624,7 +624,7 @@ const chatStore = create<ChatStore>()(
 								taskAssigning[assigneeAgentIndex].tasks.push(taskTemp ?? { id: task_id, content, status: "running", });
 							}
 						}
-						
+
 						// Only update or add to taskRunning, never duplicate
 						if (taskRunningIndex === -1) {
 							// Task not in taskRunning, add it
@@ -1639,16 +1639,19 @@ const chatStore = create<ChatStore>()(
 			const { create } = get()
 			console.log('clearTasks')
 			fetchDelete('/task/stop-all')
-			window.ipcRenderer.invoke('restart-backend')
-			const newTaskId = create()
-			set((state) => ({
-				...state,
-				tasks: {
-					[newTaskId]: {
-						...state.tasks[newTaskId],
+			window.ipcRenderer.invoke('restart-backend').then((res) => {
+				console.log('restart-backend', res)
+				const newTaskId = create()
+				set((state) => ({
+					...state,
+					tasks: {
+						[newTaskId]: {
+							...state.tasks[newTaskId],
+						},
 					},
-				},
-			}))
+				}))
+			})
+
 		},
 	})
 );

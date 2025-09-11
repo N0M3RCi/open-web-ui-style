@@ -312,10 +312,10 @@ function registerIpcHandlers() {
   });
   ipcMain.handle('get-app-version', () => app.getVersion());
   ipcMain.handle('get-backend-port', () => backendPort);
-  ipcMain.handle('restart-backend', () => {
+  ipcMain.handle('restart-backend', async () => {
     if (backendPort) {
-      cleanupPythonProcess();
-      checkAndStartBackend();
+      await cleanupPythonProcess();
+      await checkAndStartBackend();
     }
     return { success: true };
   });
