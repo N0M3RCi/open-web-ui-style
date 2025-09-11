@@ -120,10 +120,12 @@ export class WebViewManager {
         const activeSize = this.getActiveWebview().length
         const allSize = Array.from(this.webViews.values()).length
         if (allSize - activeSize <= 3) {
-          const newId = Array.from(this.webViews.keys()).length + 2
+          const newId = (Math.max(0, ...Array.from(this.webViews.keys()).map(Number)) || 0) + 2
           this.createWebview(newId.toString(), 'about:blank?use=0')
           this.createWebview((newId + 1).toString(), 'about:blank?use=0')
           this.createWebview((newId + 2).toString(), 'about:blank?use=0')
+          this.createWebview((newId + 3).toString(), 'about:blank?use=0')
+          this.createWebview((newId + 4).toString(), 'about:blank?use=0')
         }
 
         // setTimeout(() => {
