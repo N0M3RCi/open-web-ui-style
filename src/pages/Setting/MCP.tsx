@@ -196,13 +196,24 @@ export default function SettingMCP() {
 		setSaving(true);
 		setErrorMsg(null);
 		try {
-			await proxyFetchPut(`/api/mcp/users/${showConfig.id}`, {
+			const mcpData = {
 				mcp_name: configForm.mcp_name,
 				mcp_desc: configForm.mcp_desc,
 				command: configForm.command,
 				args: arrayToArgsJson(configForm.argsArr),
 				env: configForm.env,
-			});
+			}
+			await proxyFetchPut(`/api/mcp/users/${showConfig.id}`, mcpData);
+
+			if (window.ipcRenderer) {
+				window.ipcRenderer.invoke("mcp-update", mcpData.mcp_name, {
+					description: configForm.mcp_desc,
+					command: configForm.command,
+					args: arrayToArgsJson(configForm.argsArr),
+					env: configForm.env,
+				})
+			}
+
 			setShowConfig(null);
 			fetchList();
 		} catch (err: any) {
@@ -236,7 +247,7 @@ export default function SettingMCP() {
 	const handleInstall = async () => {
 		setInstalling(true);
 		try {
-			if (addType === "local") {
+				if (addType === "local") {
 				let data:ConfigFile;
 				try {
 					data = JSON.parse(localJson);

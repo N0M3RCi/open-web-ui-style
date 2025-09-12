@@ -34,7 +34,7 @@ export default function MCPConfigDialog({ open, form, mcp, onChange, onSave, onC
         <form onSubmit={onSave} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Name</label>
-            <input autoComplete="off" className="w-full border rounded px-3 py-2 text-sm" value={form.mcp_name} onChange={e => onChange({ ...form, mcp_name: e.target.value })} disabled={loading} />
+            <input autoComplete="off" className="w-full border rounded px-3 py-2 text-sm" value={form.mcp_name} onChange={e => onChange({ ...form, mcp_name: e.target.value })} disabled readOnly />
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Description</label>
