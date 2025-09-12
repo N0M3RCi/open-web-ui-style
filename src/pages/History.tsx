@@ -342,21 +342,21 @@ export default function Home() {
 															className={`transition-all duration-300 flex justify-start items-center gap-1 px-sm py-xs bg-menutabs-bg-default rounded-lg border border-solid border-white-100% ${
 																agentMap[
 																	taskAssigning.type as keyof typeof agentMap
-																].borderColor
+																]?.borderColor
 															}`}
 														>
 															<Bot
 																className={`w-3 h-3 ${
 																	agentMap[
 																		taskAssigning.type as keyof typeof agentMap
-																	].textColor
+																	]?.textColor
 																}`}
 															/>
 															<div
 																className={`${
 																	agentMap[
 																		taskAssigning.type as keyof typeof agentMap
-																	].textColor
+																	]?.textColor
 																} text-xs leading-17 font-medium`}
 															>
 																{taskAssigning.name}

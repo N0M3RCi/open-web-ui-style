@@ -141,6 +141,8 @@ export function TaskCard({
 						<div className="flex items-center gap-2 ">
 							{taskType === 1 && (
 								<TaskState
+									all={taskInfo.length || 0}
+									reAssignTo={0}
 									done={0}
 									progress={
 										taskInfo.filter((task) => task.content !== "").length || 0
@@ -150,11 +152,15 @@ export function TaskCard({
 							)}
 							{taskType !== 1 && (
 								<TaskState
+									all={taskRunning.length || 0}
 									done={
 										taskRunning?.filter(
 											(task) =>
 												task.status === "completed" || task.status === "failed"
 										).length || 0
+									}
+									reAssignTo={
+										taskRunning?.filter((task) => task.reAssignTo).length || 0
 									}
 									progress={
 										taskRunning?.filter(
@@ -162,11 +168,12 @@ export function TaskCard({
 												task.status !== "completed" &&
 												task.status !== "failed" &&
 												task.status !== "skipped" &&
+												task.status !== "waiting" &&
 												task.content !== ""
 										).length || 0
 									}
 									skipped={
-										taskRunning?.filter((task) => task.status === "skipped")
+										taskRunning?.filter((task) => task.status === "skipped"||task.status==="waiting")
 											.length || 0
 									}
 								/>
@@ -316,7 +323,7 @@ export function TaskCard({
 												</div>
 												<div className="flex-1 flex flex-col items-start justify-center">
 													<div
-														className={` w-full ${
+														className={` w-full break-words [overflow-wrap:anywhere] whitespace-pre-line ${
 															task.status === "failed"
 																? "text-text-cuation-default"
 																: task.status === "blocked"
