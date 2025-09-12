@@ -580,11 +580,12 @@ const chatStore = create<ChatStore>()(
 					if (agentMessages.step === "assign_task") {
 						if (!agentMessages.data?.assignee_id || !agentMessages.data?.task_id) return;
 
-						const { assignee_id, task_id, content = "", state: taskState } = agentMessages.data as any;
+						const { assignee_id, task_id, content = "", state: taskState ,failure_count} = agentMessages.data as any;
 						let taskAssigning = [...tasks[taskId].taskAssigning]
 						let taskRunning = [...tasks[taskId].taskRunning]
 						let taskInfo = [...tasks[taskId].taskInfo]
 
+						// Find the index of the agent corresponding to assignee_id
 						const assigneeAgentIndex = taskAssigning!.findIndex((agent: Agent) => agent.agent_id === assignee_id);
 						// Find task corresponding to task_id
 						const task = taskInfo!.find((task: TaskInfo) => task.id === task_id);
@@ -602,7 +603,7 @@ const chatStore = create<ChatStore>()(
 							setTaskAssigning(taskId, [...taskAssigning]);
 							return; // Return early, do not add to the running queue
 						}
-
+						
 						// The following logic is for when the task actually starts executing (running)
 						if (taskAssigning && taskAssigning[assigneeAgentIndex]) {
 							// Check if task already exists in the agent's task list
@@ -611,6 +612,9 @@ const chatStore = create<ChatStore>()(
 							if (existingTaskIndex !== -1) {
 								// Task already exists, update its status
 								taskAssigning[assigneeAgentIndex].tasks[existingTaskIndex].status = "running";
+								if (failure_count!==0) {
+									taskAssigning[assigneeAgentIndex].tasks[existingTaskIndex].failure_count = failure_count;
+								}
 							} else {
 								// Task doesn't exist, add it
 								let taskTemp = null
