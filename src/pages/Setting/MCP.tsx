@@ -335,13 +335,13 @@ export default function SettingMCP() {
 				{!isLoading && !error && items.length === 0 && (
 					<div className="text-center py-8 text-gray-400">No MCP servers</div>
 				)}
-				<MCPList
+				{!isLoading && <MCPList
 					items={items}
 					onSetting={setShowConfig}
 					onDelete={setDeleteTarget}
 					onSwitch={handleSwitch}
 					switchLoading={switchLoading}
-				/>
+				/>}
 				<MCPConfigDialog
 					open={!!showConfig}
 					form={configForm}
