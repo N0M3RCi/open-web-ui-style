@@ -20,6 +20,7 @@ import { getProxyBaseURL } from "@/lib";
 import { useAuthStore } from "@/store/authStore";
 
 import { toast } from "sonner";
+import { ConfigFile } from "electron/main/utils/mcpConfig";
 
 export default function SettingMCP() {
 	const navigate = useNavigate();
@@ -236,9 +237,27 @@ export default function SettingMCP() {
 		setInstalling(true);
 		try {
 			if (addType === "local") {
-				let data;
+				let data:ConfigFile;
 				try {
 					data = JSON.parse(localJson);
+
+					// validate mcpServers structure
+					if (!data.mcpServers || typeof data.mcpServers !== "object") {
+						throw new Error("Invalid mcpServers");
+					}
+
+					// check for name conflicts with existing items
+					const serverNames = Object.keys(data.mcpServers);
+					const conflict = serverNames.find((name) =>
+						items.some((d) => d.mcp_name === name)
+					);
+					if (conflict) {
+						toast.error(`MCP server "${conflict}" already exists`, {
+							closeButton: true,
+						});
+						setInstalling(false);
+						return;
+					}
 				} catch (e) {
 					toast.error("Invalid JSON", { closeButton: true });
 					setInstalling(false);
