@@ -51,13 +51,10 @@ class SlackToolkit(BaseSlackToolkit, AbstractToolkit):
 
     @listen_toolkit(
         BaseSlackToolkit.send_slack_message,
-        lambda _,
-        message,
-        channel_id,
-        user=None: f"send Slack message: {message} to channel id: {channel_id} for user: {user}",
+        lambda _, message, channel_id, file_path, user: f"send Slack message: {message} to channel id: {channel_id}, file: {file_path}, user: {user}",
     )
-    def send_slack_message(self, message: str, channel_id: str, user: str | None = None) -> str:
-        return super().send_slack_message(message, channel_id, user)
+    def send_slack_message(self, message: str, channel_id: str, file_path: str, user: str) -> str:
+        return super().send_slack_message(message, channel_id, file_path, user)
 
     @listen_toolkit(
         BaseSlackToolkit.delete_slack_message,
