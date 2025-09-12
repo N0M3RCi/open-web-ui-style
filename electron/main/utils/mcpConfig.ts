@@ -8,6 +8,7 @@ const MCP_CONFIG_PATH = path.join(MCP_CONFIG_DIR, 'mcp.json');
 type McpServerConfig = {
   command: string;
   args: string[];
+  description?: string;
   env?: Record<string, string>;
 } | {
   url: string;
@@ -17,7 +18,7 @@ type McpServersConfig = {
   [name: string]: McpServerConfig;
 };
 
-type ConfigFile = {
+export type ConfigFile = {
   mcpServers: McpServersConfig;
 };
 
