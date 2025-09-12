@@ -247,7 +247,7 @@ export default function SettingMCP() {
 	const handleInstall = async () => {
 		setInstalling(true);
 		try {
-				if (addType === "local") {
+			if (addType === "local") {
 				let data:ConfigFile;
 				try {
 					data = JSON.parse(localJson);
