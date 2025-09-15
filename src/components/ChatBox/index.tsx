@@ -12,9 +12,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { NoticeCard } from "./NoticeCard";
 import { useAuthStore } from "@/store/authStore";
 import { PrivacyDialog } from "../Dialog/Privacy";
+import { TaskStateType } from "../TaskState";
 
 export default function ChatBox(): JSX.Element {
 	const [message, setMessage] = useState<string>("");
+	const [selectedStates, setSelectedStates] = useState<TaskStateType[]>([]);
 	const chatStore = useChatStore();
 
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -463,6 +465,9 @@ export default function ChatBox(): JSX.Element {
 													);
 													chatStore.deleteTaskInfo(taskIndex);
 												}}
+												selectedStates={selectedStates}
+												onStateChange={setSelectedStates}
+												clickable={true}
 											/>
 										);
 									}

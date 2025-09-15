@@ -450,7 +450,7 @@ const chatStore = create<ChatStore>()(
 						let taskRunning = [...tasks[taskId].taskRunning]
 						let taskAssigning = [...tasks[taskId].taskAssigning]
 						const targetTaskIndex = taskRunning.findIndex((task) => task.id === task_id)
-						const targetTaskAssigningIndex = taskAssigning.findIndex((agent) => agent.tasks.find((task: TaskInfo) => task.id === task_id && (task.failure_count == 0 || !task.failure_count)))
+						const targetTaskAssigningIndex = taskAssigning.findIndex((agent) => agent.tasks.find((task: TaskInfo) => task.id === task_id && !task.reAssignTo))
 						if (targetTaskAssigningIndex !== -1) {
 							const taskIndex = taskAssigning[targetTaskAssigningIndex].tasks.findIndex((task: TaskInfo) => task.id === task_id)
 							taskAssigning[targetTaskAssigningIndex].tasks[taskIndex].status = state === "DONE" ? "completed" : "failed";
@@ -484,13 +484,12 @@ const chatStore = create<ChatStore>()(
 										content: targetResult,
 										step: "failed",
 									})
-									setStatus(taskId, 'pause')
 								}
 							}
 
 						}
 						if (targetTaskIndex !== -1) {
-
+							console.log("targetTaskIndex", targetTaskIndex,state)
 							taskRunning[targetTaskIndex].status = state === "DONE" ? "completed" : "failed";
 						}
 						setTaskRunning(taskId, taskRunning)
@@ -540,7 +539,6 @@ const chatStore = create<ChatStore>()(
 							setTaskAssigning(taskId, [...taskAssigning]);
 						}
 						if (agentMessages.step === "deactivate_agent") {
-							taskAssigning[agentIndex].status = "completed";
 							if (message) {
 								const index = taskAssigning[agentIndex].log.findLastIndex((log) => log.data.method_name === agentMessages.data.method_name && log.data.toolkit_name === agentMessages.data.toolkit_name)
 								if (index != -1) {
@@ -549,12 +547,11 @@ const chatStore = create<ChatStore>()(
 								}
 
 							}
-							// const taskIndex = taskRunning!.findLastIndex((task) => task.agent?.agent_id === agent_id && task.status !== 'completed' && task.status !== 'failed');
-							const taskIndex = taskRunning.findIndex((task) => task.id === process_task_id);
-							if (taskIndex !== -1) {
-								taskRunning![taskIndex].agent!.status = "completed";
-								taskRunning![taskIndex]!.status = "completed";
-							}
+							// const taskIndex = taskRunning.findIndex((task) => task.id === process_task_id);
+							// if (taskIndex !== -1) {
+							// 	taskRunning![taskIndex].agent!.status = "completed";
+							// 	taskRunning![taskIndex]!.status = "completed";
+							// }
 
 
 							if (!type && historyId) {
@@ -610,7 +607,7 @@ const chatStore = create<ChatStore>()(
 
 						if (target) {
 							const { agentIndex, taskIndex } = target
-							const agentName=taskAssigning.find((agent: Agent) => agent.agent_id === assignee_id)?.name
+							const agentName = taskAssigning.find((agent: Agent) => agent.agent_id === assignee_id)?.name
 							taskAssigning[agentIndex].tasks[taskIndex].reAssignTo = agentName
 						}
 
@@ -664,7 +661,6 @@ const chatStore = create<ChatStore>()(
 							// Task already in taskRunning, update it
 							taskRunning![taskRunningIndex] = {
 								...taskRunning![taskRunningIndex],
-								content,
 								status: "",
 								agent: JSON.parse(JSON.stringify(taskAgent)),
 							};

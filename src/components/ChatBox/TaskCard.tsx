@@ -22,7 +22,7 @@ import {
 	CircleSlash,
 } from "lucide-react";
 import { useMemo, useState, useRef, useEffect } from "react";
-import { TaskState } from "../TaskState";
+import { TaskState, TaskStateType } from "../TaskState";
 
 interface TaskCardProps {
 	taskInfo: any[];
@@ -34,6 +34,9 @@ interface TaskCardProps {
 	onAddTask: () => void;
 	onUpdateTask: (taskIndex: number, content: string) => void;
 	onDeleteTask: (taskIndex: number) => void;
+	selectedStates?: TaskStateType[];
+	onStateChange?: (selectedStates: TaskStateType[]) => void;
+	clickable?: boolean;
 }
 
 export function TaskCard({
@@ -45,6 +48,9 @@ export function TaskCard({
 	onAddTask,
 	onUpdateTask,
 	onDeleteTask,
+	selectedStates = [],
+	onStateChange,
+	clickable = true,
 }: TaskCardProps) {
 	const [isExpanded, setIsExpanded] = useState(true);
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -148,6 +154,9 @@ export function TaskCard({
 										taskInfo.filter((task) => task.content !== "").length || 0
 									}
 									skipped={0}
+									selectedStates={selectedStates}
+									onStateChange={onStateChange}
+									clickable={clickable}
 								/>
 							)}
 							{taskType !== 1 && (
@@ -176,6 +185,9 @@ export function TaskCard({
 										taskRunning?.filter((task) => task.status === "skipped"||task.status==="waiting")
 											.length || 0
 									}
+									selectedStates={selectedStates}
+									onStateChange={onStateChange}
+									clickable={clickable}
 								/>
 							)}
 						</div>
@@ -286,7 +298,7 @@ export function TaskCard({
 													{task.status === "running" && (
 														<LoaderCircle
 															size={16}
-															className={`text-icon-success ${
+															className={`text-icon-information ${
 																chatStore.tasks[
 																	chatStore.activeTaskId as string
 																].status === "running" && "animate-spin"

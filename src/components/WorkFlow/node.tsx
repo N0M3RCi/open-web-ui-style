@@ -28,7 +28,7 @@ import ShinyText from "../ui/ShinyText/ShinyText";
 import { MarkDown } from "./MarkDown";
 import { Tooltip, TooltipTrigger } from "../ui/tooltip";
 import { TooltipContent } from "@radix-ui/react-tooltip";
-import { TaskState } from "../TaskState";
+import { TaskState, TaskStateType } from "../TaskState";
 import {
 	Popover,
 	PopoverClose,
@@ -59,6 +59,46 @@ interface NodeProps {
 export function Node({ id, data }: NodeProps) {
 	const [isExpanded, setIsExpanded] = useState(data.isExpanded);
 	const [selectedTask, setSelectedTask] = useState<any>(null);
+	const [selectedStates, setSelectedStates] = useState<TaskStateType[]>(['all']);
+
+	const [filterTasks, setFilterTasks] = useState<any[]>([]);
+	useEffect(() => {
+		const tasks = data.agent?.tasks || [];
+
+		if (selectedStates.includes("all") || selectedStates.length === 0) {
+			setFilterTasks(tasks);
+		} else {
+			const newFiltered = tasks.filter((task) => {
+				return selectedStates.some((state) => {
+					switch (state) {
+						case "done":
+							return (task.status === "completed" || task.status === "failed") && !task.reAssignTo;
+						case "reassigned":
+							return !!task.reAssignTo;
+						case "ongoing":
+							return (
+								task.status !== "failed" &&
+								task.status !== "completed" &&
+								task.status !== "skipped" &&
+								task.status !== "waiting" &&
+								task.status !== "" &&
+								!task.reAssignTo
+							);
+						case "pending":
+							return (
+								(task.status === "skipped" ||
+									task.status === "waiting" ||
+									task.status === "") &&
+								!task.reAssignTo
+							);
+						default:
+							return false;
+					}
+				});
+			});
+			setFilterTasks(newFiltered);
+		}
+	}, [selectedStates, data.agent?.tasks]);
 
 	const chatStore = useChatStore();
 	const { setCenter, getNode, setViewport, setNodes } = useReactFlow();
@@ -451,31 +491,40 @@ export function Node({ id, data }: NodeProps) {
 							{/* <div className="font-bold leading-tight text-xs">Subtasks</div> */}
 							<div className="flex-1 flex justify-end">
 								<TaskState
-									all={data.agent.tasks?.length||0}
+									all={data.agent.tasks?.length || 0}
 									done={
 										data.agent?.tasks?.filter(
 											(task) =>
-												task.status === "failed" || task.status === "completed"
+												(task.status === "failed" || task.status === "completed") && !task.reAssignTo
 										).length || 0
 									}
-									reAssignTo={data.agent.tasks?.filter((task) => task.reAssignTo)?.length||0}
-
+									reAssignTo={
+										data.agent.tasks?.filter((task) => task.reAssignTo)
+											?.length || 0
+									}
 									progress={
 										data.agent?.tasks?.filter(
 											(task) =>
 												task.status !== "failed" &&
 												task.status !== "completed" &&
-												task.status !== "skipped"&&
-												task.status !== "waiting"&&
-												task.status !== ""&&
+												task.status !== "skipped" &&
+												task.status !== "waiting" &&
+												task.status !== "" &&
 												!task.reAssignTo
 										).length || 0
 									}
 									skipped={
 										data.agent?.tasks?.filter(
-											(task) => (task.status === "skipped"||task.status==="waiting"||task.status==="")&&!task.reAssignTo
+											(task) =>
+												(task.status === "skipped" ||
+													task.status === "waiting" ||
+													task.status === "") &&
+												!task.reAssignTo
 										).length || 0
 									}
+									selectedStates={selectedStates}
+									onStateChange={setSelectedStates}
+									clickable={true}
 								/>
 							</div>
 						</div>
@@ -496,7 +545,7 @@ export function Node({ id, data }: NodeProps) {
 						}}
 					>
 						{data.agent?.tasks &&
-							data.agent?.tasks.map((task, index) => {
+							filterTasks.map((task, index) => {
 								return (
 									<div
 										onClick={() => {
@@ -552,6 +601,7 @@ export function Node({ id, data }: NodeProps) {
 												: "border-transparent"
 										}`}
 									>
+										{task.status}
 										<div className="">
 											{task.reAssignTo ? (
 												//  reassign to other agent
