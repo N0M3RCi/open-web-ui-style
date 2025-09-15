@@ -147,13 +147,30 @@ export function TaskCard({
 						<div className="flex items-center gap-2 ">
 							{taskType === 1 && (
 								<TaskState
-									all={taskInfo.length || 0}
-									reAssignTo={0}
-									done={0}
-									progress={
-										taskInfo.filter((task) => task.content !== "").length || 0
+									done={
+										taskInfo.filter(
+											(task) =>
+												task.status === "completed" || task.status === "failed"
+										).length || 0
 									}
-									skipped={0}
+									progress={
+										taskInfo.filter(
+											(task) =>
+												task.status !== "completed" &&
+												task.status !== "failed" &&
+												task.status !== "skipped" &&
+												task.status !== "waiting" &&
+												task.status !== ""
+										).length || 0
+									}
+									skipped={
+										taskInfo.filter(
+											(task) =>
+												task.status === "skipped" ||
+												task.status === "waiting" ||
+												task.status === ""
+										).length || 0
+									}
 									selectedStates={selectedStates}
 									onStateChange={onStateChange}
 									clickable={clickable}
@@ -161,15 +178,11 @@ export function TaskCard({
 							)}
 							{taskType !== 1 && (
 								<TaskState
-									all={taskRunning.length || 0}
 									done={
 										taskRunning?.filter(
 											(task) =>
 												task.status === "completed" || task.status === "failed"
 										).length || 0
-									}
-									reAssignTo={
-										taskRunning?.filter((task) => task.reAssignTo).length || 0
 									}
 									progress={
 										taskRunning?.filter(
@@ -178,12 +191,14 @@ export function TaskCard({
 												task.status !== "failed" &&
 												task.status !== "skipped" &&
 												task.status !== "waiting" &&
-												task.content !== ""
+												task.status !== ""
 										).length || 0
 									}
 									skipped={
-										taskRunning?.filter((task) => task.status === "skipped"||task.status==="waiting")
-											.length || 0
+										taskRunning?.filter(
+											(task) =>
+												task.status === "skipped" || task.status === "waiting" || task.status === ""
+										).length || 0
 									}
 									selectedStates={selectedStates}
 									onStateChange={onStateChange}
