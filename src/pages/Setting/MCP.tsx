@@ -289,12 +289,7 @@ export default function SettingMCP() {
 			}
 			setShowAdd(false);
 			setLocalJson(`{
-				"mcp_id": 0,
-				"mcp_name": "",
-				"mcp_desc": "",
-				"command": "",
-				"args": "",
-				"env": {}
+				"mcpServers": {}
 			}`);
 			setRemoteName("");
 			setRemoteUrl("");
