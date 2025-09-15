@@ -206,12 +206,16 @@ export default function SettingMCP() {
 			await proxyFetchPut(`/api/mcp/users/${showConfig.id}`, mcpData);
 
 			if (window.ipcRenderer) {
-				window.ipcRenderer.invoke("mcp-update", mcpData.mcp_name, {
+				//Partial payload to empty env {}
+				const payload: any = {
 					description: configForm.mcp_desc,
 					command: configForm.command,
 					args: arrayToArgsJson(configForm.argsArr),
-					env: configForm.env,
-				})
+				};
+				if (configForm.env && Object.keys(configForm.env).length > 0) {
+					payload.env = configForm.env;
+				}
+				window.ipcRenderer.invoke("mcp-update", mcpData.mcp_name, payload);
 			}
 
 			setShowConfig(null);
