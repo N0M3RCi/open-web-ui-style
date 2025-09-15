@@ -516,6 +516,15 @@ function registerIpcHandlers() {
 
   // ==================== MCP manage handler ====================
   ipcMain.handle('mcp-install', async (event, name, mcp) => {
+    // Convert args from JSON string to array if needed
+    if (mcp.args && typeof mcp.args === 'string') {
+      try {
+        mcp.args = JSON.parse(mcp.args);
+      } catch (e) {
+        // If parsing fails, split by comma as fallback
+        mcp.args = mcp.args.split(',').map((arg: string) => arg.trim()).filter((arg: string) => arg !== '');
+      }
+    }
     addMcp(name, mcp);
     return { success: true };
   });
@@ -526,6 +535,15 @@ function registerIpcHandlers() {
   });
 
   ipcMain.handle('mcp-update', async (event, name, mcp) => {
+    // Convert args from JSON string to array if needed
+    if (mcp.args && typeof mcp.args === 'string') {
+      try {
+        mcp.args = JSON.parse(mcp.args);
+      } catch (e) {
+        // If parsing fails, split by comma as fallback
+        mcp.args = mcp.args.split(',').map((arg: string) => arg.trim()).filter((arg: string) => arg !== '');
+      }
+    }
     updateMcp(name, mcp);
     return { success: true };
   });
