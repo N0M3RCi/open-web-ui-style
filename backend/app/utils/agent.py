@@ -20,7 +20,7 @@ from app.component.environment import env
 from app.utils.toolkit.abstract_toolkit import AbstractToolkit
 from app.utils.toolkit.hybrid_browser_toolkit import HybridBrowserToolkit
 from app.utils.toolkit.excel_toolkit import ExcelToolkit
-from app.utils.toolkit.file_write_toolkit import FileWriteToolkit
+from app.utils.toolkit.file_write_toolkit import FileToolkit
 from app.utils.toolkit.google_calendar_toolkit import GoogleCalendarToolkit
 from app.utils.toolkit.google_drive_mcp_toolkit import GoogleDriveMCPToolkit
 from app.utils.toolkit.google_gmail_mcp_toolkit import GoogleGmailMCPToolkit
@@ -53,7 +53,7 @@ from loguru import logger
 from app.model.chat import Chat, McpServers
 
 # Create traceroot logger for agent tracking
-traceroot_logger = traceroot.get_logger('agent')
+traceroot_logger = traceroot.get_logger("agent")
 from app.service.task import (
     Action,
     ActionActivateAgentData,
@@ -151,7 +151,9 @@ class ListenChatAgent(ChatAgent):
         error_info = None
         message = None
         res = None
-        traceroot_logger.info(f"Agent {self.agent_name} starting step with message: {input_message.content if isinstance(input_message, BaseMessage) else input_message}")
+        traceroot_logger.info(
+            f"Agent {self.agent_name} starting step with message: {input_message.content if isinstance(input_message, BaseMessage) else input_message}"
+        )
         try:
             res = super().step(input_message, response_format)
         except ModelProcessingError as e:
@@ -221,7 +223,9 @@ class ListenChatAgent(ChatAgent):
         error_info = None
         message = None
         res = None
-        traceroot_logger.debug(f"Agent {self.agent_name} starting async step with message: {input_message.content if isinstance(input_message, BaseMessage) else input_message}")
+        traceroot_logger.debug(
+            f"Agent {self.agent_name} starting async step with message: {input_message.content if isinstance(input_message, BaseMessage) else input_message}"
+        )
 
         try:
             res = await super().astep(input_message, response_format)
@@ -290,7 +294,9 @@ class ListenChatAgent(ChatAgent):
                 task_lock = get_task_lock(self.api_task_id)
 
                 toolkit_name = getattr(tool, "_toolkit_name") if hasattr(tool, "_toolkit_name") else "mcp_toolkit"
-                traceroot_logger.debug(f"Agent {self.agent_name} executing tool: {func_name} from toolkit: {toolkit_name} with args: {json.dumps(args, ensure_ascii=False)}")
+                traceroot_logger.debug(
+                    f"Agent {self.agent_name} executing tool: {func_name} from toolkit: {toolkit_name} with args: {json.dumps(args, ensure_ascii=False)}"
+                )
                 asyncio.create_task(
                     task_lock.put_queue(
                         ActionActivateToolkitData(
@@ -353,7 +359,9 @@ class ListenChatAgent(ChatAgent):
             task_lock = get_task_lock(self.api_task_id)
 
             toolkit_name = getattr(tool, "_toolkit_name") if hasattr(tool, "_toolkit_name") else "mcp_toolkit"
-            traceroot_logger.info(f"Agent {self.agent_name} executing async tool: {func_name} from toolkit: {toolkit_name} with args: {json.dumps(args, ensure_ascii=False)}")
+            traceroot_logger.info(
+                f"Agent {self.agent_name} executing async tool: {func_name} from toolkit: {toolkit_name} with args: {json.dumps(args, ensure_ascii=False)}"
+            )
             await task_lock.put_queue(
                 ActionActivateToolkitData(
                     data={
@@ -861,7 +869,7 @@ async def document_agent(options: Chat):
     message_integration = ToolkitMessageIntegration(
         message_handler=HumanToolkit(options.task_id, Agents.task_agent).send_message_to_user
     )
-    file_write_toolkit = FileWriteToolkit(options.task_id, working_directory=working_directory)
+    file_write_toolkit = FileToolkit(options.task_id, working_directory=working_directory)
     pptx_toolkit = PPTXToolkit(options.task_id, working_directory=working_directory)
     pptx_toolkit = message_integration.register_toolkits(pptx_toolkit)
     mark_it_down_toolkit = MarkItDownToolkit(options.task_id)
@@ -1043,7 +1051,7 @@ supported formats including advanced spreadsheet functionality.
         options,
         tools,
         tool_names=[
-            FileWriteToolkit.toolkit_name(),
+            FileToolkit.toolkit_name(),
             PPTXToolkit.toolkit_name(),
             HumanToolkit.toolkit_name(),
             MarkItDownToolkit.toolkit_name(),
@@ -1342,7 +1350,9 @@ operations.
 
 @traceroot.trace()
 async def mcp_agent(options: Chat):
-    traceroot_logger.info(f"Creating MCP agent for task: {options.task_id} with {len(options.installed_mcp['mcpServers'])} MCP servers")
+    traceroot_logger.info(
+        f"Creating MCP agent for task: {options.task_id} with {len(options.installed_mcp['mcpServers'])} MCP servers"
+    )
     tools = [
         # *HumanToolkit.get_can_use_tools(options.task_id, Agents.mcp_agent),
         *McpSearchToolkit(options.task_id).get_tools(),
@@ -1400,7 +1410,7 @@ async def get_toolkits(tools: list[str], agent_name: str, api_task_id: str):
         "audio_analysis_toolkit": AudioAnalysisToolkit,
         "openai_image_toolkit": OpenAIImageToolkit,
         "excel_toolkit": ExcelToolkit,
-        "file_write_toolkit": FileWriteToolkit,
+        "file_write_toolkit": FileToolkit,
         "github_toolkit": GithubToolkit,
         "google_calendar_toolkit": GoogleCalendarToolkit,
         "google_drive_mcp_toolkit": GoogleDriveMCPToolkit,
