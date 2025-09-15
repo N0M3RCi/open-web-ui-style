@@ -517,9 +517,7 @@ export default function ChatBox(): JSX.Element {
 					)}
 				</div>
 			) : (
-				<div
-					className="w-full h-[calc(100vh-54px)] flex items-center rounded-xl border border-border-disabled p-2 pr-0  border-solid  relative overflow-hidden"
-				>
+				<div className="w-full h-[calc(100vh-54px)] flex items-center rounded-xl border border-border-disabled p-2 pr-0  border-solid  relative overflow-hidden">
 					<div className="absolute inset-0 blur-bg bg-bg-surface-secondary pointer-events-none"></div>
 					<div className=" w-full flex flex-col relative z-10">
 						<div className="flex flex-col items-center gap-1 h-[210px] justify-end">
@@ -554,11 +552,11 @@ export default function ChatBox(): JSX.Element {
 										onClick={(e) => {
 											// Check if the click target is an anchor tag
 											const target = e.target as HTMLElement;
-											if (target.tagName === 'A') {
+											if (target.tagName === "A") {
 												// Let the anchor tag handle the click naturally
 												return;
 											}
-											
+
 											// Enable privacy permissions
 											const API_FIELDS = [
 												"take_screenshot",
@@ -630,9 +628,8 @@ export default function ChatBox(): JSX.Element {
 											className="cursor-pointer flex items-center gap-1 px-sm py-xs rounded-md bg-surface-information"
 										>
 											<span className="text-text-information text-sm font-medium leading-[22px]">
-												You're using Self-hosted mode. Enter the Google
-												Search Keys in “MCP and Tools” to ensure Eigent works
-												properly.
+												You're using Self-hosted mode. Enter the Google Search
+												Keys in “MCP and Tools” to ensure Eigent works properly.
 											</span>
 										</div>
 									</div>
@@ -645,8 +642,9 @@ export default function ChatBox(): JSX.Element {
 										{[
 											{
 												label: "Palm Springs Tennis Trip Planner",
-												message:
-													"I am two tennis fans and want to go see the tennis tournament in palm springs. l live in SF - please prepare a detailed itinerary with flights, hotels, things to do for 3 days - around the time semifinal/finals are happening. We like hiking, vegan food and spas. Our budget is $5K. The itinerary should be a detailed timeline of time, activity, cost, other details and if applicable a link to buy tickets/make reservations etc. for the item. Some preferences 1.Spa access would be nice but not necessary 2. When you finnish this task, please generate a html report about this trip.",
+												message: `I am a tennis fan and want to see the tennis tournament in Palm Springs. I live in San Francisco (SF). Please prepare a detailed, three-day itinerary with flights, hotels, and activities for the period around the semifinals/finals. I like hiking, vegan food, and spas. My budget is $5,000.
+The itinerary should be a detailed timeline showing times, activities, costs, and other details, and — where applicable — links to buy tickets or make reservations.
+Preferences: 1. Spa access would be nice but is not necessary. 2. When you finish this task, please generate an HTML report about the trip.`,
 											},
 											{
 												label: "Bank Transfer CSV Analysis and Visualization",
