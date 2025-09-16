@@ -102,30 +102,32 @@ export const TaskState = ({
 				</div>
 
 				{/* Reassigned */}
-				{reAssignTo && <div
-					className={`group hover:bg-tag-surface flex gap-xs items-center px-0.5 py-0.5 transition-all duration-200 ${
-						isSelected("reassigned") && "bg-tag-surface"
-					} ${
-						clickable && "cursor-pointer hover:opacity-80 transition-opacity"
-					}`}
-					onClick={() => handleStateClick("reassigned")}
-				>
-					<CircleSlash2
-						className={`w-[10px] h-[10px] text-icon-secondary group-hover:text-icon-warning ${
-							isSelected("reassigned") && "text-icon-warning"
+				{reAssignTo ? (
+					<div
+						className={`group hover:bg-tag-surface flex gap-xs items-center px-0.5 py-0.5 transition-all duration-200 ${
+							isSelected("reassigned") && "bg-tag-surface"
+						} ${
+							clickable && "cursor-pointer hover:opacity-80 transition-opacity"
 						}`}
-					/>
-					<span
-						className={`transition-all duration-200 text-xs leading-tight font-normal text-text-label group-hover:text-text-warning ${
-							isSelected("reassigned") && "text-text-warning"
-						}`}
+						onClick={() => handleStateClick("reassigned")}
 					>
-						Reassigned{" "}
-						<span className={fadeWidthClass(isSelected("reassigned"))}>
-							{reAssignTo}
+						<CircleSlash2
+							className={`w-[10px] h-[10px] text-icon-secondary group-hover:text-icon-warning ${
+								isSelected("reassigned") && "text-icon-warning"
+							}`}
+						/>
+						<span
+							className={`transition-all duration-200 text-xs leading-tight font-normal text-text-label group-hover:text-text-warning ${
+								isSelected("reassigned") && "text-text-warning"
+							}`}
+						>
+							Reassigned{" "}
+							<span className={fadeWidthClass(isSelected("reassigned"))}>
+								{reAssignTo}
+							</span>
 						</span>
-					</span>
-				</div>}
+					</div>
+				) : null}
 
 				{/* Ongoing */}
 				<div
