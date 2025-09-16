@@ -58,7 +58,7 @@ const Update = () => {
   // listen to download progress and update toast
   useEffect(() => {
     if (isDownloading) {
-      toast.custom((t) => (
+      toast.custom((toastId) => (
         <div className="bg-white-100% shadow-lg p-4 rounded-lg w-[300px]">
           <div className="text-sm font-medium mb-2">{t("update.downloading-update")}</div>
           <Progress value={downloadProgress} className="mb-2" />
