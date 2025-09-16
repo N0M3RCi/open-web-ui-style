@@ -1,4 +1,6 @@
+import { useTranslation } from "react-i18next";
 export const TaskType = ({ type }: { type: 1 | 2 | 3 }) => {
+	const { t } = useTranslation();
 	const typeMap = {
 		1: {
 			label: t("chat.task-splitting"),

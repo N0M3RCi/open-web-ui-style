@@ -1,5 +1,6 @@
 import { CircleCheckBig, CircleSlash2, LoaderCircle } from "lucide-react";
 import { useChatStore } from "@/store/chatStore";
+import { useTranslation } from "react-i18next";
 
 export type TaskStateType =
 	| "all"
@@ -30,7 +31,7 @@ export const TaskState = ({
 	clickable = true,
 }: TaskStateProps) => {
 	const chatStore = useChatStore();
-
+	const { t } = useTranslation();
 	const handleStateClick = (state: TaskStateType) => {
 		if (!clickable || !onStateChange) return;
 
@@ -71,7 +72,7 @@ export const TaskState = ({
 						onClick={() => handleStateClick("all")}
 					>
 						<span className="text-xs font-normal text-text-body">
-							All{" "}
+							{t("chat.all")}{" "}
 							<span className={fadeWidthClass(isSelected("all"))}>{all}</span>
 						</span>
 					</div>
@@ -96,7 +97,7 @@ export const TaskState = ({
 							isSelected("done") && "text-text-success"
 						}`}
 					>
-						Done{" "}
+						{t("chat.done")}{" "}
 						<span className={fadeWidthClass(isSelected("done"))}>{done}</span>
 					</span>
 				</div>
@@ -120,7 +121,7 @@ export const TaskState = ({
 							isSelected("reassigned") && "text-text-warning"
 						}`}
 					>
-						Reassigned{" "}
+						{t("chat.reassigned")}{" "}
 						<span className={fadeWidthClass(isSelected("reassigned"))}>
 							{reAssignTo}
 						</span>
@@ -149,7 +150,7 @@ export const TaskState = ({
 							isSelected("ongoing") && "!text-text-information"
 						}`}
 					>
-						Ongoing{" "}
+						{t("chat.ongoing")}{" "}
 						<span className={fadeWidthClass(isSelected("ongoing"))}>
 							{progress}
 						</span>
@@ -175,7 +176,7 @@ export const TaskState = ({
 							isSelected("pending") && "text-primary-foreground"
 						}`}
 					>
-						Pending{" "}
+						{t("chat.pending")}{" "}
 						<span className={fadeWidthClass(isSelected("pending"))}>
 							{skipped}
 						</span>
