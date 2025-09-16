@@ -1658,7 +1658,17 @@ const chatStore = create<ChatStore>()(
 		clearTasks: () => {
 			const { create } = get()
 			console.log('clearTasks')
-			fetchDelete('/task/stop-all')
+
+			window.ipcRenderer.invoke('restart-backend')
+				.then((res) => {
+					console.log('restart-backend', res)
+				})
+				.catch((error) => {
+					console.error('Error in clearTasks cleanup:', error)
+				})
+
+
+			// Immediately create new task to maintain UI responsiveness
 			const newTaskId = create()
 			set((state) => ({
 				...state,
