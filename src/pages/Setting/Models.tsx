@@ -682,9 +682,6 @@ export default function SettingModels() {
 									<SelectItem value="gpt-5">GPT-5</SelectItem>
 									<SelectItem value="gpt-5-mini">GPT-5 mini</SelectItem>
 									<SelectItem value="gpt-5-nano">GPT-5 nano</SelectItem>
-									<SelectItem value="claude-opus-4-1-20250805">
-										Claude Opus 4.1
-									</SelectItem>
 									<SelectItem value="claude-sonnet-4-20250514">
 										Claude Sonnet 4
 									</SelectItem>
