@@ -601,7 +601,6 @@ export function Node({ id, data }: NodeProps) {
 												: "border-transparent"
 										}`}
 									>
-										{task.status}
 										<div className="">
 											{task.reAssignTo ? (
 												//  reassign to other agent
@@ -692,7 +691,7 @@ export function Node({ id, data }: NodeProps) {
 													{task.toolkits &&
 														task.toolkits.length > 0 &&
 														task.toolkits
-															.filter((tool) => tool.toolkitName !== "notice")
+															.filter((tool: any) => tool.toolkitName !== "notice")
 															.at(-1)?.toolkitStatus === "running" && (
 															<div className="flex-1 min-w-0 flex justify-start items-center gap-sm animate-in fade-in-0 slide-in-from-right-2 duration-300">
 																{agentMap[data.type]?.icon ?? (
