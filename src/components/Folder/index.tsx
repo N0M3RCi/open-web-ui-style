@@ -331,7 +331,7 @@ export default function Folder({ data }: { data?: Agent }) {
 						(item: any) => item.name === chatStoreSelectedFile.name
 					);
 					console.log("file", file);
-					if (file) {
+					if (file && selectedFile?.path !== chatStoreSelectedFile?.path) {
 						selectedFileChange(file as FileInfo, isShowSourceCode);
 					}
 				}
@@ -353,7 +353,7 @@ export default function Folder({ data }: { data?: Agent }) {
 			const file = fileGroups[0].files.find(
 				(item: any) => item.path === chatStoreSelectedFile.path
 			);
-			if (file) {
+			if (file && selectedFile?.path !== chatStoreSelectedFile?.path) {
 				selectedFileChange(file as FileInfo, isShowSourceCode);
 			}
 		}
@@ -361,7 +361,7 @@ export default function Folder({ data }: { data?: Agent }) {
 		chatStore.tasks[chatStore.activeTaskId as string]?.selectedFile?.path,
 		fileGroups,
 		isShowSourceCode,
-		chatStore.activeTaskId
+		chatStore.activeTaskId,
 	]);
 
 	const handleBack = () => {
@@ -456,7 +456,7 @@ export default function Folder({ data }: { data?: Agent }) {
 							{fileGroups.map((group) =>
 								group.files.map((file) => (
 									<button
-										key={file.name}
+										key={file.path}
 										onClick={() => selectedFileChange(file, isShowSourceCode)}
 										className={`w-full flex items-center justify-center p-2 rounded-md hover:bg-fill-fill-primary-hover transition-colors ${
 											selectedFile?.name === file.name
