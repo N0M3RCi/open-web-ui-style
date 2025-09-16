@@ -286,9 +286,9 @@ export default function SettingMCP() {
 				}
 				if (window.ipcRenderer) {
 					const mcpServers = data["mcpServers"];
-					Object.entries(mcpServers).forEach(async ([key, value]) => {
+					for (const [key, value] of Object.entries(mcpServers)) {
 						await window.ipcRenderer.invoke("mcp-install", key, value);
-					});
+					}
 				}
 			}
 			setShowAdd(false);
