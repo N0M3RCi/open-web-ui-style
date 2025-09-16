@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import platform
 from threading import Event
 import traceback
@@ -1448,7 +1449,17 @@ async def get_mcp_tools(mcp_server: McpServers):
     traceroot_logger.info(f"Getting MCP tools for {len(mcp_server['mcpServers'])} servers")
     if len(mcp_server["mcpServers"]) == 0:
         return []
-    mcp_toolkit = MCPToolkit(config_dict={**mcp_server}, timeout=180)
+    
+    # Ensure unified auth directory for all mcp-remote servers to avoid re-authentication on each task
+    config_dict = {**mcp_server}
+    for server_config in config_dict["mcpServers"].values():
+        if "env" not in server_config:
+            server_config["env"] = {}
+        # Set global auth directory to persist authentication across tasks
+        if "MCP_REMOTE_CONFIG_DIR" not in server_config["env"]:
+            server_config["env"]["MCP_REMOTE_CONFIG_DIR"] = env("MCP_REMOTE_CONFIG_DIR", os.path.expanduser("~/.mcp-auth"))
+    
+    mcp_toolkit = MCPToolkit(config_dict=config_dict, timeout=20)
     try:
         await mcp_toolkit.connect()
         traceroot_logger.info(f"Successfully connected to MCP toolkit with {len(mcp_server['mcpServers'])} servers")
