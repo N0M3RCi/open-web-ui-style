@@ -21,6 +21,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useTranslation } from "react-i18next";
 
 import { toast } from "sonner";
+import { ConfigFile } from "electron/main/utils/mcpConfig";
 
 export default function SettingMCP() {
 	const navigate = useNavigate();
@@ -197,13 +198,28 @@ export default function SettingMCP() {
 		setSaving(true);
 		setErrorMsg(null);
 		try {
-			await proxyFetchPut(`/api/mcp/users/${showConfig.id}`, {
+			const mcpData = {
 				mcp_name: configForm.mcp_name,
 				mcp_desc: configForm.mcp_desc,
 				command: configForm.command,
 				args: arrayToArgsJson(configForm.argsArr),
 				env: configForm.env,
-			});
+			}
+			await proxyFetchPut(`/api/mcp/users/${showConfig.id}`, mcpData);
+
+			if (window.ipcRenderer) {
+				//Partial payload to empty env {}
+				const payload: any = {
+					description: configForm.mcp_desc,
+					command: configForm.command,
+					args: arrayToArgsJson(configForm.argsArr),
+				};
+				if (configForm.env && Object.keys(configForm.env).length > 0) {
+					payload.env = configForm.env;
+				}
+				window.ipcRenderer.invoke("mcp-update", mcpData.mcp_name, payload);
+			}
+
 			setShowConfig(null);
 			fetchList();
 		} catch (err: any) {
@@ -238,9 +254,27 @@ export default function SettingMCP() {
 		setInstalling(true);
 		try {
 			if (addType === "local") {
-				let data;
+				let data:ConfigFile;
 				try {
 					data = JSON.parse(localJson);
+
+					// validate mcpServers structure
+					if (!data.mcpServers || typeof data.mcpServers !== "object") {
+						throw new Error("Invalid mcpServers");
+					}
+
+					// check for name conflicts with existing items
+					const serverNames = Object.keys(data.mcpServers);
+					const conflict = serverNames.find((name) =>
+						items.some((d) => d.mcp_name === name)
+					);
+					if (conflict) {
+						toast.error(`MCP server "${conflict}" already exists`, {
+							closeButton: true,
+						});
+						setInstalling(false);
+						return;
+					}
 				} catch (e) {
 					toast.error(t("setting.invalid-json"), { closeButton: true });
 					setInstalling(false);
@@ -254,19 +288,14 @@ export default function SettingMCP() {
 				}
 				if (window.ipcRenderer) {
 					const mcpServers = data["mcpServers"];
-					Object.entries(mcpServers).forEach(async ([key, value]) => {
+					for (const [key, value] of Object.entries(mcpServers)) {
 						await window.ipcRenderer.invoke("mcp-install", key, value);
-					});
+					}
 				}
 			}
 			setShowAdd(false);
 			setLocalJson(`{
-				"mcp_id": 0,
-				"mcp_name": "",
-				"mcp_desc": "",
-				"command": "",
-				"args": "",
-				"env": {}
+				"mcpServers": {}
 			}`);
 			setRemoteName("");
 			setRemoteUrl("");
@@ -337,13 +366,13 @@ export default function SettingMCP() {
 				{!isLoading && !error && items.length === 0 && (
 					<div className="text-center py-8 text-gray-400">{t("setting.no-mcp-servers")}</div>
 				)}
-				<MCPList
+				{!isLoading && <MCPList
 					items={items}
 					onSetting={setShowConfig}
 					onDelete={setDeleteTarget}
 					onSwitch={handleSwitch}
 					switchLoading={switchLoading}
-				/>
+				/>}
 				<MCPConfigDialog
 					open={!!showConfig}
 					form={configForm}

@@ -231,6 +231,7 @@ const ToolSelect = forwardRef<
 
 	// select management
 	const addOption = (item: McpItem, isLocal?: boolean) => {
+		setKeyword("");
 		const currentSelected = initialSelectedTools || [];
 		console.log(currentSelected.find((i) => i.id === item.id));
 		if (isLocal) {
@@ -245,6 +246,7 @@ const ToolSelect = forwardRef<
 			const newSelected = [...currentSelected, { ...item, isLocal }];
 			onSelectedToolsChange?.(newSelected);
 		}
+		
 	};
 
 	const removeOption = (item: McpItem) => {
@@ -472,7 +474,7 @@ const ToolSelect = forwardRef<
 						onChange={(e) => setKeyword(e.target.value)}
 						onFocus={() => setIsOpen(true)}
 						ref={inputRef}
-						className="bg-transparent border-none !shadow-none text-sm leading-normal !ring-0 !ring-offset-0 w-10 !h-[20px] p-0"
+						className="bg-transparent border-none !shadow-none text-sm leading-normal !ring-0 !ring-offset-0 w-auto !h-[20px] p-0"
 					/>
 				</div>
 			</div>
