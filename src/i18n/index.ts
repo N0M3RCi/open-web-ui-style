@@ -6,7 +6,7 @@ import { getAuthStore } from "@/store/authStore";
 export enum LocaleEnum {
   SimplifiedChinese = "zh-Hans",
   TraditionalChinese = "zh-Hant",
-  English = "en-us",
+  English = "en-US",
   German = "de",
   Korean = "ko",
   Japanese = "ja",

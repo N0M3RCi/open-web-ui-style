@@ -11,7 +11,7 @@ import ar from './ar'
 import ko from './ko'
 
 export const resources = {
-  "en-us": {
+  "en-US": {
     translation: en,
   },
   "zh-Hans": {
