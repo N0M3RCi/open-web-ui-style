@@ -11,14 +11,14 @@ import { proxyFetchGet } from "@/api/http";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { NoticeCard } from "./NoticeCard";
 import { useAuthStore } from "@/store/authStore";
-import { PrivacyDialog } from "../Dialog/Privacy";
+import { useTranslation } from "react-i18next";
 import { TaskStateType } from "../TaskState";
 
 export default function ChatBox(): JSX.Element {
 	const [message, setMessage] = useState<string>("");
 	const [selectedStates, setSelectedStates] = useState<TaskStateType[]>([]);
 	const chatStore = useChatStore();
-
+	const { t } = useTranslation();
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const scrollContainerRef = useRef<HTMLDivElement>(null);
 	const [privacy, setPrivacy] = useState<any>(false);
@@ -334,7 +334,7 @@ export default function ChatBox(): JSX.Element {
 													id={item.id}
 													key={item.id}
 													role={item.role}
-													content="No reply received, task continue"
+													content={t("chat.no-reply-received-task-continue")}
 													onTyping={scrollToBottom}
 												/>
 											);
@@ -522,10 +522,10 @@ export default function ChatBox(): JSX.Element {
 					<div className=" w-full flex flex-col relative z-10">
 						<div className="flex flex-col items-center gap-1 h-[210px] justify-end">
 							<div className="text-xl leading-[30px] text-zinc-800 text-center font-bold">
-								Welcome to Eigent
+								{t("chat.welcome-to-eigent")}
 							</div>
 							<div className="text-lg leading-7 text-zinc-500 text-center mb-5">
-								How can I help you today?
+								{t("chat.how-can-i-help-you")}
 							</div>
 						</div>
 
@@ -580,23 +580,23 @@ export default function ChatBox(): JSX.Element {
 											className="text-icon-information"
 										/>
 										<span className=" flex-1 text-text-information text-xs font-medium leading-[20px]">
-											By messaging Eigent, you agree to our{" "}
+											{t("chat.by-messaging-eigent")}{" "}
 											<a
 												href="https://www.eigent.ai/terms-of-use"
 												target="_blank"
 												className="text-text-information underline"
 												onClick={(e) => e.stopPropagation()}
 											>
-												Terms of Use
+												{t("chat.terms-of-use")}
 											</a>{" "}
-											and{" "}
+											{t("chat.and")}{" "}
 											<a
 												href="https://www.eigent.ai/privacy-policy"
 												target="_blank"
 												className="text-text-information underline"
 												onClick={(e) => e.stopPropagation()}
 											>
-												Privacy Policy
+												{t("chat.privacy-policy")}
 											</a>
 											.
 										</span>
@@ -611,9 +611,7 @@ export default function ChatBox(): JSX.Element {
 										className="cursor-pointer flex items-center gap-1 px-sm py-xs rounded-md bg-surface-information"
 									>
 										<span className="text-text-information text-sm font-medium leading-[22px]">
-											You're in Self-hosted mode. Cloud models can't be used
-											here — set up your own local cloud model to keep things
-											running.
+											{t("chat.you-are-using-self-hosted-mode")}
 										</span>
 									</div>
 								</div>
@@ -628,8 +626,7 @@ export default function ChatBox(): JSX.Element {
 											className="cursor-pointer flex items-center gap-1 px-sm py-xs rounded-md bg-surface-information"
 										>
 											<span className="text-text-information text-sm font-medium leading-[22px]">
-												You're using Self-hosted mode. Enter the Google Search
-												Keys in “MCP and Tools” to ensure Eigent works properly.
+												{t("chat.you-are-using-self-hosted-mode")}
 											</span>
 										</div>
 									</div>
@@ -641,20 +638,26 @@ export default function ChatBox(): JSX.Element {
 									<div className="mr-2 flex flex-col items-center gap-2">
 										{[
 											{
-												label: "Palm Springs Tennis Trip Planner",
-												message: `I am a tennis fan and want to see the tennis tournament in Palm Springs. I live in San Francisco (SF). Please prepare a detailed, three-day itinerary with flights, hotels, and activities for the period around the semifinals/finals. I like hiking, vegan food, and spas. My budget is $5,000.
-The itinerary should be a detailed timeline showing times, activities, costs, and other details, and — where applicable — links to buy tickets or make reservations.
-Preferences: 1. Spa access would be nice but is not necessary. 2. When you finish this task, please generate an HTML report about the trip.`,
+												label: t("chat.palm-springs-tennis-trip-planner"),
+												message: t(
+													"chat.palm-springs-tennis-trip-planner-message"
+												),
 											},
 											{
-												label: "Bank Transfer CSV Analysis and Visualization",
-												message:
-													"Create a mock bank transfer CSV file include 10 columns and 10 rows. Read the generated CSV file and summarize the data, generate a chart to visualize relevant trends or insights from the data.",
+												label: t(
+													"chat.bank-transfer-csv-analysis-and-visualization"
+												),
+												message: t(
+													"chat.bank-transfer-csv-analysis-and-visualization-message"
+												),
 											},
 											{
-												label: "Find Duplicate Files in Downloads Folder",
-												message:
-													"Help me find duplicate files by content, size, and format in my downloads folder.",
+												label: t(
+													"chat.find-duplicate-files-in-downloads-folder"
+												),
+												message: t(
+													"chat.find-duplicate-files-in-downloads-folder-message"
+												),
 											},
 										].map(({ label, message }) => (
 											<div

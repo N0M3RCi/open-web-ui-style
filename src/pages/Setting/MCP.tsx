@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import IntegrationList from "./components/IntegrationList";
 import { getProxyBaseURL } from "@/lib";
 import { useAuthStore } from "@/store/authStore";
+import { useTranslation } from "react-i18next";
 
 import { toast } from "sonner";
 import { ConfigFile } from "electron/main/utils/mcpConfig";
@@ -25,6 +26,7 @@ import { ConfigFile } from "electron/main/utils/mcpConfig";
 export default function SettingMCP() {
 	const navigate = useNavigate();
 	const { checkAgentTool } = useAuthStore();
+	const { t } = useTranslation();
 	const [items, setItems] = useState<MCPUserItem[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -66,7 +68,7 @@ export default function SettingMCP() {
 			env_vars: ["GOOGLE_API_KEY", "SEARCH_ENGINE_ID", "EXA_API_KEY"],
 			desc: (
 				<>
-					Environmental variables required: GOOGLE_API_KEY, SEARCH_ENGINE_ID
+					{t("setting.environmental-variables-required")}: GOOGLE_API_KEY, SEARCH_ENGINE_ID
 					<br />
 					<span
 						style={{
@@ -75,7 +77,7 @@ export default function SettingMCP() {
 							display: "block",
 						}}
 					>
-						Get Google Search API:{" "}
+						{t("setting.get-google-search-api")}:{" "}
 						<a
 							onClick={() => {
 								window.location.href =
@@ -83,17 +85,17 @@ export default function SettingMCP() {
 							}}
 							className="underline text-blue-500"
 						>
-							Google Custom Search API
+							{t("setting.google-custom-search-api")}
 						</a>
 						<br />
-						Get Exa API (optional):{" "}
+						{t("setting.get-exa-api")}:{" "}
 						<a
 							onClick={() => {
 								window.location.href = "https://exa.ai";
 							}}
 							className="underline text-blue-500"
 						>
-							Exa.ai
+							{t("setting.exa-ai")}
 						</a>
 					</span>
 				</>
@@ -118,7 +120,7 @@ export default function SettingMCP() {
 						env_vars: value.env_vars,
 						desc:
 							value.env_vars && value.env_vars.length > 0
-								? `Environmental variables required: ${value.env_vars.join(
+								? `${t("setting.environmental-variables-required")}: ${value.env_vars.join(
 										", "
 								  )}`
 								: "",
@@ -151,7 +153,7 @@ export default function SettingMCP() {
 				}
 			})
 			.catch((err) => {
-				setError(err?.message || "Load failed");
+				setError(err?.message || t("setting.load-failed"));
 			})
 			.finally(() => {
 				setIsLoading(false);
@@ -221,7 +223,7 @@ export default function SettingMCP() {
 			setShowConfig(null);
 			fetchList();
 		} catch (err: any) {
-			setErrorMsg(err?.message || "save failed");
+			setErrorMsg(err?.message || t("setting.save-failed"));
 		} finally {
 			setSaving(false);
 		}
@@ -274,13 +276,13 @@ export default function SettingMCP() {
 						return;
 					}
 				} catch (e) {
-					toast.error("Invalid JSON", { closeButton: true });
+					toast.error(t("setting.invalid-json"), { closeButton: true });
 					setInstalling(false);
 					return;
 				}
 				let res = await proxyFetchPost("/api/mcp/import/local", data);
 				if (res.detail) {
-					toast.error("Invalid JSON", { closeButton: true });
+					toast.error(t("setting.invalid-json"), { closeButton: true });
 					setInstalling(false);
 					return;
 				}
@@ -326,12 +328,12 @@ export default function SettingMCP() {
 		<div className="space-y-md">
 			<div className="flex items-center justify-between">
 				<div className="text-base font-bold leading-snug text-text-body">
-					MCP & Tools
+					{t("setting.mcp-and-tools")}
 				</div>
 				<div className="flex items-center gap-sm">
 					<Button variant="outline" size="sm" onClick={() => setShowAdd(true)}>
 						<Plus />
-						<span>Add MCP Server</span>
+						<span>{t("setting.add-mcp-server")}</span>
 					</Button>
 
 					<Button
@@ -340,12 +342,12 @@ export default function SettingMCP() {
 						onClick={() => navigate("/setting/mcp_market")}
 					>
 						<Store />
-						<span>Market</span>
+						<span>{t("setting.market")}</span>
 					</Button>
 				</div>
 			</div>
 			<div className="text-text-body font-bold text-base leading-snug">
-				Tools
+				{t("setting.tools")}
 			</div>
 			<IntegrationList items={essentialIntegrations} />
 			<div className="text-text-body font-bold text-base leading-snug">MCP</div>
@@ -354,15 +356,15 @@ export default function SettingMCP() {
 			<div className="pt-4">
 				<div className="self-stretch inline-flex justify-start items-center gap-1">
 					<div className="justify-center text-text-body text-base font-bold leading-snug">
-						Added external servers
+						{t("setting.added-external-servers")}
 					</div>
 				</div>
 				{isLoading && (
-					<div className="text-center py-8 text-gray-400">Loading...</div>
+					<div className="text-center py-8 text-gray-400">{t("setting.loading")}</div>
 				)}
 				{error && <div className="text-center py-8 text-red-500">{error}</div>}
 				{!isLoading && !error && items.length === 0 && (
-					<div className="text-center py-8 text-gray-400">No MCP servers</div>
+					<div className="text-center py-8 text-gray-400">{t("setting.no-mcp-servers")}</div>
 				)}
 				{!isLoading && <MCPList
 					items={items}
