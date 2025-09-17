@@ -598,7 +598,7 @@ const chatStore = create<ChatStore>()(
 								if (agent.agent_id === assignee_id) return null
 
 								const taskIndex = agent.tasks.findIndex(
-									(task: TaskInfo) => task.id === task_id && !task.reAssignTo&&agent.agent_id!==assignee_id
+									(task: TaskInfo) => task.id === task_id && !task.reAssignTo
 								)
 
 								return taskIndex !== -1 ? { agentIndex, taskIndex } : null
@@ -608,10 +608,6 @@ const chatStore = create<ChatStore>()(
 						if (target) {
 							const { agentIndex, taskIndex } = target
 							const agentName = taskAssigning.find((agent: Agent) => agent.agent_id === assignee_id)?.name
-							console.log('写了reAssignTo',agentName)
-							console.log('taskAssigning',taskAssigning)
-							console.log('agentIndex',agentIndex)
-							console.log('taskIndex',taskIndex)
 							taskAssigning[agentIndex].tasks[taskIndex].reAssignTo = agentName
 						}
 

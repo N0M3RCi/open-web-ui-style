@@ -209,7 +209,7 @@ export default function Home() {
 							}
 							done={
 								activeAgent?.tasks?.filter(
-									(task) => 	task.status === "completed"
+									(task) => task.status === "completed"
 								).length || 0
 							}
 							progress={
