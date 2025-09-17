@@ -1,19 +1,7 @@
 name: Build
 
 on:
-  push:
-    tags:
-      - "v*"
-    paths-ignore:
-      - "**.md"
-      - "**.spec.js"
-      - ".idea"
-      - ".vscode"
-      - ".dockerignore"
-      - "Dockerfile"
-      - ".gitignore"
-      - ".github/**"
-      - "!.github/workflows/build.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
