@@ -734,15 +734,19 @@ def search_agent(options: Chat):
     terminal_toolkit = message_integration.register_functions([terminal_toolkit.shell_exec])
     note_toolkit = NoteTakingToolkit(options.task_id, Agents.search_agent, working_directory=working_directory)
     note_toolkit = message_integration.register_toolkits(note_toolkit)
-    search_toolkit = SearchToolkit(options.task_id)
-    search_toolkit = message_integration.register_functions([search_toolkit.search_google])
+    search_tools = SearchToolkit.get_can_use_tools(options.task_id)
+    # Only register search tools if any are available
+    if search_tools:
+        search_tools = message_integration.register_functions(search_tools)
+    else:
+        search_tools = []
 
     tools = [
         *HumanToolkit.get_can_use_tools(options.task_id, Agents.search_agent),
         *web_toolkit_custom.get_tools(),
         *terminal_toolkit,
         *note_toolkit.get_tools(),
-        *search_toolkit,
+        *search_tools,
     ]
 
     system_message = f"""
