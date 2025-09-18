@@ -612,7 +612,7 @@ const chatStore = create<ChatStore>()(
 						}
 
 
-						// If the state is "waiting", only mark it in the agent's task list and do not add it to taskRunning
+						// Handle task assignment to taskAssigning based on state
 						if (taskState === "waiting") {
 							if (!taskAssigning[assigneeAgentIndex].tasks.find(item => item.id === task_id)) {
 								taskAssigning[assigneeAgentIndex].tasks.push(task ?? { id: task_id, content, status: "waiting" });

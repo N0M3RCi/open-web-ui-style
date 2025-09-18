@@ -88,7 +88,7 @@ export function TaskCard({
 			});
 			setFilterTasks(newFiltered);
 		}
-	}, [selectedState, taskInfo,taskRunning]);
+	}, [selectedState, taskInfo, taskRunning]);
 
 	const isAllTaskFinished = useMemo(() => {
 		return (
