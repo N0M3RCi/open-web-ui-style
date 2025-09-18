@@ -37,9 +37,14 @@ TooltipContent.displayName = TooltipPrimitive.Content.displayName
  * </TooltipSimple>
  * ```
  */
+interface TooltipSimpleProps extends Omit<React.ComponentPropsWithoutRef<typeof TooltipContent>, 'children' | 'content'> {
+  children: React.ReactNode;
+  content: React.ReactNode;
+}
+
 const TooltipSimple = React.forwardRef<
   React.ElementRef<typeof TooltipContent>,
-  React.ComponentPropsWithoutRef<typeof TooltipContent>
+  TooltipSimpleProps
 >(({ children, content, className, sideOffset = 4, ...props }, ref) => {
   return (
     <TooltipProvider>

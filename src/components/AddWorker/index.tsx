@@ -90,7 +90,7 @@ export function AddWorker({
 							?.replace(/{{/g, "")
 							?.replace(/}}/g, "") || "",
 				};
-			};
+			}
 			setEnvValues(initialValues);
 		}
 	};
