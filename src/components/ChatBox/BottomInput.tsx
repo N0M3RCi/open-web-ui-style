@@ -314,7 +314,7 @@ export const BottomInput = ({
 			) : (
 				<div className="mr-2 relative z-10  h-auto min-h-[82px] rounded-2xl bg-input-bg-default !px-2 !pb-2 gap-0 space-x-1 shadow-none border-solid border border-zinc-300">
 					<Textarea
-						disabled={!privacy || isPending || useCloudModelInDev}
+						disabled={!privacy || isPending}
 						ref={textareaRef}
 						value={message}
 						onChange={(e) => onMessageChange(e.target.value)}
