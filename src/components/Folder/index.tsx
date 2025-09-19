@@ -364,7 +364,6 @@ export default function Folder({ data }: { data?: Agent }) {
 		fileGroups,
 		isShowSourceCode,
 		chatStore.activeTaskId,
-		selectedFile,
 	]);
 
 	const handleBack = () => {
