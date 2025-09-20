@@ -13,10 +13,12 @@ import githubIcon from "@/assets/github.svg";
 import { Input } from "@/components/ui/input";
 import { useState, FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+
 interface EnvValue {
 	value: string;
 	required: boolean;
 	tip: string;
+	error?: string;
 }
 
 interface MCPEnvDialogProps {
@@ -141,7 +143,29 @@ export const MCPEnvDialog: FC<MCPEnvDialogProps> = ({
 		onClose();
 	};
 
+	const setFieldError = (key: string, error: string) => {
+		setEnvValues((prev) => ({
+			...prev,
+			[key]: {
+				...prev[key],
+				error,
+			},
+		}));
+	};
+
+	const clearFieldErrors = () => {
+		setEnvValues((prev) => {
+			const updated: typeof prev = {};
+			Object.keys(prev).forEach((key) => {
+				updated[key] = { ...prev[key], error: "" };
+			});
+			return updated;
+		});
+	};
+
 	const handleConfigureMcpEnvSetting = async () => {
+		clearFieldErrors();
+
 		const env: { [key: string]: string } = {};
 		Object.keys(envValues).forEach((key) => {
 			env[key] = envValues[key]?.value;
@@ -151,7 +175,8 @@ export const MCPEnvDialog: FC<MCPEnvDialogProps> = ({
 		if (env["GOOGLE_API_KEY"] && env["SEARCH_ENGINE_ID"]) {
 			const result = await google_check(env["GOOGLE_API_KEY"], env["SEARCH_ENGINE_ID"]);
 			if (!result.success) {
-				toast.error(result.message);
+				setFieldError("GOOGLE_API_KEY", result.message);
+				setFieldError("SEARCH_ENGINE_ID", result.message);
 				return;
 			}
 		}
@@ -160,7 +185,7 @@ export const MCPEnvDialog: FC<MCPEnvDialogProps> = ({
 		if (env["EXA_API_KEY"]) {
 			const result = await exa_check(env["EXA_API_KEY"]);
 			if (!result.success) {
-				toast.error(result.message);
+				setFieldError("EXA_API_KEY", result.message);
 				return;
 			}
 		}
@@ -247,6 +272,9 @@ export const MCPEnvDialog: FC<MCPEnvDialogProps> = ({
 									</div>
 									<div className="text-input-label-default text-xs leading-normal">
 										{envValues[key]?.tip}
+										{envValues[key]?.error && (
+											<div className="text-red-500 text-xs mt-1">{envValues[key]?.error}</div>
+										)}
 										{key === 'SEARCH_ENGINE_ID' && (
 											<div className="mt-1">
 												{t("setting.get-it-from")}: <a onClick={() => {
