@@ -5,7 +5,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Bot, CircleAlert, Eye, EyeOff } from "lucide-react";
