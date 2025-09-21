@@ -2,20 +2,29 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+The following versions of Eigent are currently being supported with security updates:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 0.0.x   | :white_check_mark: |
+| < 0.0   | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+If you discover a security vulnerability in Eigent, please report it responsibly:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+### How to Report
+- **Email**: Send details to info@eigent.ai
+- **GitHub**: Use GitHub's private security advisory feature
+- **Include**: Detailed description, steps to reproduce, and potential impact
+
+### What to Expect
+- **Response Time**: We aim to acknowledge reports within 48 hours
+- **Updates**: We will provide updates on the investigation progress weekly
+- **Resolution**: Critical vulnerabilities will be addressed within 7 days
+- **Credit**: We will credit security researchers in our security advisories (if desired)
+
+### Security Disclosure Policy
+- We follow responsible disclosure practices
+- We request 90 days to address the vulnerability before public disclosure
+- We will coordinate disclosure timing with the reporter
