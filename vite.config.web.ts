@@ -37,7 +37,24 @@ export default defineConfig(({ mode }) => {
         '@': path.join(__dirname, 'src'),
       },
     },
-    plugins: [react()],
+    plugins: [
+      react(),
+      {
+        name: 'resolve-stackframe',
+        resolveId(id) {
+          if (id === '@stackframe/react') {
+            return path.join(
+              __dirname,
+              'package/@stackframe/react/dist/esm/index.js'
+            );
+          }
+          if (id.startsWith('@stackframe/react/')) {
+            return path.join(__dirname, 'package/' + id);
+          }
+          return undefined;
+        },
+      },
+    ],
     optimizeDeps: {
       exclude: ['@stackframe/react'],
       force: true,
@@ -46,10 +63,25 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist-web',
       emptyOutDir: true,
       sourcemap: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            stackframe: ['@stackframe/react'],
+          },
+        },
+      },
     },
     server: {
       port: 5173,
       open: false,
+      allowedHosts: ['.loca.lt', '.serveousercontent.com', '.serveo.net'],
+      watch: {
+        ignored: [
+          '**/server/.venv/**',
+          '**/backend/.venv/**',
+          '**/node_modules/**',
+        ],
+      },
       proxy: env.VITE_PROXY_URL
         ? {
             '/api': {
