@@ -35,6 +35,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src'),
+        '@stackframe/react': path.join(
+          __dirname,
+          'node_modules/@stackframe/react/dist/esm/index.js'
+        ),
       },
     },
     plugins: [react()],
