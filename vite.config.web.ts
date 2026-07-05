@@ -37,7 +37,7 @@ export default defineConfig(({ mode }) => {
         '@': path.join(__dirname, 'src'),
         '@stackframe/react': path.join(
           __dirname,
-          'node_modules/@stackframe/react/dist/esm/index.js'
+          'src/__stackframe_vendor__/index.js'
         ),
       },
     },
