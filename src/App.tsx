@@ -30,11 +30,11 @@ function App() {
   const host = useHost();
   const navigate = useNavigate();
   const { setInitState } = useAuthStore();
-  const { token } = useAuthStore();
+  const { token, initState } = useAuthStore();
 
   // Subscribe to execution events when user is authenticated
   // Note: Removed triggers.length check to prevent reconnection on every trigger update
-  const shouldSubscribe = !!token;
+  const shouldSubscribe = !!token && initState === 'done';
   useExecutionSubscription(shouldSubscribe);
   useBackgroundTaskProcessor();
 
