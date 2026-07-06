@@ -444,7 +444,7 @@ describe('SearchInput Component', () => {
       const input = screen.getByRole('textbox');
 
       // Type multiple characters quickly
-      await user.type(input, 'quick', {});
+      await user.type(input, 'quick', { delay: 1 });
 
       expect(mockOnChange).toHaveBeenCalledTimes(5); // 'q', 'u', 'i', 'c', 'k'
     });

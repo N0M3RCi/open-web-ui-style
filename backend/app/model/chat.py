@@ -158,11 +158,7 @@ class Chat(BaseModel):
             return False
         return any(
             marker in self.api_url
-            for marker in (
-                "nova-proxy",
-                "merci-proxy",
-                "proxy.merci-unimind.ai",
-            )
+            for marker in ("nova-proxy", "proxy.merci-unimind.ai")
         )
 
     def file_save_path(self, path: str | None = None):

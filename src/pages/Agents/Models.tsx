@@ -1167,10 +1167,14 @@ export default function SettingModels() {
   const [trialUpgradeDialogOpen, setTrialUpgradeDialogOpen] = useState(false);
   const [upgradingTrial, setUpgradingTrial] = useState(false);
   const fetchSubscription = async () => {
-    const res = await proxyFetchGet('/api/v1/subscription');
-    debug(res);
-    if (res) {
-      setSubscription(res);
+    try {
+      const res = await proxyFetchGet('/api/v1/subscription');
+      debug(res);
+      if (res) {
+        setSubscription(res);
+      }
+    } catch (error) {
+      console.error('Failed to fetch subscription:', error);
     }
   };
   const [credits, setCredits] = useState<any>(0);

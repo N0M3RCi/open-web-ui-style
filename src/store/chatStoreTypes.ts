@@ -13,6 +13,8 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Types extracted from chatStore.ts (4968 lines → ~4800 lines).
 
+import type { AgentMessage } from '@/types';
+
 export const API_CODE_TRIAL_LIMIT = '22';
 export const PROJECT_CONTEXT_MAX_CHARS = 24_000;
 export const PROJECT_CONTEXT_MAX_RUNS = 8;

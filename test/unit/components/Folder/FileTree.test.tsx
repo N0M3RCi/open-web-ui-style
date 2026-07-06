@@ -162,7 +162,7 @@ describe('FileTree', () => {
   it('returns null when node has no children', () => {
     const { container } = render(
       <FileTree
-        node={{ name: '', path: '', children: [] }}
+        node={{ id: 'root', name: '', path: '', children: [] }}
         selectedFile={null}
         expandedFolders={new Set()}
         onToggleFolder={onToggleFolder}

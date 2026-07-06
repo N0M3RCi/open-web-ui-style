@@ -218,7 +218,7 @@ describe('Case 3: Add to the workforce queue', () => {
     // Get initial state
     const { chatStore: initialChatStore, projectStore } = result.current;
     const projectId = projectStore.activeProjectId as string;
-    const initiatorTaskId = initialChatStore.activeTaskId as string;
+    const initiatorTaskId = initialChatStore.activeTaskId;
 
     // Verify initial queue is empty
     expect(projectStore.getProjectById(projectId)?.queuedMessages).toEqual([]);
@@ -244,7 +244,7 @@ describe('Case 3: Add to the workforce queue', () => {
       () => {
         rerender();
         const { chatStore, projectStore: _projectStore } = result.current;
-        const taskId = chatStore.activeTaskId as string;
+        const taskId = chatStore.activeTaskId;
         const task = chatStore.tasks[taskId];
 
         // Task should have subtasks (making it busy)
@@ -309,7 +309,7 @@ describe('Case 3: Add to the workforce queue', () => {
       () => {
         rerender();
         const { chatStore } = result.current;
-        const taskId = chatStore.activeTaskId as string;
+        const taskId = chatStore.activeTaskId;
         const task = chatStore.tasks[taskId];
 
         expect(task.status).toBe('finished');
@@ -324,7 +324,7 @@ describe('Case 3: Add to the workforce queue', () => {
         rerender();
         //Get new appended chatStore
         const { chatStore } = result.current;
-        const taskId = chatStore.activeTaskId as string;
+        const taskId = chatStore.activeTaskId;
         const task = chatStore.tasks[taskId];
 
         // Look for new_task_state in messages
@@ -361,7 +361,7 @@ describe('Case 3: Add to the workforce queue', () => {
         rerender();
         const { chatStore: finalChatStore, projectStore: _finalProjectStore } =
           result.current;
-        const finalTaskId = finalChatStore.activeTaskId as string;
+        const finalTaskId = finalChatStore.activeTaskId;
         const finalTask = finalChatStore.tasks[finalTaskId];
         expect(finalTask.status).toBe('finished');
       },
@@ -380,7 +380,7 @@ describe('Case 3: Add to the workforce queue', () => {
     );
 
     // Verify task completed successfully
-    const finalTaskId = finalChatStore.activeTaskId as string;
+    const finalTaskId = finalChatStore.activeTaskId;
     const finalTask = finalChatStore.tasks[finalTaskId];
     expect(finalTask.status).toBe('finished');
     //Not to be because its a new chatStore
@@ -418,11 +418,7 @@ describe('Case 3: Add to the workforce queue', () => {
       const taskIds: string[] = [];
 
       messages.forEach((message, _index) => {
-        const taskId = projectStore.addQueuedMessage(
-          projectId,
-          message,
-          []
-        ) as string;
+        const taskId = projectStore.addQueuedMessage(projectId, message, []);
         taskIds.push(taskId);
         expect(taskId).toBeDefined();
       });
@@ -481,7 +477,7 @@ describe('Case 3: Add to the workforce queue', () => {
         projectId,
         messageContent,
         attachments
-      ) as string;
+      );
 
       // Verify message is queued
       let project = projectStore.getProjectById(projectId);
@@ -538,7 +534,7 @@ describe('Case 3: Add to the workforce queue', () => {
           projectId,
           messages[i],
           []
-        ) as string;
+        );
         taskIds.push(taskId);
 
         const project = projectStore.getProjectById(projectId);
@@ -577,7 +573,7 @@ describe('Case 3: Add to the workforce queue', () => {
     // Get initial state
     const { chatStore: initialChatStore, projectStore } = result.current;
     const projectId = projectStore.activeProjectId as string;
-    const initiatorTaskId = initialChatStore.activeTaskId as string;
+    const initiatorTaskId = initialChatStore.activeTaskId;
 
     // Verify initial queue is empty
     expect(projectStore.getProjectById(projectId)?.queuedMessages).toEqual([]);
@@ -722,7 +718,7 @@ describe('Case 3: Add to the workforce queue', () => {
       () => {
         rerender();
         const { chatStore } = result.current;
-        const taskId = chatStore.activeTaskId as string;
+        const taskId = chatStore.activeTaskId;
         const task = chatStore.tasks[taskId];
 
         // Check for confirmed step
@@ -740,7 +736,7 @@ describe('Case 3: Add to the workforce queue', () => {
       () => {
         rerender();
         const { chatStore } = result.current;
-        const taskId = chatStore.activeTaskId as string;
+        const taskId = chatStore.activeTaskId;
         const task = chatStore.tasks[taskId];
 
         // Task should have subtasks
@@ -811,7 +807,7 @@ describe('Case 3: Add to the workforce queue', () => {
       () => {
         rerender();
         const { chatStore } = result.current;
-        const taskId = chatStore.activeTaskId as string;
+        const taskId = chatStore.activeTaskId;
         const task = chatStore.tasks[taskId];
 
         expect(task.status).toBe('finished');
@@ -825,7 +821,7 @@ describe('Case 3: Add to the workforce queue', () => {
       () => {
         rerender();
         const { chatStore } = result.current;
-        const taskId = chatStore.activeTaskId as string;
+        const taskId = chatStore.activeTaskId;
         const task = chatStore.tasks[taskId];
 
         // Look for new_task_state event
@@ -862,7 +858,7 @@ describe('Case 3: Add to the workforce queue', () => {
         rerender();
         const { chatStore: finalChatStore, projectStore: _finalProjectStore } =
           result.current;
-        const finalTaskId = finalChatStore.activeTaskId as string;
+        const finalTaskId = finalChatStore.activeTaskId;
         const finalTask = finalChatStore.tasks[finalTaskId];
         expect(finalTask.status).toBe('finished');
       },
@@ -873,7 +869,7 @@ describe('Case 3: Add to the workforce queue', () => {
     const { chatStore: finalChatStore, projectStore: finalProjectStore } =
       result.current;
     const finalProject = finalProjectStore.getProjectById(projectId);
-    const finalTaskId = finalChatStore.activeTaskId as string;
+    const finalTaskId = finalChatStore.activeTaskId;
     const finalTask = finalChatStore.tasks[finalTaskId];
 
     // Queue should have 1 remaining message (the second one)
@@ -890,12 +886,12 @@ describe('Case 3: Add to the workforce queue', () => {
 
     //Get previous chatStore
     const allChatStores = finalProjectStore.getAllChatStores(
-      finalProjectStore.activeProjectId as string
+      finalProjectStore.activeProjectId
     );
     // Should have initial + first task + second task = 3 chat stores
     expect(allChatStores).toHaveLength(3);
     const [_initial, first, _second] = allChatStores;
-    const originalTaskId = first.chatStore.getState().activeTaskId as string;
+    const originalTaskId = first.chatStore.getState().activeTaskId;
     const originalFinalTask = first.chatStore.getState().tasks[originalTaskId];
     expect(originalFinalTask.summaryTask).toBe(
       'Calculator App|Build a comprehensive calculator'
