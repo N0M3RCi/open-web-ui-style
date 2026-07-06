@@ -162,6 +162,7 @@
   "back": "戻る",
   "forward": "進む",
   "developer-agent": "開発者エージェント",
+  "browser-agent": "ブラウザエージェント",
   "document-agent": "ドキュメントエージェント",
   "multi-modal-agent": "マルチモーダルエージェント",
   "social-media-agent": "ソーシャルメディアエージェント",
