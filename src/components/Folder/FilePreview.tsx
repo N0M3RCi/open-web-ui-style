@@ -17,14 +17,12 @@ import { useHost } from '@/host';
 import { FileText, X } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isAudioFile, isImageFile, isVideoFile } from './fileTypes';
 import {
   downloadFromUrl,
   downloadOpenedFile,
   fetchRemoteFileAsDataUrl,
   FileViewerPanel,
-  isAudioFile,
-  isImageFile,
-  isVideoFile,
 } from './index';
 
 export interface FilePreviewProps {
@@ -252,7 +250,7 @@ export function FilePreview({
       onDownloadFile={handleDownloadFile}
       onToggleSourceCode={handleToggleSourceCode}
       emptyState={
-        <div className="gap-3 px-6 text-ds-text-neutral-muted-default flex h-full w-full flex-1 flex-col items-center justify-center text-center">
+        <div className="flex h-full w-full flex-1 flex-col items-center justify-center gap-3 px-6 text-center text-ds-text-neutral-muted-default">
           <FileText className="h-12 w-12 text-ds-icon-neutral-muted-default" />
           <p className="text-sm">
             {t('chat.no-file-selected', {

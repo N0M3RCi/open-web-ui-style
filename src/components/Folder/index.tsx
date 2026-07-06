@@ -67,10 +67,13 @@ import { useSpaceStore } from '@/store/spaceStore';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
+  getLeafFileTreeIcon,
+  IMAGE_EXTENSIONS,
   isAudioFile,
   isImageFile,
   isVideoFile,
   treeSegmentLabel,
+  workingFolderBasename,
 } from './fileTypes';
 import { ZoomControls } from './ZoomControls';
 
