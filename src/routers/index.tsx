@@ -15,7 +15,7 @@
 import { proxyFetchPost } from '@/api/http';
 import { isDesktop } from '@/client/platform';
 import { useAuthStore } from '@/store/authStore';
-import { lazy, useEffect, useReducer } from 'react';
+import { lazy, useEffect, useReducer, useRef } from 'react';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 
 import Layout from '@/components/Layout';
@@ -93,6 +93,8 @@ const ProtectedRoute = () => {
     setIsFirstLaunch,
     setModelType,
   } = useAuthStore();
+  const autoLoginAttempted = useRef(false);
+
   useEffect(() => {
     // Check VITE_USE_LOCAL_PROXY value on app startup
     if (token) {
@@ -108,9 +110,10 @@ const ProtectedRoute = () => {
       }
     }
 
-    // Local mode: always auto-login to get a fresh token,
+    // Local mode: auto-login once on mount to get a fresh token,
     // even when a (possibly stale) token exists from a previous session.
-    if (IS_LOCAL_MODE) {
+    if (IS_LOCAL_MODE && !autoLoginAttempted.current) {
+      autoLoginAttempted.current = true;
       proxyFetchPost('/api/v1/user/auto-login', {})
         .then((data) => {
           if (data && data.token) {
@@ -139,7 +142,9 @@ const ProtectedRoute = () => {
       return;
     }
 
-    dispatch({ type: 'INITIALIZE', payload: { isAuthenticated: !!token } });
+    if (!IS_LOCAL_MODE) {
+      dispatch({ type: 'INITIALIZE', payload: { isAuthenticated: !!token } });
+    }
   }, [
     token,
     localProxyValue,
