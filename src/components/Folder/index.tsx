@@ -1459,6 +1459,8 @@ export default function Folder({ data: _data }: { data?: Agent }) {
                     alt=""
                     className="size-4 shrink-0"
                     aria-hidden
+                    loading="lazy"
+                    decoding="async"
                   />
                   {t('chat.open-in-cursor')}
                 </DropdownMenuItem>
@@ -1471,6 +1473,8 @@ export default function Folder({ data: _data }: { data?: Agent }) {
                     alt=""
                     className="size-4 shrink-0"
                     aria-hidden
+                    loading="lazy"
+                    decoding="async"
                   />
                   {t('chat.open-in-vscode')}
                 </DropdownMenuItem>
@@ -1664,6 +1668,8 @@ function ImageLoader({ selectedFile }: { selectedFile: FileInfo }) {
       src={src}
       alt={selectedFile.name}
       className="max-h-full max-w-full object-contain"
+      loading="lazy"
+      decoding="async"
       onError={(err) => console.error('Image load error:', err)}
     />
   );
