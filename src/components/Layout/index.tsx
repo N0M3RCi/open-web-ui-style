@@ -77,15 +77,17 @@ const Layout = () => {
   // isBackendReady defaults to false on each app launch (non-persisted),
   // so the main UI is gated until health check passes — no race condition.
   // Also wait for first-launch onboarding to be completed before showing main UI.
-  const actualShouldShowInstallScreen =
-    shouldShowInstallScreen ||
-    initState !== 'done' ||
-    !isBackendReady ||
-    (isFirstLaunch && !onboardingCompleted);
+  const isWebMode = !host?.electronAPI;
+  const actualShouldShowInstallScreen = isWebMode
+    ? false
+    : shouldShowInstallScreen ||
+      initState !== 'done' ||
+      !isBackendReady ||
+      (isFirstLaunch && !onboardingCompleted);
   const shouldShowMainContent = !actualShouldShowInstallScreen;
 
   return (
-    <div className="bg-ds-bg-neutral-muted-default relative flex h-full flex-col overflow-hidden">
+    <div className="relative flex h-full flex-col overflow-hidden bg-ds-bg-neutral-muted-default">
       <div
         className={
           actualShouldShowInstallScreen
@@ -95,7 +97,7 @@ const Layout = () => {
       >
         <TopBar />
       </div>
-      <div className="min-h-0 relative h-full flex-1 overflow-hidden">
+      <div className="relative h-full min-h-0 flex-1 overflow-hidden">
         {/* Installation screen */}
         {actualShouldShowInstallScreen && <InstallDependencies />}
 
