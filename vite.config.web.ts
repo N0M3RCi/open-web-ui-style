@@ -39,6 +39,10 @@ export default defineConfig(({ mode }) => {
           __dirname,
           'src/__stackframe_vendor__/index.js'
         ),
+        '@stackframe/stack-shared': path.join(
+          __dirname,
+          'package/@stackframe/stack-shared'
+        ),
       },
     },
     plugins: [react()],
