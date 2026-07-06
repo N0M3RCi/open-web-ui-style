@@ -221,15 +221,15 @@ class TestIsCloud:
             api_url=api_url,
         )
 
-    def test_is_cloud_matches_legacy_hyphenated_host(self):
-        assert self._chat_with_url(
-            "https://merci-proxy.example.com"
-        ).is_cloud()
+    def test_is_cloud_matches_proxy_host(self):
+        assert self._chat_with_url("https://nova-proxy.example.com").is_cloud()
 
     def test_is_cloud_matches_current_proxy_host(self):
         # `proxy.merci-unimind.ai` is the actual prod/dev hostname (no hyphen).
         assert self._chat_with_url("https://proxy.merci-unimind.ai").is_cloud()
-        assert self._chat_with_url("https://proxy.merci-unimind.ai/").is_cloud()
+        assert self._chat_with_url(
+            "https://proxy.merci-unimind.ai/"
+        ).is_cloud()
 
     def test_is_cloud_false_for_user_configured_endpoints(self):
         assert not self._chat_with_url("https://api.openai.com/v1").is_cloud()
