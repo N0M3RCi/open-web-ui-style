@@ -1,12 +1,12 @@
 ---
 title: Webhook and app triggers
-description: Start Eigent tasks from HTTP requests or supported application events.
+description: Start Nova tasks from HTTP requests or supported application events.
 icon: webhook
 ---
 
 Webhook and app triggers start tasks when an external event occurs.
 
-Use a webhook for a custom system. Use an application trigger when Eigent provides a guided integration for the event source.
+Use a webhook for a custom system. Use an application trigger when Nova provides a guided integration for the event source.
 
 ## Create a webhook trigger
 
@@ -19,7 +19,7 @@ Use a webhook for a custom system. Use an application trigger when Eigent provid
 7. Configure optional execution settings.
 8. Create the trigger.
 
-Eigent generates the webhook URL after creation.
+Nova generates the webhook URL after creation.
 
 > **Screenshot placeholder:** Add a screenshot of the webhook configuration and the post-creation URL dialog. Obscure most of the URL token.
 

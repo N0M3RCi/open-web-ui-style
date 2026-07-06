@@ -23,7 +23,7 @@ export const mockTriggers: Trigger[] = [
         name: "Webhook Data Processor",
         description: "Processes incoming webhook data from external services",
         trigger_type: TriggerType.Webhook,
-        webhook_url: "https://dev.eigent.ai/webhook/abc123def456",
+        webhook_url: "https://dev.nova.ai/webhook/abc123def456",
         listener_type: ListenerType.Workforce,
         status: TriggerStatus.Active,
         execution_count: 128,

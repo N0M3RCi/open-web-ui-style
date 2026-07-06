@@ -1,4 +1,4 @@
-# Eigent Documentation Structure
+# Nova Documentation Structure
 
 This file is the editorial map for the public Mintlify documentation. Navigation is defined in `docs/docs.json`. Writing and media conventions are defined in `docs/STYLE_GUIDE.md`.
 
@@ -42,7 +42,7 @@ This file is the editorial map for the public Mintlify documentation. Navigation
 ### Models
 
 - Model selection overview
-- Eigent Cloud
+- Nova Cloud
 - Bring Your Own Key
 - Local models
 - Provider reference

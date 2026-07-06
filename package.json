@@ -1,9 +1,9 @@
 {
-  "name": "eigent",
-  "version": "1.0.1",
+  "name": "merci-unimind",
+  "version": "1.0.0",
   "main": "dist-electron/main/index.js",
-  "description": "Eigent",
-  "author": "Eigent.AI",
+  "description": "M3RCI - UniMind AI Platform",
+  "author": "M3RCI - UniMind",
   "license": "MIT",
   "private": true,
   "debug": {

@@ -1,16 +1,16 @@
 ---
 title: Models overview
-description: Choose between Eigent Cloud, your own provider keys, and local inference servers.
+description: Choose between Nova Cloud, your own provider keys, and local inference servers.
 icon: brain
 ---
 
-Eigent is model-flexible by design. You can use managed Eigent Cloud models, connect provider accounts with your own keys, or run open models on local infrastructure.
+Nova is model-flexible by design. You can use managed Nova Cloud models, connect provider accounts with your own keys, or run open models on local infrastructure.
 
-At least one valid model is required before Eigent can start a task.
+At least one valid model is required before Nova can start a task.
 
 ## Open Models
 
-1. Open the Eigent dashboard.
+1. Open the Nova dashboard.
 2. Select **Agents**.
 3. Select **Models**.
 
@@ -20,9 +20,9 @@ The Models page separates managed cloud, bring-your-own-key, and local providers
 
 ## Choose a model source
 
-### Eigent Cloud
+### Nova Cloud
 
-Use managed models without configuring provider credentials. This is the quickest way to evaluate Eigent and is billed through Eigent credits.
+Use managed models without configuring provider credentials. This is the quickest way to evaluate Nova and is billed through Nova credits.
 
 ### Bring Your Own Key
 
@@ -30,7 +30,7 @@ Connect a supported cloud provider with your own API key and endpoint. Provider 
 
 ### Local models
 
-Connect Eigent to Ollama, vLLM, SGLang, LM Studio, or LLaMA.cpp. Local models can keep inference on infrastructure you control.
+Connect Nova to Ollama, vLLM, SGLang, LM Studio, or LLaMA.cpp. Local models can keep inference on infrastructure you control.
 
 ## Configure a provider
 
@@ -72,7 +72,7 @@ Use a representative task to validate a model before making it the default for a
 3. Select the delete or reset action.
 4. Confirm the removal.
 
-Removing a provider deletes its stored Eigent configuration. It does not delete the provider account or local model.
+Removing a provider deletes its stored Nova configuration. It does not delete the provider account or local model.
 
 ## Troubleshooting
 
@@ -90,7 +90,7 @@ Confirm the preferred provider and the model selected in the task composer. Exis
 
 ## Related guides
 
-- [Eigent Cloud models](/models/eigent-cloud)
+- [Nova Cloud models](/models/nova-cloud)
 - [Bring Your Own Key](/core/models/byok)
 - [Local models](/core/models/local-model)
 - [Provider reference](/models/provider-reference)

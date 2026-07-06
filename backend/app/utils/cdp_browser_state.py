@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import logging
 import time
@@ -85,7 +85,7 @@ def build_web_cdp_browser(
 def get_connected_cdp_endpoint(owner_key: str) -> str | None:
     if owner_key in _web_cdp_browser_meta_by_owner:
         return _web_cdp_browser_meta_by_owner[owner_key].get("endpoint")
-    cdp_url = env("EIGENT_CDP_URL")
+    cdp_url = env("NOVA_CDP_URL")
     if cdp_url:
         return cdp_url
     return None
@@ -109,7 +109,7 @@ def get_connected_cdp_port(owner_key: str) -> int | None:
         _, _, port = normalize_cdp_url(cdp_url)
         return port
     except Exception:
-        logger.warning("Invalid EIGENT_CDP_URL: %s", cdp_url)
+        logger.warning("Invalid NOVA_CDP_URL: %s", cdp_url)
         return None
 
 

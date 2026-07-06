@@ -4,9 +4,9 @@ description: Add local command-based or remote URL-based Model Context Protocol 
 icon: wrench
 ---
 
-Use a custom Model Context Protocol server when you need a tool that is not included in Eigent's supported integration catalog.
+Use a custom Model Context Protocol server when you need a tool that is not included in Nova's supported integration catalog.
 
-Eigent supports:
+Nova supports:
 
 - Local MCP servers started with a command
 - Remote MCP servers reached through a URL
@@ -86,7 +86,7 @@ Deleting an MCP entry does not revoke credentials at the external service.
 
 ### The local command is not found
 
-Use an absolute path or ensure the executable is installed in the environment used by Eigent.
+Use an absolute path or ensure the executable is installed in the environment used by Nova.
 
 ### The process exits immediately
 

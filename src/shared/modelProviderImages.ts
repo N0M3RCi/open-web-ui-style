@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,13 +10,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import anthropicImage from '@/assets/model/anthropic.svg';
 import azureImage from '@/assets/model/azure.svg';
 import bedrockImage from '@/assets/model/bedrock.svg';
 import deepseekImage from '@/assets/model/deepseek.svg';
-import eigentImage from '@/assets/model/eigent.svg';
+import novaImage from '@/assets/model/nova.svg';
 import ernieImage from '@/assets/model/ernie.png';
 import geminiImage from '@/assets/model/gemini.svg';
 import llamaCppImage from '@/assets/model/llamacpp.svg';
@@ -39,7 +39,7 @@ import {
 } from '@/pages/Agents/localModels';
 
 const MODEL_PROVIDER_IMAGE_MAP: Record<string, string> = {
-  cloud: eigentImage,
+  cloud: novaImage,
   openai: openaiImage,
   'codex-subscription': openaiImage,
   anthropic: anthropicImage,

@@ -1,6 +1,6 @@
-# 🐫 Welcome to Eigent! 🐫
+# 🐫 Welcome to Nova! 🐫
 
-Thank you for your interest in contributing to the Eigent project! 🎉
+Thank you for your interest in contributing to the Nova project! 🎉
 We're excited to have your support. As an open-source product built on
 CAMEL in a rapidly evolving and open-ended field, we wholeheartedly
 welcome contributions of all kinds. Whether you want to introduce new
@@ -11,21 +11,21 @@ for more efficient communication. 💬
 
 ---
 
-## Eigent Contribution Guideline
+## Nova Contribution Guideline
 
-Eigent is a multi-agent system designed to deliver a high-quality open source Cowork experience for users. We welcome developers who genuinely use Eigent to solve real-world problems to engage with us and build together.
+Nova is a multi-agent system designed to deliver a high-quality open source Cowork experience for users. We welcome developers who genuinely use Nova to solve real-world problems to engage with us and build together.
 
 **Our goals are:**
 
-1. Pursue quality over quantity — in both code and features design within the Eigent repository.
-1. Welcome any developer or user who truly uses Eigent, or shares our mission and vision, to discuss product and technology with us and bring the multi-agent open source Cowork system to more real users.
+1. Pursue quality over quantity — in both code and features design within the Nova repository.
+1. Welcome any developer or user who truly uses Nova, or shares our mission and vision, to discuss product and technology with us and bring the multi-agent open source Cowork system to more real users.
 
 ### Why This Policy Exists
 
 As AI coding capabilities grow, an increasing number of AI coding bots or vibe code are introducing significant noise and risk to open-source repositories:
 
 1. **Code quality risks.** AI-generated code may contain subtle bugs or hallucinations. An excessive volume of LLM-generated code is presumed to be polluted code and dramatically increases heavy and meaningless maintenance costs.
-1. **Community culture.** For Eigent's community, we uphold the core value of human collaboration and oppose low-effort, low-signal spamming.
+1. **Community culture.** For Nova's community, we uphold the core value of human collaboration and oppose low-effort, low-signal spamming.
 
 ### Contribution Requirements
 
@@ -104,7 +104,7 @@ a pull request. 🚀
 ### Contributing to Code Reviews 🔍
 
 This part outlines the guidelines and best practices for conducting
-code reviews in Eigent. The aim is to ensure that all contributions are
+code reviews in Nova. The aim is to ensure that all contributions are
 of high quality, align with the project's goals, and are consistent with
 our coding standards.
 
@@ -157,11 +157,11 @@ our coding standards.
 - Ignoring Feedback: Address all feedback provided by reviewers, even if you don’t agree with it—discuss it instead of ignoring it.
 - Rushed Reviews: Avoid rushing through reviews. Taking the time to thoroughly review code is critical to maintaining quality.
 
-Code reviews are an essential part of maintaining the quality and integrity of our open source project. By following these guidelines, we can ensure that Eigent remains robust, secure, and easy to maintain, while also fostering a collaborative and welcoming community.
+Code reviews are an essential part of maintaining the quality and integrity of our open source project. By following these guidelines, we can ensure that Nova remains robust, secure, and easy to maintain, while also fostering a collaborative and welcoming community.
 
 ### Guideline for Writing Docstrings
 
-This guideline will help you write clear, concise, and structured docstrings for contributing to `Eigent`.
+This guideline will help you write clear, concise, and structured docstrings for contributing to `Nova`.
 
 #### 1. Use the Triple-Quoted String with `r"""` (Raw String)
 
@@ -205,7 +205,7 @@ response generation. Defaults to :obj:`OpenAIModel` with
 
 #### Naming Principle: Avoid Abbreviations in Naming
 
-- Abbreviations can lead to ambiguity, especially since variable names and code in Eigent are directly used by agents.
+- Abbreviations can lead to ambiguity, especially since variable names and code in Nova are directly used by agents.
 - Use clear, descriptive names that convey meaning without requiring additional explanation. This improves both human readability and the agent's ability to interpret the code.
 
 Examples:
@@ -213,15 +213,15 @@ Examples:
 - Bad: msg_win_sz
 - Good: message_window_size
 
-By adhering to this principle, we ensure that Eigent remains accessible and unambiguous for both developers and AI agents.
+By adhering to this principle, we ensure that Nova remains accessible and unambiguous for both developers and AI agents.
 
 ### Board Item Create Workflow 🛠️
 
-At Eigent, we manage our project through a structured workflow that ensures efficiency and clarity in our development process. Our workflow includes stages for issue creation and pull requests (PRs), sprint planning, and reviews.
+At Nova, we manage our project through a structured workflow that ensures efficiency and clarity in our development process. Our workflow includes stages for issue creation and pull requests (PRs), sprint planning, and reviews.
 
 #### Issue Item Stage
 
-Our [issues](https://github.com/eigent-ai/eigent/issues) page on GitHub is regularly updated with bugs, improvements, and feature requests. We have a handy set of labels to help you sort through and find issues that interest you. Feel free to use these labels to keep things organized.
+Our [issues](https://github.com/nova-ai/nova/issues) page on GitHub is regularly updated with bugs, improvements, and feature requests. We have a handy set of labels to help you sort through and find issues that interest you. Feel free to use these labels to keep things organized.
 
 When you start working on an issue, please assign it to yourself so that others know it's being taken care of.
 
@@ -231,14 +231,14 @@ We do our best to keep these issues up to date, but considering the fast-paced n
 
 Here’s how to engage with our issues effectively:
 
-- Go to [GitHub Issues](https://github.com/eigent-ai/eigent/issues), create a new issue, choose the category, and fill in the required information.
+- Go to [GitHub Issues](https://github.com/nova-ai/nova/issues), create a new issue, choose the category, and fill in the required information.
 - Ensure the issue has a proper title and update the Assignees, Labels, Projects (select Backlog status), Development, and Milestones.
 - Discuss the issue during team meetings, then move it to the Analysis Done column.
 - At the beginning of each sprint, share the analyzed issue and move it to the Sprint Planned column if you are going to work on this issue in the sprint.
 
 #### Pull Request Item Stage
 
-- Go to [GitHub Pulls](https://github.com/eigent-ai/eigent/pulls), create a new PR, choose the branch, and fill in the information, linking the related issue.
+- Go to [GitHub Pulls](https://github.com/nova-ai/nova/pulls), create a new PR, choose the branch, and fill in the information, linking the related issue.
 - Ensure the PR has a proper title and update the Reviewers (convert to draft), Assignees, Labels, Projects (select Developing status), Development, and Milestones.
 - If the PR is related to a roadmap, link the roadmap to the PR.
 - Move the PR item through the stages: Developing, Stuck, Reviewing (click ready for review), Merged. The linked issue will close automatically when the PR is merged.
@@ -260,8 +260,8 @@ Our aim is to make the developer setup as straightforward as possible. If you en
 ## Quick Start 🚀
 
 ```bash
-git clone https://github.com/eigent-ai/eigent.git
-cd eigent
+git clone https://github.com/nova-ai/nova.git
+cd nova
 npm install
 npm run dev
 

@@ -65,7 +65,7 @@ uv run uvicorn main:api --reload --port 3001 --host 0.0.0.0
 
 ### Electron App Users
 
-If you are running Eigent as a desktop app, simply restart the application. The server will be restarted automatically.
+If you are running Nova as a desktop app, simply restart the application. The server will be restarted automatically.
 
 ## FAQ
 

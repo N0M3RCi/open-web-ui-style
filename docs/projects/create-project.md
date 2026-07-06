@@ -4,7 +4,7 @@ description: Start a project, choose an execution mode, attach files, and submit
 icon: plus
 ---
 
-Create a Project when you want Eigent to keep related tasks, files, and follow-up requests together.
+Create a Project when you want Nova to keep related tasks, files, and follow-up requests together.
 
 ## Before you begin
 
@@ -15,7 +15,7 @@ Confirm the following:
 - The task goal is clear enough to plan or execute.
 - Required source files are available.
 
-If no model is configured, Eigent opens the Models page instead of starting the task.
+If no model is configured, Nova opens the Models page instead of starting the task.
 
 ## Open the project composer
 
@@ -69,9 +69,9 @@ For example:
 1. Review the selected Space, mode, files, and request.
 2. Select **Send**.
 
-Eigent creates a server-backed Project in the active Space, opens the Session, and starts the first Run.
+Nova creates a server-backed Project in the active Space, opens the Session, and starts the first Run.
 
-In Workforce mode, Eigent can show a task plan before execution. Review, edit, add, or remove subtasks before starting the plan.
+In Workforce mode, Nova can show a task plan before execution. Review, edit, add, or remove subtasks before starting the plan.
 
 > **Video placeholder:** Add a 60-90 second MP4 showing project creation in both Single Agent and Workforce modes. Include captions and pause briefly on the Workforce plan review.
 
@@ -81,7 +81,7 @@ In Workforce mode, Eigent can show a task plan before execution. Review, edit, a
 
 Confirm that the request contains text and that project startup is not already in progress.
 
-### Eigent asks for a model
+### Nova asks for a model
 
 Open **Agents > Models**, configure a provider, and return to the composer.
 

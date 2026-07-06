@@ -1,6 +1,6 @@
 # Agent Module
 
-This module provides the agent infrastructure for eigent, built on top of the CAMEL framework.
+This module provides the agent infrastructure for nova, built on top of the CAMEL framework.
 
 ## Architecture Overview
 

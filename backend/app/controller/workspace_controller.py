@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import logging
 from pathlib import Path
@@ -24,7 +24,7 @@ from app.router_layer.hands_resolver import get_environment_hands
 from app.service.task import get_task_lock_if_exists
 from app.utils.space_overlay_client import overlay_sync_failure_count
 from app.utils.workspace_paths import (
-    get_eigent_root,
+    get_nova_root,
     runtime_owner_key,
     sanitize_identity,
 )
@@ -183,7 +183,7 @@ def _scratch_space_root(
 ) -> Path:
     safe_space_id = sanitize_identity(space_id).removeprefix("space_")
     return (
-        get_eigent_root()
+        get_nova_root()
         / runtime_owner_key(email, user_id)
         / f"space_{safe_space_id or 'scratch'}"
     )

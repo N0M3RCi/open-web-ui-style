@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 """
 Browser launcher for Web mode: ensures a CDP-capable browser is running
@@ -295,7 +295,7 @@ def ensure_cdp_browser_available(port: int = DEFAULT_CDP_PORT) -> bool:
         False otherwise.
     """
     # Check if auto-launch is disabled
-    if os.environ.get("EIGENT_BRAIN_LAUNCH_BROWSER", "true").lower() in (
+    if os.environ.get("NOVA_BRAIN_LAUNCH_BROWSER", "true").lower() in (
         "false",
         "0",
         "no",
@@ -328,7 +328,7 @@ def ensure_cdp_browser_available(port: int = DEFAULT_CDP_PORT) -> bool:
         return False
 
     user_data_dir = os.path.expanduser(
-        f"~/.eigent/browser_profiles/cdp_brain_{port}"
+        f"~/.nova/browser_profiles/cdp_brain_{port}"
     )
     proc = _launch_browser(executable, port, user_data_dir)
     if not proc:

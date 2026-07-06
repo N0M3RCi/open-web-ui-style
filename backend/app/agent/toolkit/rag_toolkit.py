@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import hashlib
 import logging
@@ -31,7 +31,7 @@ from app.service.task import Agents
 logger = logging.getLogger("rag_toolkit")
 
 # Default paths and constants
-DEFAULT_RAG_STORAGE_PATH = "~/.eigent/rag_storage"
+DEFAULT_RAG_STORAGE_PATH = "~/.nova/rag_storage"
 DEFAULT_COLLECTION_NAME = "default"
 RAW_TEXT_SUBDIR = "raw_text"
 DEFAULT_STORAGE_TYPE = StorageType.QDRANT
@@ -66,7 +66,7 @@ class RAGToolkit(AbstractToolkit):
         """Initialize RAGToolkit with configurable storage.
 
         Args:
-            api_task_id (str): Task ID for eigent integration.
+            api_task_id (str): Task ID for nova integration.
             agent_name (str | None): Optional agent name override.
             collection_name (str | None): Name for the vector collection.
             storage_path (str | Path | None): Path for vector storage.
@@ -353,7 +353,7 @@ class RAGToolkit(AbstractToolkit):
         """Return tools that can be used based on available configuration.
 
         Args:
-            api_task_id (str): Task ID for eigent integration.
+            api_task_id (str): Task ID for nova integration.
         """
         # Auto-derive collection name for task isolation
         collection_name = f"task_{api_task_id}"

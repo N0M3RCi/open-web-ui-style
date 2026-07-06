@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import base64
 import json
@@ -25,7 +25,7 @@ RESOLVER_URL_ENV = "CODEX_RESOLVER_URL"
 RESOLVER_SECRET_ENV = "CODEX_RESOLVER_SECRET"
 MODEL_API_URL_ENV = "CODEX_MODEL_API_URL"
 MODEL_DEFAULT_HEADERS_ENV = "CODEX_MODEL_DEFAULT_HEADERS_JSON"
-RESOLVER_SECRET_HEADER = "x-eigent-resolver-secret"
+RESOLVER_SECRET_HEADER = "x-nova-resolver-secret"
 DEFAULT_CODEX_API_URL = "https://chatgpt.com/backend-api/codex"
 _CAMEL_RESPONSES_MULTIMODAL_PATCHED = False
 
@@ -126,7 +126,7 @@ def _decode_jwt_payload(token: str) -> dict[str, Any]:
 
 def _codex_runtime_headers(access_token: str) -> dict[str, str]:
     headers = {
-        "User-Agent": "codex_cli_rs/0.0.0 (Eigent)",
+        "User-Agent": "codex_cli_rs/0.0.0 (Nova)",
         "originator": "codex_cli_rs",
     }
     payload = _decode_jwt_payload(access_token)

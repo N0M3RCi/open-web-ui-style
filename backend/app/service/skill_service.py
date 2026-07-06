@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import logging
 import os
@@ -20,10 +20,10 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-SKILLS_ROOT = Path.home() / ".eigent" / "skills"
+SKILLS_ROOT = Path.home() / ".nova" / "skills"
 SKILL_FILE = "SKILL.md"
-EXAMPLE_SKILLS_ENV = "EIGENT_EXAMPLE_SKILLS_DIR"
-EXAMPLE_SKILL_MARKER = ".eigent-example-skill"
+EXAMPLE_SKILLS_ENV = "NOVA_EXAMPLE_SKILLS_DIR"
+EXAMPLE_SKILL_MARKER = ".nova-example-skill"
 logger = logging.getLogger("skill_service")
 
 
@@ -395,7 +395,7 @@ def skill_import_zip(
     Returns {success, error?, conflicts?} matching Electron IPC contract.
     """
     replacements_set = set(replacements or [])
-    temp_dir = Path(tempfile.mkdtemp(prefix="eigent-skill-extract-"))
+    temp_dir = Path(tempfile.mkdtemp(prefix="nova-skill-extract-"))
     try:
         SKILLS_ROOT.mkdir(parents=True, exist_ok=True)
 

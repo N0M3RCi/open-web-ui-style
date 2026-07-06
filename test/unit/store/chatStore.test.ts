@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 /**
  * ChatStore Unit Tests - Core Functionality
@@ -336,7 +336,7 @@ describe('ChatStore - Core Functionality', () => {
     it('collects generated files from task output file lists', () => {
       const uploadFiles = collectTaskUploadFiles([], [], [], 'task-789', [
         {
-          path: '/Users/test/.eigent/user_1/space_x/index.html',
+          path: '/Users/test/.nova/user_1/space_x/index.html',
           name: 'index.html',
           type: 'html',
         },
@@ -349,7 +349,7 @@ describe('ChatStore - Core Functionality', () => {
 
       expect(uploadFiles).toEqual([
         {
-          path: '/Users/test/.eigent/user_1/space_x/index.html',
+          path: '/Users/test/.nova/user_1/space_x/index.html',
           name: 'index.html',
           uploadName: 'project_output/index.html',
           source: 'project_output',
@@ -361,7 +361,7 @@ describe('ChatStore - Core Functionality', () => {
       const uploadFiles = collectTaskUploadFiles(
         [
           {
-            path: '/Users/test/.eigent/user_1/project_p/task_t/camel_logs/agent/conv.json',
+            path: '/Users/test/.nova/user_1/project_p/task_t/camel_logs/agent/conv.json',
             name: 'conv.json',
             relativePath: 'agent',
             source: 'camel_log',
@@ -374,7 +374,7 @@ describe('ChatStore - Core Functionality', () => {
 
       expect(uploadFiles).toEqual([
         {
-          path: '/Users/test/.eigent/user_1/project_p/task_t/camel_logs/agent/conv.json',
+          path: '/Users/test/.nova/user_1/project_p/task_t/camel_logs/agent/conv.json',
           name: 'conv.json',
           uploadName: 'camel_log/agent/conv.json',
           source: 'camel_log',

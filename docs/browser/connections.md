@@ -4,13 +4,13 @@ description: Launch a managed browser or connect an existing CDP-enabled browser
 icon: globe
 ---
 
-The browser pool contains Chrome DevTools Protocol sessions that Eigent agents can use.
+The browser pool contains Chrome DevTools Protocol sessions that Nova agents can use.
 
 ## Open a new browser
 
 1. Open **Browser > Connections**.
 2. Select **Open new browser**.
-3. Wait for Eigent to launch the browser and add it to the pool.
+3. Wait for Nova to launch the browser and add it to the pool.
 
 The browser item displays its name and debugging port.
 
@@ -33,15 +33,15 @@ Then:
 3. Enter the remote-debugging port.
 4. Select **Connect**.
 
-Eigent checks `http://localhost:<port>/json/version` before adding the browser.
+Nova checks `http://localhost:<port>/json/version` before adding the browser.
 
 ## Choose a port
 
 Use a port from `1` to `65535`. The port must:
 
 - Belong to a running CDP-enabled browser
-- Not already exist in the Eigent browser pool
-- Be reachable from the Eigent application
+- Not already exist in the Nova browser pool
+- Be reachable from the Nova application
 
 ## Remove a browser
 
@@ -49,7 +49,7 @@ Use a port from `1` to `65535`. The port must:
 2. Select its delete action.
 3. Confirm the removal.
 
-Removing a browser disconnects it from Eigent. It does not necessarily close an external browser process.
+Removing a browser disconnects it from Nova. It does not necessarily close an external browser process.
 
 ## Use the browser in a task
 

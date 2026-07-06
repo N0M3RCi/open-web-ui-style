@@ -26,7 +26,7 @@ Use Workforce for broad tasks that benefit from specialized roles or parallel su
 4. Attach required files.
 5. Send the request.
 
-Eigent opens a Session and starts the task without a Workforce planning stage.
+Nova opens a Session and starts the task without a Workforce planning stage.
 
 > **Screenshot placeholder:** Add a screenshot of the new-project composer with Single Agent mode selected.
 

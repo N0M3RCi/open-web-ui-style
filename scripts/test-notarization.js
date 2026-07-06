@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 /* global console, process */
 
@@ -34,7 +34,7 @@ const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 
 const RELEASE_DIR = path.join(projectRoot, 'release');
-const APP_BUNDLE_PATTERN = /Eigent\.app$/;
+const APP_BUNDLE_PATTERN = /Nova\.app$/;
 
 /**
  * Find the app bundle in release directory
@@ -55,7 +55,7 @@ function findAppBundle() {
       return path.join(RELEASE_DIR, entry.name);
     }
 
-    // Check subdirectories (e.g., mac-arm64/Eigent.app)
+    // Check subdirectories (e.g., mac-arm64/Nova.app)
     if (entry.isDirectory()) {
       const subDir = path.join(RELEASE_DIR, entry.name);
       const subEntries = fs.readdirSync(subDir, { withFileTypes: true });

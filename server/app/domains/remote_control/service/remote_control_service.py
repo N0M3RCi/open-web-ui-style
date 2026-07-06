@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 from __future__ import annotations
 
@@ -554,7 +554,7 @@ class RemoteControlService:
                 raise HTTPException(status_code=403, detail="Project is outside this remote Space")
 
         expires_at = _now() + timedelta(seconds=data.expires_in_seconds)
-        title = _truncate(data.title or space.name or "Eigent Desktop", REMOTE_SESSION_TITLE_MAX_LENGTH)
+        title = _truncate(data.title or space.name or "Nova Desktop", REMOTE_SESSION_TITLE_MAX_LENGTH)
         current_brain_session_id = _id("rc_brain") if is_v2_request and target_project_id else None
         legacy_brain_session_id = data.brain_session_id or (_id("rc_brain") if target_project_id else None)
         session = None

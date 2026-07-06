@@ -1,10 +1,10 @@
 ---
 title: Provider reference
-description: Review every cloud and local model provider supported by Eigent.
+description: Review every cloud and local model provider supported by Nova.
 icon: list
 ---
 
-Eigent supports multiple provider types so open-source deployments can choose models based on capability, cost, privacy, and infrastructure.
+Nova supports multiple provider types so open-source deployments can choose models based on capability, cost, privacy, and infrastructure.
 
 Provider availability and required fields are defined by the current application. Use this page as an overview and the provider's official documentation for account, model, and billing details.
 
@@ -33,7 +33,7 @@ Provider availability and required fields are defined by the current application
 | OpenAI-compatible    | Endpoint, optional key, model              | For compatible third-party services   |
 
 <Note>
-Provider fields can change. Confirm required values in **Agents > Models** after updating Eigent.
+Provider fields can change. Confirm required values in **Agents > Models** after updating Nova.
 </Note>
 
 ## Local runtimes
@@ -51,7 +51,7 @@ Provider fields can change. Confirm required values in **Agents > Models** after
 1. Create an account with the provider.
 2. Create a restricted API credential.
 3. Confirm the provider endpoint and model identifier.
-4. In Eigent, open **Agents > Models**.
+4. In Nova, open **Agents > Models**.
 5. Select the provider and enter the values.
 6. Validate and save.
 7. Run a small test task.
@@ -73,7 +73,7 @@ Compatibility can vary. Test streaming, tool calls, and structured responses bef
 1. Install and start the runtime.
 2. Load or serve a model.
 3. Confirm the endpoint responds locally.
-4. In Eigent, open **Agents > Models > Local**.
+4. In Nova, open **Agents > Models > Local**.
 5. Select the runtime.
 6. Enter the endpoint and model.
 7. Validate and enable it.
@@ -90,7 +90,7 @@ Each dedicated provider guide should include:
 2. Credential creation
 3. Endpoint format
 4. Model identifier examples
-5. Eigent configuration
+5. Nova configuration
 6. Validation
 7. Common errors
 8. Billing and privacy notes

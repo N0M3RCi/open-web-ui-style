@@ -36,7 +36,7 @@ Notion and other services can open a dedicated authentication flow. Other integr
 3. Enter each required environment value.
 4. Save the changes.
 
-Use credentials created specifically for Eigent. Avoid personal administrator tokens.
+Use credentials created specifically for Nova. Avoid personal administrator tokens.
 
 ## Enable or disable an integration
 
@@ -58,7 +58,7 @@ Disabling a connector preserves its configuration but prevents new agent use. Ex
 2. Select **Uninstall**.
 3. Confirm the action.
 
-Uninstalling removes the Eigent connector configuration. Revoke OAuth grants or provider tokens separately when required.
+Uninstalling removes the Nova connector configuration. Revoke OAuth grants or provider tokens separately when required.
 
 ## Assign the integration to a worker
 

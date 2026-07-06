@@ -1,6 +1,6 @@
 ---
 title: Google Search
-description: Configure web search for managed and self-hosted Eigent deployments.
+description: Configure web search for managed and self-hosted Nova deployments.
 icon: magnifying-glass
 ---
 
@@ -8,7 +8,7 @@ Google Search provides current web results for Browser agents and research workf
 
 ## Determine your setup
 
-### Managed Eigent mode
+### Managed Nova mode
 
 Google Search can be enabled by default and does not require user credentials.
 
@@ -29,7 +29,7 @@ Provide:
 
 Use Google's current Custom Search documentation for account-specific steps and quota information.
 
-## Configure Search in Eigent
+## Configure Search in Nova
 
 1. Open **Connectors**.
 2. Select **Google Search**.
@@ -43,7 +43,7 @@ Use Google's current Custom Search documentation for account-specific steps and 
 
 Start a small Browser-agent task, for example:
 
-> Find the three most recent official release notes for Eigent and return their publication dates and source links.
+> Find the three most recent official release notes for Nova and return their publication dates and source links.
 
 Review the task log to confirm that the search tool returned results.
 

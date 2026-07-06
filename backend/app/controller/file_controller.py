@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import asyncio
 import logging
@@ -36,22 +36,22 @@ file_logger = logging.getLogger("file_controller")
 # Config
 MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50MB
 MAX_FILES_PER_SESSION = 20
-WORKSPACE_ROOT = env("EIGENT_WORKSPACE", "~/.eigent/workspace")
+WORKSPACE_ROOT = env("NOVA_WORKSPACE", "~/.nova/workspace")
 SESSION_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 FILE_LIST_SEMAPHORE = asyncio.Semaphore(4)
 SLOW_FILE_LIST_LOG_MS = 300
 
 
-def _get_eigent_root() -> Path:
-    """Base root for eigent storage (~/eigent). Do NOT use env file_save_path
+def _get_nova_root() -> Path:
+    """Base root for nova storage (~/nova). Do NOT use env file_save_path
     here: chat overwrites it to task path, which would break list/stream."""
-    eigent = Path.home() / "eigent"
-    if eigent.exists():
-        return eigent
-    dot_eigent = Path.home() / ".eigent"
-    if dot_eigent.exists():
-        return dot_eigent
-    return eigent  # default to ~/eigent
+    nova = Path.home() / "nova"
+    if nova.exists():
+        return nova
+    dot_nova = Path.home() / ".nova"
+    if dot_nova.exists():
+        return dot_nova
+    return nova  # default to ~/nova
 
 
 def _get_workspace_root() -> Path:
@@ -162,8 +162,8 @@ def _normalize_relative_path(path: str) -> str:
 
 
 def _get_project_root(email: str, project_id: str) -> Path:
-    """Get project root path: ~/eigent/{email}/project_{project_id}/."""
-    root = _get_eigent_root()
+    """Get project root path: ~/nova/{email}/project_{project_id}/."""
+    root = _get_nova_root()
     email_sanitized = _sanitize_email(email)
     return root / email_sanitized / f"project_{project_id}"
 
@@ -178,7 +178,7 @@ def _resolve_project_root(email: str, project_id: str) -> Path:
     if preferred.exists():
         return preferred
 
-    root = _get_eigent_root()
+    root = _get_nova_root()
     candidate_name = f"project_{project_id}"
     try:
         for child in root.iterdir():

@@ -1,19 +1,19 @@
 ---
-title: Eigent Cloud models
+title: Nova Cloud models
 description: Use managed models and credits without configuring provider API keys.
 icon: cloud
 ---
 
-Eigent Cloud provides managed model access for users who do not want to configure provider credentials or local inference.
+Nova Cloud provides managed model access for users who do not want to configure provider credentials or local inference.
 
-## When to use Eigent Cloud
+## When to use Nova Cloud
 
-Choose Eigent Cloud when you want:
+Choose Nova Cloud when you want:
 
 - The fastest setup path
 - A curated model catalog
 - No provider API-key management
-- Usage tracked through Eigent credits
+- Usage tracked through Nova credits
 - A managed fallback while testing BYOK or local models
 
 ## Enable a Cloud model
@@ -40,7 +40,7 @@ Exact models can change as providers release new versions. Treat the in-product 
 
 ## Understand credits
 
-Cloud usage consumes Eigent credits. Credit consumption depends on the selected model and task usage.
+Cloud usage consumes Nova credits. Credit consumption depends on the selected model and task usage.
 
 The product can show:
 
@@ -75,7 +75,7 @@ This supports workflows such as:
 
 ### No Cloud models are available
 
-Confirm the account is signed in, the application can reach Eigent services, and the current plan includes model access.
+Confirm the account is signed in, the application can reach Nova services, and the current plan includes model access.
 
 ### Credits are unavailable
 

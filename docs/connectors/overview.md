@@ -1,6 +1,6 @@
 ---
 title: Connectors overview
-description: Extend Eigent with hosted integrations, Google Search, and custom MCP servers.
+description: Extend Nova with hosted integrations, Google Search, and custom MCP servers.
 icon: plug
 ---
 
@@ -8,7 +8,7 @@ Connectors give agents access to external services and tools. A connector can se
 
 ## Open Connectors
 
-1. Open the Eigent dashboard.
+1. Open the Nova dashboard.
 2. Select **Connectors**.
 
 The page combines supported integrations, Google Search, and user-managed MCP servers.
@@ -59,7 +59,7 @@ X, WhatsApp, Reddit, and GitHub are marked Coming soon in the current connector 
 
 ## Assign tools to agents
 
-Installing a connector makes its tools available to Eigent. To use it in Workforce:
+Installing a connector makes its tools available to Nova. To use it in Workforce:
 
 1. Open the Workspace.
 2. Add or edit a worker.

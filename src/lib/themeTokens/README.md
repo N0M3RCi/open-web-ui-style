@@ -49,10 +49,10 @@ Override precedence is deterministic:
 In development, `ThemeProvider` exposes:
 
 ```js
-window.__eigentThemeV2.listThemes(); // { light: [...], dark: [...] }
-window.__eigentThemeV2.setTheme("light", "starfish");
-window.__eigentThemeV2.setContrast(65);
-window.__eigentThemeV2.getState();
+window.__novaThemeV2.listThemes(); // { light: [...], dark: [...] }
+window.__novaThemeV2.setTheme("light", "starfish");
+window.__novaThemeV2.setContrast(65);
+window.__novaThemeV2.getState();
 ```
 
 ## Validation

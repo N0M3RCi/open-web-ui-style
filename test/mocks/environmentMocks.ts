@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { vi } from 'vitest';
 
@@ -29,11 +29,11 @@ export interface MockEnvironmentState {
     backendPathExists: boolean;
     pyprojectExists: boolean;
     // New fields for process.ts functions
-    eigentDirExists: boolean;
-    eigentBinDirExists: boolean;
-    eigentCacheDirExists: boolean;
-    eigentVenvsDirExists: boolean;
-    eigentRuntimeDirExists: boolean;
+    novaDirExists: boolean;
+    novaBinDirExists: boolean;
+    novaCacheDirExists: boolean;
+    novaVenvsDirExists: boolean;
+    novaRuntimeDirExists: boolean;
     resourcesDirExists: boolean;
     binariesExist: { [name: string]: boolean };
     oldVenvsExist: string[]; // List of old venv directories that exist
@@ -75,11 +75,11 @@ export function createFileSystemMock() {
       installedLockExists: true,
       backendPathExists: true,
       pyprojectExists: true,
-      eigentDirExists: true,
-      eigentBinDirExists: true,
-      eigentCacheDirExists: true,
-      eigentVenvsDirExists: true,
-      eigentRuntimeDirExists: true,
+      novaDirExists: true,
+      novaBinDirExists: true,
+      novaCacheDirExists: true,
+      novaVenvsDirExists: true,
+      novaRuntimeDirExists: true,
       resourcesDirExists: true,
       binariesExist: { uv: true, bun: true },
       oldVenvsExist: [],
@@ -122,22 +122,22 @@ export function createFileSystemMock() {
         return mockState.filesystem.backendPathExists;
       if (path.includes('pyproject.toml'))
         return mockState.filesystem.pyprojectExists;
-      if (path.includes('.eigent/bin') || path.includes('.eigent\\bin'))
-        return mockState.filesystem.eigentBinDirExists;
-      if (path.includes('.eigent/cache') || path.includes('.eigent\\cache'))
-        return mockState.filesystem.eigentCacheDirExists;
-      if (path.includes('.eigent/venvs') || path.includes('.eigent\\venvs'))
-        return mockState.filesystem.eigentVenvsDirExists;
-      if (path.includes('.eigent/runtime') || path.includes('.eigent\\runtime'))
-        return mockState.filesystem.eigentRuntimeDirExists;
+      if (path.includes('.nova/bin') || path.includes('.nova\\bin'))
+        return mockState.filesystem.novaBinDirExists;
+      if (path.includes('.nova/cache') || path.includes('.nova\\cache'))
+        return mockState.filesystem.novaCacheDirExists;
+      if (path.includes('.nova/venvs') || path.includes('.nova\\venvs'))
+        return mockState.filesystem.novaVenvsDirExists;
+      if (path.includes('.nova/runtime') || path.includes('.nova\\runtime'))
+        return mockState.filesystem.novaRuntimeDirExists;
       if (
-        path.includes('.eigent') &&
+        path.includes('.nova') &&
         !path.includes('bin') &&
         !path.includes('cache') &&
         !path.includes('venvs') &&
         !path.includes('runtime')
       ) {
-        return mockState.filesystem.eigentDirExists;
+        return mockState.filesystem.novaDirExists;
       }
       if (path.includes('resources'))
         return mockState.filesystem.resourcesDirExists;
@@ -204,27 +204,27 @@ dependencies = ["fastapi", "uvicorn"]
       if (path.includes('backend')) {
         mockState.filesystem.backendPathExists = true;
       } else if (
-        path.includes('.eigent/bin') ||
-        path.includes('.eigent\\bin')
+        path.includes('.nova/bin') ||
+        path.includes('.nova\\bin')
       ) {
-        mockState.filesystem.eigentBinDirExists = true;
+        mockState.filesystem.novaBinDirExists = true;
       } else if (
-        path.includes('.eigent/cache') ||
-        path.includes('.eigent\\cache')
+        path.includes('.nova/cache') ||
+        path.includes('.nova\\cache')
       ) {
-        mockState.filesystem.eigentCacheDirExists = true;
+        mockState.filesystem.novaCacheDirExists = true;
       } else if (
-        path.includes('.eigent/venvs') ||
-        path.includes('.eigent\\venvs')
+        path.includes('.nova/venvs') ||
+        path.includes('.nova\\venvs')
       ) {
-        mockState.filesystem.eigentVenvsDirExists = true;
+        mockState.filesystem.novaVenvsDirExists = true;
       } else if (
-        path.includes('.eigent/runtime') ||
-        path.includes('.eigent\\runtime')
+        path.includes('.nova/runtime') ||
+        path.includes('.nova\\runtime')
       ) {
-        mockState.filesystem.eigentRuntimeDirExists = true;
-      } else if (path.includes('.eigent')) {
-        mockState.filesystem.eigentDirExists = true;
+        mockState.filesystem.novaRuntimeDirExists = true;
+      } else if (path.includes('.nova')) {
+        mockState.filesystem.novaDirExists = true;
       }
     }),
 
@@ -241,7 +241,7 @@ dependencies = ["fastapi", "uvicorn"]
 
     readdirSync: vi.fn().mockImplementation((path: string, _options?: any) => {
       if (!path || typeof path !== 'string') return [];
-      if (path.includes('.eigent/venvs')) {
+      if (path.includes('.nova/venvs')) {
         // Return old venv directories for cleanup testing
         return mockState.filesystem.oldVenvsExist.map((venv) => ({
           name: venv,
@@ -264,11 +264,11 @@ dependencies = ["fastapi", "uvicorn"]
           installedLockExists: true,
           backendPathExists: true,
           pyprojectExists: true,
-          eigentDirExists: true,
-          eigentBinDirExists: true,
-          eigentCacheDirExists: true,
-          eigentVenvsDirExists: true,
-          eigentRuntimeDirExists: true,
+          novaDirExists: true,
+          novaBinDirExists: true,
+          novaCacheDirExists: true,
+          novaVenvsDirExists: true,
+          novaRuntimeDirExists: true,
           resourcesDirExists: true,
           binariesExist: { uv: true, bun: true },
           oldVenvsExist: [],
@@ -518,9 +518,9 @@ export function createProcessUtilsMock() {
       utilsMock.mockState = mockState;
 
       utilsMock.getUvEnv.mockReturnValue({
-        UV_PYTHON_INSTALL_DIR: `${mockState.system.homedir}/.eigent/cache/uv_python`,
-        UV_TOOL_DIR: `${mockState.system.homedir}/.eigent/cache/uv_tool`,
-        UV_PROJECT_ENVIRONMENT: `${mockState.system.homedir}/.eigent/venvs/backend-mock`,
+        UV_PYTHON_INSTALL_DIR: `${mockState.system.homedir}/.nova/cache/uv_python`,
+        UV_TOOL_DIR: `${mockState.system.homedir}/.nova/cache/uv_tool`,
+        UV_PROJECT_ENVIRONMENT: `${mockState.system.homedir}/.nova/venvs/backend-mock`,
         UV_HTTP_TIMEOUT: '300',
       });
 
@@ -553,7 +553,7 @@ export function createProcessUtilsMock() {
       });
 
       utilsMock.getBinaryPath.mockImplementation(async (name?: string) => {
-        const binDir = `${mockState.system.homedir}/.eigent/bin`;
+        const binDir = `${mockState.system.homedir}/.nova/bin`;
         if (!name) return binDir;
         const binaryName =
           mockState.system.platform === 'win32' ? `${name}.exe` : name;
@@ -561,15 +561,15 @@ export function createProcessUtilsMock() {
       });
 
       utilsMock.getCachePath.mockImplementation((folder: string) => {
-        return `${mockState.system.homedir}/.eigent/cache/${folder}`;
+        return `${mockState.system.homedir}/.nova/cache/${folder}`;
       });
 
       utilsMock.getVenvPath.mockImplementation((version: string) => {
-        return `${mockState.system.homedir}/.eigent/venvs/backend-${version}`;
+        return `${mockState.system.homedir}/.nova/venvs/backend-${version}`;
       });
 
       utilsMock.getVenvsBaseDir.mockReturnValue(
-        `${mockState.system.homedir}/.eigent/venvs`
+        `${mockState.system.homedir}/.nova/venvs`
       );
 
       utilsMock.cleanupOldVenvs.mockImplementation(
@@ -719,12 +719,12 @@ export function setupMockEnvironment() {
         });
       },
 
-      missingEigentDirectories: () => {
-        fsMock.mockState.filesystem.eigentDirExists = false;
-        fsMock.mockState.filesystem.eigentBinDirExists = false;
-        fsMock.mockState.filesystem.eigentCacheDirExists = false;
-        fsMock.mockState.filesystem.eigentVenvsDirExists = false;
-        fsMock.mockState.filesystem.eigentRuntimeDirExists = false;
+      missingNovaDirectories: () => {
+        fsMock.mockState.filesystem.novaDirExists = false;
+        fsMock.mockState.filesystem.novaBinDirExists = false;
+        fsMock.mockState.filesystem.novaCacheDirExists = false;
+        fsMock.mockState.filesystem.novaVenvsDirExists = false;
+        fsMock.mockState.filesystem.novaRuntimeDirExists = false;
       },
     },
 

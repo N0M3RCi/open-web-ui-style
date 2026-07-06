@@ -31,4 +31,4 @@ Closes #
 
 ### Contribution Guidelines Acknowledgement
 
-- [ ] I have read and agree to the [Eigent Contribution Guideline](https://github.com/eigent-ai/eigent/blob/main/CONTRIBUTING.md#eigent-contribution-guideline)
+- [ ] I have read and agree to the [Nova Contribution Guideline](https://github.com/nova-ai/nova/blob/main/CONTRIBUTING.md#nova-contribution-guideline)

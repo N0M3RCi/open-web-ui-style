@@ -1,10 +1,10 @@
 ---
-title: Open-source Eigent
-description: Build, inspect, extend, and self-host Eigent from its public source code.
+title: Open-source Nova
+description: Build, inspect, extend, and self-host Nova from its public source code.
 icon: code-branch
 ---
 
-Eigent is an open-source agent workspace built around model choice, extensible tools, and local control. You can inspect the implementation, run the application yourself, connect private infrastructure, and contribute changes.
+Nova is an open-source agent workspace built around model choice, extensible tools, and local control. You can inspect the implementation, run the application yourself, connect private infrastructure, and contribute changes.
 
 ## Why open source matters
 
@@ -59,7 +59,7 @@ npm run format:check
 
 Run focused backend and server tests for the modules you change.
 
-## Extend Eigent
+## Extend Nova
 
 Common extension points include:
 
@@ -109,14 +109,14 @@ Product documentation lives in `docs/`.
 ## Community and support
 
 <CardGroup cols={3}>
-  <Card title="GitHub Issues" icon="github" href="https://github.com/eigent-ai/eigent/issues">
-    Report reproducible bugs and feature requests. Please include Eigent version, operating system, deployment mode, model provider, reproduction steps, expected and actual behavior, and sanitized logs.
+  <Card title="GitHub Issues" icon="github" href="https://github.com/nova-ai/nova/issues">
+    Report reproducible bugs and feature requests. Please include Nova version, operating system, deployment mode, model provider, reproduction steps, expected and actual behavior, and sanitized logs.
   </Card>
   <Card title="Discord Community" icon="discord" href="https://discord.camel-ai.org/">
-    Join our Discord community to ask questions, share ideas, and connect with other Eigent users and contributors.
+    Join our Discord community to ask questions, share ideas, and connect with other Nova users and contributors.
   </Card>
-  <Card title="Email" icon="envelope" href="mailto:info@eigent.ai">
-    Reach out to us at info@eigent.ai for general inquiries and support.
+  <Card title="Email" icon="envelope" href="mailto:info@nova.ai">
+    Reach out to us at info@nova.ai for general inquiries and support.
   </Card>
 </CardGroup>
 
@@ -127,7 +127,7 @@ Product documentation lives in `docs/`.
     Understand the main runtime and service boundaries.
   </Card>
   <Card title="Self-hosting" icon="server" href="/get_started/self-hosting">
-    Run Eigent with your own infrastructure.
+    Run Nova with your own infrastructure.
   </Card>
   <Card title="Custom MCP servers" icon="wrench" href="/connectors/custom-mcp">
     Extend agents with new tools.

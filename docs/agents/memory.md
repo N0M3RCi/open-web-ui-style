@@ -1,6 +1,6 @@
 ---
 title: Agent Memory
-description: Understand the context Eigent uses today and the planned direction for persistent agent memory.
+description: Understand the context Nova uses today and the planned direction for persistent agent memory.
 icon: brain
 ---
 
@@ -10,7 +10,7 @@ The Agent Memory page is present in the Agents dashboard but is currently marked
 Do not rely on this page for persistent cross-project memory. The feature is not generally available in the current product.
 </Warning>
 
-## What Eigent remembers today
+## What Nova remembers today
 
 Current context can come from:
 

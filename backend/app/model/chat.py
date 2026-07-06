@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import json
 import logging
@@ -158,7 +158,7 @@ class Chat(BaseModel):
             return False
         return any(
             marker in self.api_url
-            for marker in ("eigent-proxy", "proxy.eigent.ai")
+            for marker in ("nova-proxy", "proxy.nova.ai")
         )
 
     def file_save_path(self, path: str | None = None):
@@ -175,14 +175,14 @@ class Chat(BaseModel):
         # Use project-based structure: project_{project_id}/task_{task_id}
         project_base = (
             Path.home()
-            / "eigent"
+            / "nova"
             / owner_key
             / f"project_{self.project_id}"
             / f"task_{run_id}"
         )
         legacy_project_base = (
             Path.home()
-            / "eigent"
+            / "nova"
             / legacy_owner_key
             / f"project_{self.project_id}"
             / f"task_{run_id}"
@@ -193,7 +193,7 @@ class Chat(BaseModel):
             and legacy_project_base.exists()
         ):
             # Bridge old installs whose artifacts were written under
-            # ~/eigent/{email_sanitized} before user_id-owned roots existed.
+            # ~/nova/{email_sanitized} before user_id-owned roots existed.
             project_base = legacy_project_base
         save_path = project_base / path if path is not None else project_base
         save_path.mkdir(parents=True, exist_ok=True)

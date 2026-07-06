@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 // Global test setup file
 import '@testing-library/jest-dom';
@@ -22,14 +22,14 @@ vi.mock('react-i18next', () => ({
     t: (key: string) => {
       // Map translation keys to English text
       const translations: Record<string, string> = {
-        'chat.welcome-to-eigent': 'Welcome to Eigent',
+        'chat.welcome-to-nova': 'Welcome to Nova',
         'chat.how-can-i-help-you': 'How can I help you today?',
         'chat.it-ticket-creation': 'IT Ticket Creation',
         'chat.bank-transfer-csv-analysis-and-visualization':
           'Bank Transfer CSV Analysis and Visualization',
         'chat.help-organize-my-desktop': 'Please Help Organize My Desktop',
         'setting.search-mcp': 'Search MCPs',
-        'chat.by-messaging-eigent': 'By messaging Eigent, you agree to our',
+        'chat.by-messaging-nova': 'By messaging Nova, you agree to our',
         'chat.terms-of-use': 'Terms of Use',
         'chat.and': 'and',
         'chat.privacy-policy': 'Privacy Policy',

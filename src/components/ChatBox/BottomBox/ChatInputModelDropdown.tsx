@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 /**
  * Default model picker for the chat input bar — same structure as Agents → Models.
@@ -18,7 +18,7 @@
  */
 
 import { proxyFetchGet } from '@/api/http';
-import folderIcon from '@/assets/logo/eigent_icon_rich.svg';
+import folderIcon from '@/assets/logo/nova_icon_rich.svg';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -466,7 +466,7 @@ export function ChatInputModelDropdown({
                 aria-hidden
               />
               <span className="min-w-0 text-body-sm flex-1 text-left">
-                {t('setting.eigent-cloud')}
+                {t('setting.nova-cloud')}
               </span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent

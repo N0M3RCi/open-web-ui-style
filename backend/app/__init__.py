@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import os
 
@@ -19,16 +19,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 
 # Initialize FastAPI with title
-api = FastAPI(title="Eigent Multi-Agent System API")
+api = FastAPI(title="Nova Multi-Agent System API")
 
 
 @api.get("/")
 def root():
     """Root endpoint - confirms this is the Brain backend."""
-    return {"service": "eigent-brain", "docs": "/docs", "health": "/health"}
+    return {"service": "nova-brain", "docs": "/docs", "health": "/health"}
 
 
-_cors_raw = os.environ.get("EIGENT_CORS_ORIGINS", "")
+_cors_raw = os.environ.get("NOVA_CORS_ORIGINS", "")
 _allowed_origins = [o.strip() for o in _cors_raw.split(",") if o.strip()]
 _default_frame_ancestors = [
     "'self'",

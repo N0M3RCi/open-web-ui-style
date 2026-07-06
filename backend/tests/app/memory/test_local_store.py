@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,11 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 """LocalMemoryStore acceptance tests (§25 of design doc).
 
-Exercises the M1 surface on a tmpdir root so no real ~/.eigent is touched.
+Exercises the M1 surface on a tmpdir root so no real ~/.nova is touched.
 """
 
 from __future__ import annotations
@@ -88,14 +88,14 @@ class TestLazyInit:
         LocalMemoryStore(root=empty)
         assert not empty.exists()
 
-    def test_root_defaults_to_home_eigent_memory(self):
+    def test_root_defaults_to_home_nova_memory(self):
         from pathlib import Path
 
         from app.memory import memory_root
 
         s = LocalMemoryStore()
         assert s.root == memory_root()
-        assert s.root == Path.home() / ".eigent" / "memory"
+        assert s.root == Path.home() / ".nova" / "memory"
 
 
 # ----- Space-level -----

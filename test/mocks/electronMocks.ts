@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { vi } from 'vitest';
 
@@ -29,7 +29,7 @@ export interface MockedElectronAPI {
     // Environment-related state
     envFileExists: boolean;
     envContent: string;
-    eigentDirExists: boolean;
+    novaDirExists: boolean;
     userEmail: string;
     mcpRemoteConfigExists: boolean;
     hasToken: boolean;
@@ -101,7 +101,7 @@ export function createElectronAPIMock(): MockedElectronAPI {
     envFileExists: true,
     envContent:
       'MOCK_VAR=mock_value\n# === MCP INTEGRATION ENV START ===\nMCP_KEY=test_value\n# === MCP INTEGRATION ENV END ===',
-    eigentDirExists: true,
+    novaDirExists: true,
     userEmail: 'test@example.com',
     mcpRemoteConfigExists: true,
     hasToken: true,
@@ -262,7 +262,7 @@ export function createElectronAPIMock(): MockedElectronAPI {
         .split('@')[0]
         .replace(/[\\/*?:"<>|\s]/g, '_')
         .replace('.', '_');
-      return `/mock/home/.eigent/.env.${sanitizedEmail}`;
+      return `/mock/home/.nova/.env.${sanitizedEmail}`;
     }),
 
     updateEnvBlock: vi
@@ -312,8 +312,8 @@ export function createElectronAPIMock(): MockedElectronAPI {
         .replace(/[\\/*?:"<>|\s]/g, '_')
         .replace('.', '_');
       return {
-        MCP_REMOTE_CONFIG_DIR: `/mock/home/.eigent/${sanitizedEmail}`,
-        MCP_CONFIG_DIR: '/mock/home/.eigent',
+        MCP_REMOTE_CONFIG_DIR: `/mock/home/.nova/${sanitizedEmail}`,
+        MCP_CONFIG_DIR: '/mock/home/.nova',
         tempEmail: sanitizedEmail,
         hasToken: mockState.hasToken,
       };
@@ -417,7 +417,7 @@ export function createElectronAPIMock(): MockedElectronAPI {
         envFileExists: true,
         envContent:
           'MOCK_VAR=mock_value\n# === MCP INTEGRATION ENV START ===\nMCP_KEY=test_value\n# === MCP INTEGRATION ENV END ===',
-        eigentDirExists: true,
+        novaDirExists: true,
         userEmail: 'test@example.com',
         mcpRemoteConfigExists: true,
         hasToken: true,

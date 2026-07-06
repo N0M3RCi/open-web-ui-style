@@ -1,6 +1,6 @@
 ---
 title: MiniMax
-description: This guide walks you through setting up your MiniMax API key within Eigent to enable the MiniMax model for your AI workforce.
+description: This guide walks you through setting up your MiniMax API key within Nova to enable the MiniMax model for your AI workforce.
 ---
 
 ### Prerequisites
@@ -13,7 +13,7 @@ description: This guide walks you through setting up your MiniMax API key within
 
 #### 1. Access Application Settings
 
-- Launch Eigent and navigate to the **Home Page**.
+- Launch Nova and navigate to the **Home Page**.
 - Click on the **Settings** tab (usually located in the sidebar or top
   navigation).
 
@@ -43,7 +43,7 @@ Click on the Minimax Config card and fill in the following fields:
 
 - Once saved, the **"Set as Default"** button on the Minimax Config card will be
   selected/active.
-- **You are ready to go.** Your Eigent agents can now utilize the Minimax model.
+- **You are ready to go.** Your Nova agents can now utilize the Minimax model.
 
 > **Screenshot placeholder:** Add a current screenshot for “Minimax 4 Pn”.
 

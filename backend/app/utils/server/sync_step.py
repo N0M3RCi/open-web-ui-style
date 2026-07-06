@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,15 +10,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 """
 Cloud sync step decorator.
 
 Syncs SSE step data to cloud server when SERVER_URL is configured.
 High-frequency events (decompose_text) are batched to reduce API calls.
 
-Config (~/.eigent/.env):
-    SERVER_URL=https://dev.eigent.ai/api/v1
+Config (~/.nova/.env):
+    SERVER_URL=https://dev.nova.ai/api/v1
 """
 
 import asyncio

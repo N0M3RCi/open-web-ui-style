@@ -10,7 +10,7 @@ Cookies can grant account access. Use a dedicated profile and remove sessions th
 
 ## Open Cookie management
 
-1. Open the Eigent dashboard.
+1. Open the Nova dashboard.
 2. Select **Browser**.
 3. Select **Cookies**.
 
@@ -23,8 +23,8 @@ The page groups cookie records by main domain and shows the total cookie count f
 1. Select **Open browser**.
 2. Sign in to the required websites.
 3. Close the login browser when finished.
-4. Wait for Eigent to refresh the cookie list.
-5. Restart Eigent when prompted.
+4. Wait for Nova to refresh the cookie list.
+5. Restart Nova when prompted.
 
 The restart makes the new cookie state available to browser automation.
 
@@ -40,13 +40,13 @@ Use refresh after completing another login or when the list appears stale.
 2. Select its delete action.
 3. Confirm the deletion.
 
-Eigent deletes cookies for the main domain and its listed subdomains.
+Nova deletes cookies for the main domain and its listed subdomains.
 
 ## Delete all cookies
 
 1. Select **Delete all**.
 2. Confirm the action.
-3. Restart Eigent when prompted.
+3. Restart Nova when prompted.
 
 This removes all browser cookie records managed by this feature.
 
@@ -68,11 +68,11 @@ Confirm that login completed, the login browser was closed, and the target site 
 
 ### A website still asks for login
 
-Restart Eigent, confirm the domain appears in the list, and check whether the website uses another domain or additional authentication.
+Restart Nova, confirm the domain appears in the list, and check whether the website uses another domain or additional authentication.
 
 ### Deleting cookies does not sign out immediately
 
-Restart Eigent and close other browser sessions. The service can also maintain server-side sessions until they expire or are revoked.
+Restart Nova and close other browser sessions. The service can also maintain server-side sessions until they expire or are revoked.
 
 ## Related guides
 

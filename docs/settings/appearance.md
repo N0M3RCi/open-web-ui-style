@@ -4,11 +4,11 @@ description: Customize color mode, themes, contrast, and workspace backgrounds.
 icon: palette
 ---
 
-Appearance settings control Eigent's color mode, theme palette, contrast, and Workspace background.
+Appearance settings control Nova's color mode, theme palette, contrast, and Workspace background.
 
 ## Open Appearance
 
-1. Open the Eigent dashboard.
+1. Open the Nova dashboard.
 2. Select **Settings**.
 3. Select **Appearance**.
 
@@ -28,7 +28,7 @@ System mode follows the operating-system appearance.
 
 Built-in theme families include:
 
-- Eigent
+- Nova
 - CAMEL
 - Claw
 - Starfish

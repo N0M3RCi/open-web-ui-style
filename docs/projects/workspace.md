@@ -32,7 +32,7 @@ Use **All sessions** to review more projects than the recent-session list shows.
 3. Attach required files.
 4. Select **Send**.
 
-Eigent creates a Project when no existing Project is selected.
+Nova creates a Project when no existing Project is selected.
 
 ## Use example prompts
 

@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 /** Display labels with only the first character capitalized. */
 export function capitalizeLabel(value: string): string {
@@ -106,7 +106,7 @@ export type HomeViewMode = 'grid' | 'list' | 'board';
 export type HomeSortBy = 'created' | 'updated' | 'name';
 export type HomeSortDirection = 'asc' | 'desc';
 
-const HOME_VIEW_MODE_STORAGE_KEY = 'eigent-home-hub-view-mode';
+const HOME_VIEW_MODE_STORAGE_KEY = 'nova-home-hub-view-mode';
 
 export function readStoredHomeViewMode(): HomeViewMode {
   if (typeof window === 'undefined') return 'grid';

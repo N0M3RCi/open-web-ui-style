@@ -1,10 +1,10 @@
 ---
 title: Dispatch and remote control
-description: Control an active Eigent Space from a shareable remote web session.
+description: Control an active Nova Space from a shareable remote web session.
 icon: tower-broadcast
 ---
 
-Dispatch provides channels for interacting with Eigent away from the desktop application.
+Dispatch provides channels for interacting with Nova away from the desktop application.
 
 The currently implemented channel is Remote Control. Telegram, Lark, and WhatsApp appear as future channels.
 
@@ -21,7 +21,7 @@ Remote Control requires an active Space because commands and desktop targets are
 
 1. In Dispatch, find **Remote Control**.
 2. Select **Start**.
-3. Wait for Eigent to create the session.
+3. Wait for Nova to create the session.
 4. Select **Copy link**.
 5. Open the link on the remote device.
 
@@ -79,7 +79,7 @@ Do not document these messaging channels as available until setup and connection
 
 ### Remote Control cannot start
 
-Open a Space and confirm the desktop can reach the Eigent server.
+Open a Space and confirm the desktop can reach the Nova server.
 
 ### The remote page is disconnected
 

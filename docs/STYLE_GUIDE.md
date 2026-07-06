@@ -1,4 +1,4 @@
-# Eigent Documentation Style Guide
+# Nova Documentation Style Guide
 
 Use this guide when writing or reviewing pages in `docs/`.
 

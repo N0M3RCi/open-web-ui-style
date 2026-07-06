@@ -2,7 +2,7 @@
   "$description": "Base color seeds and fixed role anchors for Design Tokens V2.",
   "themes": {
     "light": {
-      "eigent": {
+      "nova": {
         "accent": "#000000",
         "background": "#faf7f6",
         "ink": "#1d1d1d"
@@ -34,7 +34,7 @@
       }
     },
     "dark": {
-      "eigent": {
+      "nova": {
         "accent": "#ede1db",
         "background": "#1f1f1f",
         "ink": "#ffffff"

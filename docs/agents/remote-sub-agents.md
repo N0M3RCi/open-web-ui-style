@@ -1,10 +1,10 @@
 ---
 title: Remote sub-agents
-description: Connect a remote Gemini agent and delegate work from Eigent.
+description: Connect a remote Gemini agent and delegate work from Nova.
 icon: network-wired
 ---
 
-Remote sub-agents let Eigent delegate a unit of work to an externally hosted agent and poll for the result. Use them when another agent platform provides specialized capabilities or isolated execution.
+Remote sub-agents let Nova delegate a unit of work to an externally hosted agent and poll for the result. Use them when another agent platform provides specialized capabilities or isolated execution.
 
 The current interface supports a Gemini remote sub-agent provider.
 
@@ -22,7 +22,7 @@ Use a dedicated credential with the minimum required permissions.
 
 ## Open Sub-agents
 
-1. Open the Eigent dashboard.
+1. Open the Nova dashboard.
 2. Select **Agents**.
 3. Select **Sub-agents**.
 4. Select the Gemini provider.
@@ -38,23 +38,23 @@ Use a dedicated credential with the minimum required permissions.
 5. Set the polling interval in seconds.
 6. Select **Save**.
 
-Eigent validates the connection before saving an enabled provider.
+Nova validates the connection before saving an enabled provider.
 
 ## Enable the provider
 
 Use the provider switch to enable or disable delegation.
 
-When enabling an existing provider, Eigent validates required fields and the remote connection. If validation fails, the provider returns to its previous state.
+When enabling an existing provider, Nova validates required fields and the remote connection. If validation fails, the provider returns to its previous state.
 
 ## Choose timing values
 
 ### Maximum wall time
 
-Maximum wall time limits how long Eigent waits for the remote task to finish. Set it high enough for the expected work, but low enough to prevent indefinite jobs.
+Maximum wall time limits how long Nova waits for the remote task to finish. Set it high enough for the expected work, but low enough to prevent indefinite jobs.
 
 ### Poll interval
 
-Poll interval controls how frequently Eigent checks the remote task. Short intervals produce faster updates but increase request volume.
+Poll interval controls how frequently Nova checks the remote task. Short intervals produce faster updates but increase request volume.
 
 Start with conservative values and adjust them after observing typical task duration.
 

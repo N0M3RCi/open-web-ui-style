@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import axios from 'axios';
 import {
@@ -106,7 +106,7 @@ let cdp_browser_pool: CdpBrowser[] = [];
 let cdpLastAssignedPort = 9223; // tracks the highest port ever assigned, never decreases
 let cdpHealthCheckTimer: ReturnType<typeof setInterval> | null = null;
 
-const CDP_POOL_FILE = path.join(os.homedir(), '.eigent', 'cdp-browsers.json');
+const CDP_POOL_FILE = path.join(os.homedir(), '.nova', 'cdp-browsers.json');
 
 /** Persist pool to disk. */
 function saveCdpPool(): void {
@@ -324,9 +324,9 @@ let profileInitPromise: Promise<void>;
 
 // Set remote debugging port
 // Storage strategy:
-// 1. Main window: partition 'persist:main_window' in app userData → Eigent account (persistent)
+// 1. Main window: partition 'persist:main_window' in app userData → M3RCI - UniMind account (persistent)
 // 2. WebView: partition 'persist:user_login' in app userData → will import cookies from tool_controller via session API
-// 3. tool_controller: ~/.eigent/browser_profiles/profile_user_login → source of truth for login cookies
+// 3. tool_controller: ~/.nova/browser_profiles/profile_user_login → source of truth for login cookies
 // 4. CDP browser: uses separate profile (doesn't share with main app)
 profileInitPromise = findAvailablePort(browser_port).then(async (port) => {
   browser_port = port;
@@ -335,7 +335,7 @@ profileInitPromise = findAvailablePort(browser_port).then(async (port) => {
   // Create isolated profile for CDP browser only
   const browserProfilesBase = path.join(
     os.homedir(),
-    '.eigent',
+    '.nova',
     'browser_profiles'
   );
   const cdpProfile = path.join(browserProfilesBase, `cdp_profile_${port}`);
@@ -379,7 +379,7 @@ if (proxyUrl) {
 // Disable automation controlled indicator to avoid detection
 app.commandLine.appendSwitch('disable-blink-features', 'AutomationControlled');
 
-// Override User Agent to remove Electron/eigent identifiers
+// Override User Agent to remove Electron/nova identifiers
 // Dynamically generate User Agent based on actual platform and Chrome version
 const getPlatformUA = () => {
   // Use actual Chrome version from Electron instead of hardcoded value
@@ -440,16 +440,16 @@ if (!app.requestSingleInstanceLock()) {
 // ==================== protocol config ====================
 const setupProtocolHandlers = () => {
   if (process.env.NODE_ENV === 'development') {
-    const isDefault = app.isDefaultProtocolClient('eigent', process.execPath, [
+    const isDefault = app.isDefaultProtocolClient('nova', process.execPath, [
       path.resolve(process.argv[1]),
     ]);
     if (!isDefault) {
-      app.setAsDefaultProtocolClient('eigent', process.execPath, [
+      app.setAsDefaultProtocolClient('nova', process.execPath, [
         path.resolve(process.argv[1]),
       ]);
     }
   } else {
-    app.setAsDefaultProtocolClient('eigent');
+    app.setAsDefaultProtocolClient('nova');
   }
 };
 
@@ -547,8 +547,8 @@ function processQueuedProtocolUrls() {
 }
 
 // ==================== auth callback server ====================
-// Local HTTP server for receiving auth callbacks from external login (eigent.ai)
-// Works in both dev and production mode, avoids eigent:// protocol issues in dev
+// Local HTTP server for receiving auth callbacks from external login (nova.ai)
+// Works in both dev and production mode, avoids nova:// protocol issues in dev
 let authCallbackServer: http.Server | null = null;
 let authCallbackPort: number | null = null;
 
@@ -576,7 +576,7 @@ async function startAuthCallbackServer() {
         </style></head>
         <body><div class="container">
           <h1>Login Successful</h1>
-          <p>You can close this tab and return to Eigent.</p>
+          <p>You can close this tab and return to M3RCI - UniMind.</p>
         </div></body></html>
       `);
 
@@ -606,7 +606,7 @@ const setupSingleInstanceLock = () => {
   // to register the event handlers.
   app.on('second-instance', (event, argv) => {
     log.info('second-instance', argv);
-    const url = argv.find((arg) => arg.startsWith('eigent://'));
+    const url = argv.find((arg) => arg.startsWith('nova://'));
     if (url) handleProtocolUrl(url);
     if (win) win.show();
   });
@@ -1112,7 +1112,7 @@ function registerIpcHandlers() {
       const platform = process.platform;
       const arch = process.arch;
       const systemVersion = `${platform}-${arch}`;
-      const defaultFileName = `eigent-${appVersion}-${systemVersion}-${Date.now()}.log`;
+      const defaultFileName = `nova-${appVersion}-${systemVersion}-${Date.now()}.log`;
 
       // Show save dialog
       const { canceled, filePath } = await dialog.showSaveDialog({
@@ -1179,7 +1179,7 @@ function registerIpcHandlers() {
         const platform = process.platform;
         const arch = process.arch;
         const bugReportText = [
-          'Eigent bug report',
+          'M3RCI - UniMind bug report',
           '=================',
           '',
           `App version: ${appVersion}`,
@@ -1194,7 +1194,7 @@ function registerIpcHandlers() {
             : []),
         ].join('\n');
 
-        const defaultFileName = `eigent-diagnostics-${appVersion}-${Date.now()}.zip`;
+        const defaultFileName = `nova-diagnostics-${appVersion}-${Date.now()}.zip`;
         const { canceled, filePath } = await dialog.showSaveDialog({
           title: 'Save diagnostics',
           defaultPath: defaultFileName,
@@ -1792,7 +1792,7 @@ function registerIpcHandlers() {
     fs.writeFileSync(ENV_PATH, lines.join('\n'), 'utf-8');
 
     // Also write to global .env file for backend process to read
-    const GLOBAL_ENV_PATH = path.join(os.homedir(), '.eigent', '.env');
+    const GLOBAL_ENV_PATH = path.join(os.homedir(), '.nova', '.env');
     let globalContent = '';
     try {
       globalContent = fs.existsSync(GLOBAL_ENV_PATH)
@@ -1830,7 +1830,7 @@ function registerIpcHandlers() {
     log.info('env-remove success', ENV_PATH);
 
     // Also remove from global .env file
-    const GLOBAL_ENV_PATH = path.join(os.homedir(), '.eigent', '.env');
+    const GLOBAL_ENV_PATH = path.join(os.homedir(), '.nova', '.env');
     try {
       let globalContent = fs.existsSync(GLOBAL_ENV_PATH)
         ? fs.readFileSync(GLOBAL_ENV_PATH, 'utf-8')
@@ -2102,16 +2102,16 @@ function registerIpcHandlers() {
   registerUpdateIpcHandlers();
 }
 
-// ==================== ensure eigent directories ====================
-const ensureEigentDirectories = () => {
-  const eigentBase = path.join(os.homedir(), '.eigent');
+// ==================== ensure nova directories ====================
+const ensureMerciUniMindDirectories = () => {
+  const novaBase = path.join(os.homedir(), '.merci-unimind');
   const requiredDirs = [
-    eigentBase,
-    path.join(eigentBase, 'bin'),
-    path.join(eigentBase, 'cache'),
-    path.join(eigentBase, 'venvs'),
-    path.join(eigentBase, 'runtime'),
-    path.join(eigentBase, 'skills'),
+    novaBase,
+    path.join(novaBase, 'bin'),
+    path.join(novaBase, 'cache'),
+    path.join(novaBase, 'venvs'),
+    path.join(novaBase, 'runtime'),
+    path.join(novaBase, 'skills'),
   ];
 
   for (const dir of requiredDirs) {
@@ -2121,13 +2121,13 @@ const ensureEigentDirectories = () => {
     }
   }
 
-  log.info('.eigent directory structure ensured');
+  log.info('.nova directory structure ensured');
 };
 
 // ==================== skills (used at startup and by IPC) ====================
-const SKILLS_ROOT = path.join(os.homedir(), '.eigent', 'skills');
+const SKILLS_ROOT = path.join(os.homedir(), '.nova', 'skills');
 const SKILL_FILE = 'SKILL.md';
-const EXAMPLE_SKILL_MARKER = '.eigent-example-skill';
+const EXAMPLE_SKILL_MARKER = '.nova-example-skill';
 
 const getExampleSkillsSourceDir = (): string => {
   if (app.isPackaged) {
@@ -2278,7 +2278,7 @@ async function syncDefaultSkillsFromBundle(): Promise<void> {
   }
   if (copiedCount > 0 || updatedCount > 0) {
     log.info(
-      `Synced default skill(s) to ~/.eigent/skills: copied=${copiedCount} updated=${updatedCount} from`,
+      `Synced default skill(s) to ~/.nova/skills: copied=${copiedCount} updated=${updatedCount} from`,
       exampleDir
     );
   }
@@ -2312,8 +2312,8 @@ async function createWindow() {
   const isMac = process.platform === 'darwin';
   const isWindows = process.platform === 'win32';
 
-  // Ensure .eigent directories exist before anything else
-  ensureEigentDirectories();
+  // Ensure .nova directories exist before anything else
+  ensureMerciUniMindDirectories();
   await seedDefaultSkillsIfEmpty();
 
   // Load persisted CDP browser pool from disk
@@ -2336,7 +2336,7 @@ async function createWindow() {
   // Platform-specific window configuration
   // Windows: native frame and solid background. macOS/Linux: frameless; macOS corner radius via native hook.
   win = new BrowserWindow({
-    title: 'Eigent',
+    title: 'M3RCI - UniMind',
     width: 1280,
     height: 960,
     minWidth: 1100,
@@ -2440,7 +2440,7 @@ async function createWindow() {
   try {
     const browserProfilesBase = path.join(
       os.homedir(),
-      '.eigent',
+      '.nova',
       'browser_profiles'
     );
     const toolControllerProfile = path.join(
@@ -2851,7 +2851,7 @@ const checkAndStartBackend = async () => {
         },
         {
           ...codexResolverEnv,
-          EIGENT_EXAMPLE_SKILLS_DIR: exampleSkillsDir,
+          NOVA_EXAMPLE_SKILLS_DIR: exampleSkillsDir,
         }
       );
 

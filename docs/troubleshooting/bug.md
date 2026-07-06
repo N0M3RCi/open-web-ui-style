@@ -16,7 +16,7 @@ description: 'Follow these simple steps to report bugs and help improve our prod
 1. Click **Save diagnostics and open email**
 1. Choose where to save the **diagnostics ZIP** (it includes app logs and a `bug_report.txt` file)
 
-Your default email app opens addressed to **info@eigent.ai** with a pre-filled message.
+Your default email app opens addressed to **info@nova.ai** with a pre-filled message.
 
 ### Step 3: Send the email
 
@@ -27,7 +27,7 @@ Your default email app opens addressed to **info@eigent.ai** with a pre-filled m
 
 ### For English-speaking Users:
 
-- Join our **CAMEL-AI Discord** **🤖｜eigent** channel : https://discord.com/invite/CNcNpquyDc for bug discussions and community support
+- Join our **CAMEL-AI Discord** **🤖｜nova** channel : https://discord.com/invite/CNcNpquyDc for bug discussions and community support
 - Get direct assistance from our team and community members
 
 ### For Chinese-speaking Users:
@@ -39,7 +39,7 @@ Your default email app opens addressed to **info@eigent.ai** with a pre-filled m
 
 Developers and technical users are welcome to report issues directly through our GitHub issues:
 
-- **Repository URL**: https://github.com/eigent-ai/eigent
+- **Repository URL**: https://github.com/nova-ai/nova
 - Submit detailed issues with reproduction steps
 
 **Optional:** In the same **Report a bug** dialog, use **Download logs** to save a single log file (without the full diagnostics ZIP).

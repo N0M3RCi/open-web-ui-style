@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import asyncio
 import inspect
@@ -70,7 +70,7 @@ def _get_login_browser_cdp_port() -> int:
     Keep this outside the Browser Agent fallback range (9223-9299), otherwise
     Cookie Management can mistake a managed task browser for the login window.
     """
-    raw_port = os.environ.get("EIGENT_LOGIN_BROWSER_CDP_PORT")
+    raw_port = os.environ.get("NOVA_LOGIN_BROWSER_CDP_PORT")
     if not raw_port:
         return DEFAULT_LOGIN_BROWSER_CDP_PORT
 
@@ -78,7 +78,7 @@ def _get_login_browser_cdp_port() -> int:
         port = int(raw_port)
     except ValueError:
         logger.warning(
-            "Invalid EIGENT_LOGIN_BROWSER_CDP_PORT=%s; using default %s",
+            "Invalid NOVA_LOGIN_BROWSER_CDP_PORT=%s; using default %s",
             raw_port,
             DEFAULT_LOGIN_BROWSER_CDP_PORT,
         )
@@ -86,7 +86,7 @@ def _get_login_browser_cdp_port() -> int:
 
     if port <= 0 or port > 65535:
         logger.warning(
-            "Out-of-range EIGENT_LOGIN_BROWSER_CDP_PORT=%s; using default %s",
+            "Out-of-range NOVA_LOGIN_BROWSER_CDP_PORT=%s; using default %s",
             raw_port,
             DEFAULT_LOGIN_BROWSER_CDP_PORT,
         )
@@ -702,7 +702,7 @@ async def uninstall_tool(tool: str):
             token_dirs.add(
                 os.path.join(
                     os.path.expanduser("~"),
-                    ".eigent",
+                    ".nova",
                     "tokens",
                     "google_calendar",
                 )
@@ -911,10 +911,10 @@ async def open_browser_login():
 
         # IMPORTANT: Use dedicated profile for tool_controller browser
         # This is the SOURCE OF TRUTH for login data
-        # On Eigent startup, this data will be copied
+        # On Nova startup, this data will be copied
         # to WebView partition (one-way sync)
         browser_profiles_base = os.path.expanduser(
-            "~/.eigent/browser_profiles"
+            "~/.nova/browser_profiles"
         )
         user_data_dir = os.path.join(
             browser_profiles_base, "profile_user_login"
@@ -956,9 +956,9 @@ async def open_browser_login():
         # invoke via cmd.exe.
         npx_cmd = None
         if os.name == "nt":
-            eigent_npx = os.path.expanduser("~/.eigent/bin/npx.cmd")
-            if os.path.exists(eigent_npx):
-                npx_cmd = eigent_npx
+            nova_npx = os.path.expanduser("~/.nova/bin/npx.cmd")
+            if os.path.exists(nova_npx):
+                npx_cmd = nova_npx
         if not npx_cmd:
             npx_cmd = shutil.which("npx") or shutil.which("npx.cmd")
         if not npx_cmd:
@@ -997,11 +997,11 @@ async def open_browser_login():
         logger.info(f"[PROFILE USER LOGIN] userData path: {user_data_dir}")
         logger.info(f"[PROFILE USER LOGIN] Electron args: {electron_args}")
 
-        # Ensure ~/.eigent/bin is on PATH for the spawned process
+        # Ensure ~/.nova/bin is on PATH for the spawned process
         env = os.environ.copy()
-        eigent_bin = os.path.expanduser("~/.eigent/bin")
-        if os.path.isdir(eigent_bin):
-            env["PATH"] = eigent_bin + os.pathsep + env.get("PATH", "")
+        nova_bin = os.path.expanduser("~/.nova/bin")
+        if os.path.isdir(nova_bin):
+            env["PATH"] = nova_bin + os.pathsep + env.get("PATH", "")
 
         # Start process and capture output in real-time
         process = subprocess.Popen(
@@ -1079,7 +1079,7 @@ async def list_cookie_domains(search: str = None):
     """
     try:
         # Use tool_controller browser's user data directory (source of truth)
-        user_data_base = os.path.expanduser("~/.eigent/browser_profiles")
+        user_data_base = os.path.expanduser("~/.nova/browser_profiles")
         user_data_dir = os.path.join(user_data_base, "profile_user_login")
 
         logger.info(
@@ -1174,7 +1174,7 @@ async def get_domain_cookies(domain: str):
         cookies
     """
     try:
-        user_data_base = os.path.expanduser("~/.eigent/browser_profiles")
+        user_data_base = os.path.expanduser("~/.nova/browser_profiles")
         user_data_dir = os.path.join(user_data_base, "profile_user_login")
 
         if not os.path.exists(user_data_dir):
@@ -1221,7 +1221,7 @@ async def delete_domain_cookies(domain: str):
         deleted cookies
     """
     try:
-        user_data_base = os.path.expanduser("~/.eigent/browser_profiles")
+        user_data_base = os.path.expanduser("~/.nova/browser_profiles")
         user_data_dir = os.path.join(user_data_base, "profile_user_login")
 
         if not os.path.exists(user_data_dir):
@@ -1269,7 +1269,7 @@ async def delete_all_cookies():
         deleted cookies
     """
     try:
-        user_data_base = os.path.expanduser("~/.eigent/browser_profiles")
+        user_data_base = os.path.expanduser("~/.nova/browser_profiles")
         user_data_dir = os.path.join(user_data_base, "profile_user_login")
 
         if not os.path.exists(user_data_dir):

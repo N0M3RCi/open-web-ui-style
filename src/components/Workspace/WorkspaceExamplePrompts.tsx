@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { useTranslation } from 'react-i18next';
 
@@ -30,7 +30,7 @@ const WORKSPACE_EXAMPLE_PROMPTS: readonly {
     titleDefault: 'Help me complete an online form',
     messageKey: 'layout.it-ticket-creation-message',
     messageDefault:
-      'Access the ticket management system at https://eiti.eigent.ai/ and add a new ticket into our system with Browser Agent:\n\nAffected User: Alice Johnson\nAssignment Group: Software Services Team\nAssigned To: Michael Brown\nPriority: 4 – Low | Urgency: 3 – Medium | Impact: 4 – Low\nAffected Service: Software Services\nIssue: Application Performance Degradation\nDescription:\nThe affected user reports slow response times and intermittent timeouts when accessing internal software applications during normal business hours.\n\nOnce done, navigate to the "In Progress" tickets list view and extract the visible ticket data from the list (Number, User, Priority, State, Issue columns). Use browser console JavaScript to capture the table data if no export button is available. Save the extracted data as a CSV file.\n\nFinally, generate a statistical report based on the extracted data:\n1. Analyze ticket distribution by Priority level (Critical/High/Moderate/Low)\n2. Parse any dollar amounts mentioned in the Issue text (e.g., "$50M", "$3.2M") as estimated financial impact\n3. Create an HTML report with bar charts showing:\n   - Ticket count by Priority\n   - Estimated financial impact by Priority (parsed from Issue text)\nInclude a "Data Notes" section explaining that financial impact values were parsed from Issue description text since no dedicated financial field exists in the system.',
+      'Access the ticket management system at https://eiti.nova.ai/ and add a new ticket into our system with Browser Agent:\n\nAffected User: Alice Johnson\nAssignment Group: Software Services Team\nAssigned To: Michael Brown\nPriority: 4 – Low | Urgency: 3 – Medium | Impact: 4 – Low\nAffected Service: Software Services\nIssue: Application Performance Degradation\nDescription:\nThe affected user reports slow response times and intermittent timeouts when accessing internal software applications during normal business hours.\n\nOnce done, navigate to the "In Progress" tickets list view and extract the visible ticket data from the list (Number, User, Priority, State, Issue columns). Use browser console JavaScript to capture the table data if no export button is available. Save the extracted data as a CSV file.\n\nFinally, generate a statistical report based on the extracted data:\n1. Analyze ticket distribution by Priority level (Critical/High/Moderate/Low)\n2. Parse any dollar amounts mentioned in the Issue text (e.g., "$50M", "$3.2M") as estimated financial impact\n3. Create an HTML report with bar charts showing:\n   - Ticket count by Priority\n   - Estimated financial impact by Priority (parsed from Issue text)\nInclude a "Data Notes" section explaining that financial impact values were parsed from Issue description text since no dedicated financial field exists in the system.',
   },
   {
     id: 'bank-transfer-csv-analysis',

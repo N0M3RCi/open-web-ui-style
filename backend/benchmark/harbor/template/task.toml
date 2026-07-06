@@ -1,11 +1,11 @@
 version = "1.0"
 
 [metadata]
-author_name = "eigent-ai"
+author_name = "nova-ai"
 difficulty = "{difficulty}"
 category = "agent_benchmark"
 tags = [{tags}]
-source = "eigent-bench"
+source = "nova-bench"
 
 [verifier]
 timeout_sec = 120.0

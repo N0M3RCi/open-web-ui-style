@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 // Comprehensive unit tests for Terminal component
 // Polyfill canvas getContext so @xterm/xterm doesn't throw in jsdom
@@ -239,7 +239,7 @@ describe('Terminal Component', async () => {
             .flat()
             .map(String);
           const joined = calls.join('\n');
-          expect(joined).toContain('=== Eigent Terminal ===');
+          expect(joined).toContain('=== Nova Terminal ===');
           expect(joined).toContain('Instance: test-instance');
           expect(joined).toContain('Ready for commands...');
         },
@@ -258,7 +258,7 @@ describe('Terminal Component', async () => {
       const welcomeCalls = (mockTerminal.writeln as any).mock.calls
         .flat()
         .map(String)
-        .filter((c: string) => c.includes('=== Eigent Terminal ==='));
+        .filter((c: string) => c.includes('=== Nova Terminal ==='));
       expect(welcomeCalls).toHaveLength(0);
     });
 
@@ -296,7 +296,7 @@ describe('Terminal Component', async () => {
         const calls = (mockTerminal.writeln as any).mock.calls
           .flat()
           .map(String);
-        const found = calls.some((c) => c.includes('[Eigent]'));
+        const found = calls.some((c) => c.includes('[Nova]'));
         expect(found).toBe(true);
       });
     });
@@ -357,7 +357,7 @@ describe('Terminal Component', async () => {
       keyHandler(mockEvent);
 
       expect(mockTerminal.writeln).toHaveBeenCalledWith('');
-      expect(mockTerminal.write).toHaveBeenCalledWith('Eigent:~$ ');
+      expect(mockTerminal.write).toHaveBeenCalledWith('Nova:~$ ');
     });
 
     it('should handle Backspace key to delete character', () => {

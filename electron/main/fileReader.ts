@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { BrowserWindow, app } from 'electron';
 import fs from 'fs';
@@ -658,7 +658,7 @@ export class FileReader {
 
   private findProjectTaskPath(
     userHome: string,
-    rootDir: 'eigent' | '.eigent',
+    rootDir: 'nova' | '.nova',
     identities: string[],
     projectId: string,
     taskId: string
@@ -725,14 +725,14 @@ export class FileReader {
       dirPath =
         this.findProjectTaskPath(
           userHome,
-          'eigent',
+          'nova',
           identities,
           projectId,
           taskId
         ) ||
         path.join(
           userHome,
-          'eigent',
+          'nova',
           safeEmail,
           `project_${projectId}`,
           `task_${taskId}`
@@ -740,14 +740,14 @@ export class FileReader {
       logPath =
         this.findProjectTaskPath(
           userHome,
-          '.eigent',
+          '.nova',
           identities,
           projectId,
           taskId
         ) ||
         path.join(
           userHome,
-          '.eigent',
+          '.nova',
           safeEmail,
           `project_${projectId}`,
           `task_${taskId}`
@@ -755,7 +755,7 @@ export class FileReader {
       return { dirPath, logPath };
     }
 
-    const userDir = path.join(userHome, 'eigent', safeEmail);
+    const userDir = path.join(userHome, 'nova', safeEmail);
     const projectBasedPath = this.findTaskInProjects(userDir, taskId);
 
     if (projectBasedPath) {
@@ -764,19 +764,19 @@ export class FileReader {
       if (projectMatch) {
         logPath = path.join(
           userHome,
-          '.eigent',
+          '.nova',
           safeEmail,
           projectMatch[0],
           `task_${taskId}`
         );
       } else {
-        logPath = path.join(userHome, '.eigent', safeEmail, `task_${taskId}`);
+        logPath = path.join(userHome, '.nova', safeEmail, `task_${taskId}`);
       }
       return { dirPath, logPath };
     }
 
-    dirPath = path.join(userHome, 'eigent', safeEmail, `task_${taskId}`);
-    logPath = path.join(userHome, '.eigent', safeEmail, `task_${taskId}`);
+    dirPath = path.join(userHome, 'nova', safeEmail, `task_${taskId}`);
+    logPath = path.join(userHome, '.nova', safeEmail, `task_${taskId}`);
     return { dirPath, logPath };
   }
 
@@ -856,7 +856,7 @@ export class FileReader {
       .replace(/[\\/*?:"<>|\s]/g, '_')
       .replace(/^\.+|\.+$/g, '');
     const userHome = app.getPath('home');
-    const dirPath = path.join(userHome, 'eigent', safeEmail);
+    const dirPath = path.join(userHome, 'nova', safeEmail);
 
     try {
       if (!fs.existsSync(dirPath)) {
@@ -881,7 +881,7 @@ export class FileReader {
     const userHome = app.getPath('home');
     const projectPath = path.join(
       userHome,
-      'eigent',
+      'nova',
       safeEmail,
       `project_${projectId}`
     );
@@ -909,7 +909,7 @@ export class FileReader {
       .replace(/[\\/*?:"<>|\s]/g, '_')
       .replace(/^\.+|\.+$/g, '');
     const userHome = app.getPath('home');
-    const userDir = path.join(userHome, 'eigent', safeEmail);
+    const userDir = path.join(userHome, 'nova', safeEmail);
 
     try {
       if (!fs.existsSync(userDir)) {
@@ -967,7 +967,7 @@ export class FileReader {
     const userHome = app.getPath('home');
     const projectPath = path.join(
       userHome,
-      'eigent',
+      'nova',
       safeEmail,
       `project_${projectId}`
     );
@@ -1026,13 +1026,13 @@ export class FileReader {
     // Source path (legacy structure)
     const sourcePath = path.join(
       userHome,
-      'eigent',
+      'nova',
       safeEmail,
       `task_${taskId}`
     );
     const sourceLogPath = path.join(
       userHome,
-      '.eigent',
+      '.nova',
       safeEmail,
       `task_${taskId}`
     );
@@ -1040,14 +1040,14 @@ export class FileReader {
     // Destination paths (project structure)
     const projectPath = path.join(
       userHome,
-      'eigent',
+      'nova',
       safeEmail,
       `project_${projectId}`
     );
     const destPath = path.join(projectPath, `task_${taskId}`);
     const destLogPath = path.join(
       userHome,
-      '.eigent',
+      '.nova',
       safeEmail,
       `project_${projectId}`,
       `task_${taskId}`
@@ -1093,7 +1093,7 @@ export class FileReader {
     const userHome = app.getPath('home');
     const projectPath = path.join(
       userHome,
-      'eigent',
+      'nova',
       safeEmail,
       `project_${projectId}`
     );

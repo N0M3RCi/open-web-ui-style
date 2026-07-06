@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,11 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 """Local filesystem-backed memory store (§22.1 of design doc).
 
-Owns ~/.eigent/memory/users/<owner>/... layout. All small JSON files are
+Owns ~/.nova/memory/users/<owner>/... layout. All small JSON files are
 written atomically (tmp + os.replace). Append-only *.jsonl files are protected
 by a per-path threading.Lock so concurrent writers in the same Brain process
 do not interleave lines (cross-process writes are out of scope -- single Brain
@@ -213,7 +213,7 @@ class LocalMemoryStore:
 
     Construction is cheap and does NOT touch the filesystem -- writes lazily
     create the directory tree on demand. Pass a custom `root` to redirect the
-    whole tree for tests; default is `~/.eigent/memory`.
+    whole tree for tests; default is `~/.nova/memory`.
     """
 
     def __init__(self, root: Path | None = None) -> None:

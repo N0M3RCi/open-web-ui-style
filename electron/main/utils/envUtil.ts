@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import fs from 'fs';
 import os from 'os';
@@ -24,14 +24,14 @@ export function getEnvPath(email: string) {
     .split('@')[0]
     .replace(/[\\/*?:"<>|\s]/g, '_')
     .replace('.', '_');
-  const eigentDir = path.join(os.homedir(), '.eigent');
+  const novaDir = path.join(os.homedir(), '.nova');
 
-  // Ensure .eigent directory exists
-  if (!fs.existsSync(eigentDir)) {
-    fs.mkdirSync(eigentDir, { recursive: true });
+  // Ensure .nova directory exists
+  if (!fs.existsSync(novaDir)) {
+    fs.mkdirSync(novaDir, { recursive: true });
   }
 
-  const envPath = path.join(eigentDir, '.env.' + tempEmail);
+  const envPath = path.join(novaDir, '.env.' + tempEmail);
   const defaultEnv = path.join(process.resourcesPath, 'backend', '.env');
   if (!fs.existsSync(envPath) && fs.existsSync(defaultEnv)) {
     fs.copyFileSync(defaultEnv, envPath);
@@ -89,11 +89,11 @@ export function removeEnvKey(lines: string[], key: string) {
 }
 
 /**
- * Read the value of a key from the global ~/.eigent/.env file.
+ * Read the value of a key from the global ~/.nova/.env file.
  */
 export function readGlobalEnvKey(key: string): string | null {
   try {
-    const globalEnvPath = path.join(os.homedir(), '.eigent', '.env');
+    const globalEnvPath = path.join(os.homedir(), '.nova', '.env');
     if (!fs.existsSync(globalEnvPath)) return null;
     const content = fs.readFileSync(globalEnvPath, 'utf-8');
     const prefix = key + '=';
@@ -139,7 +139,7 @@ export function getEmailFolderPath(email: string) {
     .split('@')[0]
     .replace(/[\\/*?:"<>|\s]/g, '_')
     .replace('.', '_');
-  const MCP_CONFIG_DIR = path.join(os.homedir(), '.eigent');
+  const MCP_CONFIG_DIR = path.join(os.homedir(), '.nova');
   const MCP_REMOTE_CONFIG_DIR = path.join(MCP_CONFIG_DIR, tempEmail);
   if (!fs.existsSync(MCP_REMOTE_CONFIG_DIR)) {
     fs.mkdirSync(MCP_REMOTE_CONFIG_DIR, { recursive: true });

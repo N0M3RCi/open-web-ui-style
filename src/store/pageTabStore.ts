@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
@@ -86,7 +86,7 @@ interface PageTabState {
   ) => void;
   /**
    * Optional absolute path override for the agent folder (per project).
-   * When unset for a project, the default Eigent project folder is used.
+   * When unset for a project, the default Nova project folder is used.
    */
   customAgentFolderPathByProjectId: Record<string, string>;
   setProjectCustomAgentFolderPath: (
@@ -346,7 +346,7 @@ export const usePageTabStore = create<PageTabState>()(
         set((state) => ({ filePreviewOpen: !state.filePreviewOpen })),
     }),
     {
-      name: 'eigent-page-tab',
+      name: 'nova-page-tab',
       version: 1,
       // v1: Project.mode becomes the source of truth. Drop the legacy global
       // sessionSidePanelMode so mode no longer drifts between Projects.
