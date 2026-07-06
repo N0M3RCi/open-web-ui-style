@@ -179,4 +179,4 @@ export async function applyDefaultModelSelection(
 
 /** Settings route when the user must finish configuring a provider first. */
 export const DEFAULT_MODEL_CONFIGURE_PATH =
-  '/history?tab=agents&section=models';
+  '/history?tab=settings&subtab=models';
