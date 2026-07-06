@@ -13,8 +13,8 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 /**
- * Default model picker for the chat input bar — same structure as Agents → Models.
- * Configured models switch inline; unconfigured options open Agents → Models.
+ * Default model picker for the chat input bar — reads providers configured in Settings → Models.
+ * Configured models switch inline; unconfigured options open Settings → Models.
  */
 
 import { proxyFetchGet } from '@/api/http';

@@ -1490,7 +1490,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
         if (!provider) {
           finishStartupFailure();
           throw new Error(
-            'No model provider configured. Please go to Agents > Models and configure at least one model provider as default.'
+            'No model provider configured. Please go to Settings > Models and configure at least one model provider as default.'
           );
         }
 
@@ -1514,7 +1514,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
         if (!resolvedCloudModel) {
           finishStartupFailure();
           throw new Error(
-            'Failed to resolve cloud model. Please try again or choose another model in Agents > Models.'
+            'Failed to resolve cloud model. Please try again or choose another model in Settings > Models.'
           );
         }
         if (
