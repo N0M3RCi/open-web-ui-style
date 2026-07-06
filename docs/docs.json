@@ -1,12 +1,12 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Nova Documentation",
+  "name": "M3RCI - UniMind Documentation",
   "theme": "aspen",
   "defaultPage": "/get_started/welcome",
   "logo": {
     "light": "/images/logo-light.png",
     "dark": "/images/logo-dark.png",
-    "href": "https://www.nova.ai"
+    "href": "https://github.com/N0M3RCi/open-web-ui-style"
   },
   "favicon": "images/favicon.png",
   "colors": {
@@ -25,13 +25,13 @@
       {
         "icon": "github",
         "label": "GitHub",
-        "href": "https://github.com/nova-ai/nova"
+        "href": "https://github.com/N0M3RCi/open-web-ui-style"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Download",
-      "href": "https://www.nova.ai/download"
+      "href": "https://github.com/N0M3RCi/open-web-ui-style/releases"
     }
   },
   "navigation": {
@@ -163,13 +163,13 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Download Nova",
-          "href": "https://www.nova.ai/download",
+          "anchor": "Download M3RCI",
+          "href": "https://github.com/N0M3RCi/open-web-ui-style/releases",
           "icon": "download"
         },
         {
           "anchor": "GitHub",
-          "href": "https://github.com/nova-ai/nova",
+          "href": "https://github.com/N0M3RCi/open-web-ui-style",
           "icon": "github"
         }
       ]
@@ -178,8 +178,8 @@
   "footer": {
     "socials": {
       "github": "https://github.com/nova-ai/nova",
-      "twitter": "https://x.com/Nova-AI",
-      "linkedin": "https://www.linkedin.com/company/nova-ai/"
+      "twitter": "https://x.com/N0M3RCi",
+      "linkedin": "https://www.linkedin.com/company/merci-unimind"
     }
   }
 }
