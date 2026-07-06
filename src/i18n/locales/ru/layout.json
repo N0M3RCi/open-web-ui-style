@@ -162,6 +162,7 @@
   "back": "Назад",
   "forward": "Вперёд",
   "developer-agent": "Агент разработчика",
+  "browser-agent": "Агент браузера",
   "document-agent": "Агент документов",
   "multi-modal-agent": "Мультимодальный агент",
   "social-media-agent": "Агент социальных сетей",

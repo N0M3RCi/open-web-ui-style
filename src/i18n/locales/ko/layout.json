@@ -162,6 +162,7 @@
   "back": "뒤로",
   "forward": "앞으로",
   "developer-agent": "개발자 에이전트",
+  "browser-agent": "브라우저 에이전트",
   "document-agent": "문서 에이전트",
   "multi-modal-agent": "멀티모달 에이전트",
   "social-media-agent": "소셜미디어 에이전트",
