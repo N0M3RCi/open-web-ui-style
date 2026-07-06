@@ -23,7 +23,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { INIT_PROVODERS } from '@/lib/llm';
-import { fetchProviderModels } from '@/lib/providerModels';
 import type { Provider } from '@/types';
 import {
   Check,
@@ -194,16 +193,29 @@ export default function Models() {
     setSelectedModel('');
 
     try {
-      const groups = await fetchProviderModels(apiHost, '/v1/models', apiKey);
-      // Flatten groups into a simple model list
-      const modelList = groups.flatMap((g) => g.models);
-      setModels(modelList);
+      // Build the models URL: strip trailing slash from host, append /models
+      const baseHost = apiHost.replace(/\/+$/, '');
+      const modelsUrl = `${baseHost}/models`;
 
-      if (modelList.length === 0) {
+      // Fetch models through the backend proxy to avoid CORS
+      const payload = await proxyFetchGet(
+        `/api/v1/providers/models/fetch?url=${encodeURIComponent(modelsUrl)}&api_key=${encodeURIComponent(apiKey)}`
+      );
+
+      // Handle both { data: [...] } and [...] response formats
+      const rawModels: { id: string }[] = Array.isArray(payload?.data)
+        ? payload.data
+        : Array.isArray(payload)
+          ? payload
+          : [];
+
+      setModels(rawModels);
+
+      if (rawModels.length === 0) {
         toast.error('No models found at this endpoint');
       } else {
         toast.success(
-          `Found ${modelList.length} model${modelList.length > 1 ? 's' : ''}`
+          `Found ${rawModels.length} model${rawModels.length > 1 ? 's' : ''}`
         );
       }
     } catch (err: any) {

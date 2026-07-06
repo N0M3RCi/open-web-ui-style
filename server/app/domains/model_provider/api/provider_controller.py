@@ -83,6 +83,28 @@ async def invalidate(id: int, auth: V1UserAuth = Depends(auth_must)):
     return {"success": True}
 
 
+@router.get("/providers/models/fetch", name="fetch models from provider API")
+async def fetch_models(
+    url: str = Query(..., description="Full models endpoint URL to fetch from"),
+    api_key: str = Query(..., description="API key for Bearer auth"),
+    auth: V1UserAuth = Depends(auth_must),
+):
+    """Proxy: fetch model list from an external OpenAI-compatible /models endpoint.
+    Avoids CORS issues by routing the request through the backend server.
+    """
+    import httpx
+
+    headers = {"Authorization": f"Bearer {api_key}", "Accept": "application/json"}
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        resp = await client.get(url, headers=headers)
+    if not resp.is_success:
+        raise HTTPException(
+            status_code=resp.status_code,
+            detail=f"Upstream returned {resp.status_code}: {resp.text[:500]}",
+        )
+    return resp.json()
+
+
 @router.post("/provider/prefer", name="set provider prefer")
 async def set_prefer(data: ProviderPreferIn, auth: V1UserAuth = Depends(auth_must)):
     result = ProviderService.set_prefer(data.provider_id, auth.id)
