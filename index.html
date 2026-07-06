@@ -4,6 +4,21 @@
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script>
+			// Polyfill crypto.randomUUID for non-HTTPS contexts
+			if (!crypto.randomUUID) {
+				crypto.randomUUID = function () {
+					return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+						/[xy]/g,
+						function (c) {
+							var r = (Math.random() * 16) | 0,
+								v = c == 'x' ? r : (r & 0x3) | 0x8;
+							return v.toString(16);
+						}
+					);
+				};
+			}
+		</script>
 		<!-- Content Security Policy: CDN allowlist for agent-generated HTML -->
 		<meta
 			http-equiv="Content-Security-Policy"
