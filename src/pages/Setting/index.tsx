@@ -25,6 +25,7 @@ import Appearance from '@/pages/Setting/Appearance';
 import General from '@/pages/Setting/General';
 import Models from '@/pages/Setting/Models';
 import Privacy from '@/pages/Setting/Privacy';
+import AdminUsers from '@/pages/AdminUsers';
 import { useAuthStore } from '@/store/authStore';
 import {
   Brain,
@@ -129,10 +130,6 @@ export default function Setting() {
 
   // Switch tabs locally and update the URL so the tab is preserved on remount
   const handleTabChange = (tabId: string) => {
-    if (tabId === 'admin') {
-      navigate('/admin/users');
-      return;
-    }
     setActiveTab(tabId);
     // Update the URL subtab parameter so the correct tab is picked up on mount
     navigate(`?tab=settings&subtab=${tabId}`, { replace: true });
@@ -228,6 +225,7 @@ export default function Setting() {
           {activeTab === 'appearance' && <Appearance />}
           {activeTab === 'models' && <Models />}
           {activeTab === 'privacy' && <Privacy />}
+          {activeTab === 'admin' && <AdminUsers />}
         </div>
       </div>
     </div>
