@@ -56,7 +56,13 @@ import { usePageTabStore } from './pageTabStore';
 import { useProjectStore } from './projectStore';
 import { legacySpaceIdForUser, useSpaceStore } from './spaceStore';
 
-import { API_CODE_TRIAL_LIMIT, hasApiCode } from './chatStoreTypes';
+import {
+  API_CODE_TRIAL_LIMIT,
+  hasApiCode,
+  PROJECT_CONTEXT_MAX_CHARS,
+  PROJECT_CONTEXT_MAX_RUNS,
+  resolveConfirmedUserMessageContent,
+} from './chatStoreTypes';
 
 let _host: AppHost | null = null;
 
