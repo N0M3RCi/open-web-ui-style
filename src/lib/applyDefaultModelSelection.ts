@@ -13,7 +13,7 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 /**
- * Shared default-model selection logic (mirrors Agents → Models) for in-app
+ * Shared default-model selection logic (now in Settings → Models) for in-app
  * switching e.g. chat input without navigating to settings when already configured.
  */
 

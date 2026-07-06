@@ -546,8 +546,15 @@ export function useExecutionSubscription(enabled: boolean = true) {
     stopPingInterval();
 
     if (wsRef.current) {
-      debug('[ExecutionSubscription] Disconnecting...');
-      wsRef.current.close(1000, 'Client disconnect'); // Normal closure
+      // Only close if not in CONNECTING state to avoid browser error
+      if (wsRef.current.readyState !== WebSocket.CONNECTING) {
+        debug('[ExecutionSubscription] Disconnecting...');
+        wsRef.current.close(1000, 'Client disconnect'); // Normal closure
+      } else {
+        debug(
+          '[ExecutionSubscription] WebSocket still connecting, skipping close'
+        );
+      }
       wsRef.current = null;
     }
 
