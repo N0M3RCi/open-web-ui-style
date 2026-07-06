@@ -30,12 +30,14 @@ describe('loginUtils', () => {
   });
 
   it('keeps the desktop callback URL on the custom protocol', () => {
-    expect(DESKTOP_LOGIN_CALLBACK_URL).toBe('eigent://auth/callback');
+    expect(DESKTOP_LOGIN_CALLBACK_URL).toBe('app://auth/callback');
   });
 
   it('encodes the external login callback URL correctly', () => {
-    expect(getExternalLoginUrl('http://localhost:5173/login?from=web')).toBe(
-      'https://www.eigent.ai/signin?callbackUrl=http%3A%2F%2Flocalhost%3A5173%2Flogin%3Ffrom%3Dweb'
+    const origin = window.location.origin;
+    const url = getExternalLoginUrl('http://localhost:5173/login?from=web');
+    expect(url).toBe(
+      `${origin}/signin?callbackUrl=http%3A%2F%2Flocalhost%3A5173%2Flogin%3Ffrom%3Dweb`
     );
   });
 });

@@ -12,8 +12,7 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
 
-export const SITE_URL =
-  import.meta.env.VITE_SITE_URL || 'https://www.eigent.ai';
+export const SITE_URL = import.meta.env.VITE_SITE_URL || '';
 
 export function getProxyBaseURL() {
   const isDev = import.meta.env.DEV;
@@ -71,14 +70,6 @@ export function debounce<T extends (...args: any[]) => void>(
 export function capitalizeFirstLetter(input: string): string {
   if (input.length === 0) return input;
   return input.charAt(0).toUpperCase() + input.slice(1);
-}
-
-export function hasStackKeys() {
-  return (
-    import.meta.env.VITE_STACK_PROJECT_ID &&
-    import.meta.env.VITE_STACK_PUBLISHABLE_CLIENT_KEY &&
-    import.meta.env.VITE_STACK_SECRET_SERVER_KEY
-  );
 }
 
 // Re-export replay utilities

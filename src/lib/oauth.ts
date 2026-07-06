@@ -22,7 +22,8 @@ const getElectronAPI = () => createHost().electronAPI;
 
 export class OAuth {
   public client_name: string = 'Eigent';
-  public client_uri: string = 'https://eigent.ai/';
+  public client_uri: string =
+    import.meta.env.VITE_SITE_URL || window.location.origin;
   public redirect_uris: string[] = [];
 
   public url: string = '';
@@ -48,9 +49,8 @@ export class OAuth {
 
     this.url = mcp.url;
     this.provider = mcp.provider;
-    this.redirect_uris = [
-      `https://dev.eigent.ai/api/v1/oauth/${this.provider}/callback`,
-    ];
+    const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+    this.redirect_uris = [`${siteUrl}/api/v1/oauth/${this.provider}/callback`];
     this.authServerUrl = new URL(mcp.url).origin;
     this.resourcePath = mcp?.resourcePath || this.resourcePath;
     this.authorizationServerPath =

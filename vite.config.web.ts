@@ -33,47 +33,13 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     resolve: {
-      alias: [
-        { find: '@', replacement: path.join(__dirname, 'src') },
-        {
-          find: '@stackframe/react',
-          replacement: path.join(
-            __dirname,
-            'src/__stackframe_vendor__/index.js'
-          ),
-        },
-        {
-          find: '@stackframe/stack-shared/dist',
-          replacement: path.join(
-            __dirname,
-            'package/@stackframe/stack-shared/dist/esm'
-          ),
-        },
-        {
-          find: '@stackframe/stack-shared',
-          replacement: path.join(
-            __dirname,
-            'package/@stackframe/stack-shared/dist/esm/index.js'
-          ),
-        },
-      ],
+      alias: [{ find: '@', replacement: path.join(__dirname, 'src') }],
     },
     plugins: [react()],
-    optimizeDeps: {
-      exclude: ['@stackframe/react'],
-      force: true,
-    },
     build: {
       outDir: 'dist-web',
       emptyOutDir: true,
       sourcemap: true,
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            stackframe: ['@stackframe/react'],
-          },
-        },
-      },
     },
     server: {
       port: 5173,
