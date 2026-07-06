@@ -247,6 +247,7 @@ export default function Models() {
 
       const data = {
         provider_name: providerName,
+        model_type: selectedModel || null,
         api_key: apiKey,
         endpoint_url: apiHost,
       };

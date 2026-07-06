@@ -45,7 +45,7 @@ class Provider(AbstractModel, DefaultTimes, table=True):
 
 class ProviderIn(BaseModel):
     provider_name: str
-    model_type: str
+    model_type: str | None = None
     api_key: str
     endpoint_url: str
     encrypted_config: dict | None = None

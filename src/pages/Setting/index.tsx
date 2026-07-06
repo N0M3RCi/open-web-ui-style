@@ -12,31 +12,17 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
-import logoBlack from '@/assets/logo/logo_black.png';
-import logoWhite from '@/assets/logo/logo_white.png';
 import VerticalNavigation, {
   HISTORY_VERTICAL_SIDEBAR_CLASSNAME,
   type VerticalNavItem,
 } from '@/components/Dashboard/VerticalNav';
-import useAppVersion from '@/hooks/use-app-version';
-import { useHost } from '@/host';
-import { SITE_URL } from '@/lib';
 import AdminUsers from '@/pages/AdminUsers';
 import Appearance from '@/pages/Setting/Appearance';
 import General from '@/pages/Setting/General';
 import Models from '@/pages/Setting/Models';
 import Privacy from '@/pages/Setting/Privacy';
-import { useAuthStore } from '@/store/authStore';
-import {
-  Brain,
-  Download,
-  Fingerprint,
-  Palette,
-  Settings,
-  Shield,
-  TagIcon,
-} from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { Brain, Fingerprint, Palette, Settings, Shield } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -45,46 +31,6 @@ export default function Setting() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { t } = useTranslation();
-  const appearance = useAuthStore((state) => state.appearance);
-  const logoSrc = appearance === 'dark' ? logoWhite : logoBlack;
-  const host = useHost();
-  const ipcRenderer = host?.ipcRenderer;
-  const version = useAppVersion();
-  const [packageUpdateAvailable, setPackageUpdateAvailable] = useState(false);
-  const [packageNewVersion, setPackageNewVersion] = useState<string | null>(
-    null
-  );
-
-  useEffect(() => {
-    const ipc = ipcRenderer;
-    if (!ipc) return;
-
-    const onUpdateCanAvailable = (
-      _event: Electron.IpcRendererEvent,
-      info: VersionInfo
-    ) => {
-      setPackageUpdateAvailable(Boolean(info.update));
-      setPackageNewVersion(info.newVersion ?? null);
-    };
-
-    const onUpdateDownloaded = () => {
-      setPackageUpdateAvailable(false);
-      setPackageNewVersion(null);
-    };
-
-    ipc.on('update-can-available', onUpdateCanAvailable);
-    ipc.on('update-downloaded', onUpdateDownloaded);
-    void ipc.invoke('check-update');
-
-    return () => {
-      ipc.off('update-can-available', onUpdateCanAvailable);
-      ipc.off('update-downloaded', onUpdateDownloaded);
-    };
-  }, [ipcRenderer]);
-
-  const handleStartPackageDownload = useCallback(() => {
-    void ipcRenderer?.invoke('start-download');
-  }, [ipcRenderer]);
   // Setting menu configuration
   const settingMenus = [
     {
@@ -160,68 +106,7 @@ export default function Setting() {
           listClassName="h-auto w-full"
           contentClassName="hidden"
         />
-        <button
-          type="button"
-          onClick={() => {
-            const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
-            if (!isLocal) {
-              window.open(SITE_URL, '_blank', 'noopener,noreferrer');
-            }
-          }}
-          className="no-drag mt-4 flex cursor-pointer items-center bg-transparent transition-opacity duration-200 hover:opacity-60"
-        >
-          <img
-            src={logoSrc}
-            alt="M3RCI - UniMind"
-            className="ml-3 h-6 w-auto"
-          />
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            if (packageUpdateAvailable) {
-              handleStartPackageDownload();
-              return;
-            }
-            window.open(
-              'https://github.com/N0M3RCi/open-web-ui-style',
-              '_blank',
-              'noopener,noreferrer'
-            );
-          }}
-          className={
-            packageUpdateAvailable
-              ? 'no-drag mt-4 flex w-full min-w-0 cursor-pointer flex-row items-center justify-center gap-1.5 rounded-full bg-ds-bg-neutral-subtle-default px-5 py-1 transition-opacity duration-200 hover:opacity-90'
-              : 'no-drag mt-4 flex w-full min-w-0 cursor-pointer flex-row items-center justify-center gap-1.5 rounded-full bg-ds-bg-neutral-subtle-default px-5 py-1 transition-opacity duration-200 hover:opacity-60'
-          }
-          aria-label={
-            packageUpdateAvailable
-              ? t('update.update')
-              : version || t('setting.version', { defaultValue: 'Version' })
-          }
-          title={
-            packageUpdateAvailable
-              ? [t('update.update'), packageNewVersion]
-                  .filter(Boolean)
-                  .join(' ')
-              : version
-          }
-        >
-          {packageUpdateAvailable ? (
-            <Download
-              className="h-4 w-4 shrink-0 stroke-2 text-ds-text-neutral-default-default"
-              aria-hidden
-            />
-          ) : (
-            <TagIcon
-              className="h-4 w-4 shrink-0 stroke-2 text-ds-text-success-default-default"
-              aria-hidden
-            />
-          )}
-          <span className="min-w-0 flex-1 truncate text-left text-label-sm font-semibold text-ds-text-neutral-default-default">
-            {packageUpdateAvailable ? t('update.update') : version}
-          </span>
-        </button>
+        <div className="mt-auto" />
       </div>
 
       <div className="flex h-auto w-full flex-1 flex-col">
