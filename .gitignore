@@ -44,6 +44,9 @@ yarn.lock
 .env.development
 client_secret_*.json
 
+# Force-track production env for Vercel deployment
+!.env.production
+
 .claude/
 .cursor
 
