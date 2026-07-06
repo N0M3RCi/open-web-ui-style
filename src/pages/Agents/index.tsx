@@ -20,11 +20,10 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Memory from './Memory';
-import Models from './Models';
 import Skills from './Skills';
 import SubAgents from './SubAgents';
 
-const AGENT_SECTIONS = ['models', 'skills', 'sub-agents', 'memory'] as const;
+const AGENT_SECTIONS = ['skills', 'sub-agents', 'memory'] as const;
 type AgentSection = (typeof AGENT_SECTIONS)[number];
 
 function isAgentSection(value: string | null): value is AgentSection {
@@ -38,7 +37,7 @@ export default function Capabilities() {
   const sectionFromUrl = searchParams.get('section');
 
   const [activeTab, setActiveTab] = useState<AgentSection>(() =>
-    isAgentSection(sectionFromUrl) ? sectionFromUrl : 'models'
+    isAgentSection(sectionFromUrl) ? sectionFromUrl : 'skills'
   );
 
   useEffect(() => {
@@ -48,10 +47,6 @@ export default function Capabilities() {
   }, [sectionFromUrl]);
 
   const menuItems = [
-    {
-      id: 'models',
-      name: t('setting.models'),
-    },
     {
       id: 'skills',
       name: t('agents.skills'),
@@ -96,7 +91,6 @@ export default function Capabilities() {
 
       <div className="flex h-auto w-full flex-1 flex-col">
         <div className="flex flex-col gap-4">
-          {activeTab === 'models' && <Models />}
           {activeTab === 'skills' && <Skills />}
           {activeTab === 'sub-agents' && <SubAgents />}
           {activeTab === 'memory' && <Memory />}
