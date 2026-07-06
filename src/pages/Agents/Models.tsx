@@ -655,8 +655,14 @@ export default function SettingModels() {
       newErrors[idx].apiHost = '';
     }
     if (!model_type || model_type.trim() === '') {
-      newErrors[idx].model_type = t('setting.model-type-can-not-be-empty');
-      hasError = true;
+      // For providers with a modelsEndpoint, model_type is optional on first
+      // save so the user can save API key/host first, then fetch models.
+      if (!items[idx]?.modelsEndpoint) {
+        newErrors[idx].model_type = t('setting.model-type-can-not-be-empty');
+        hasError = true;
+      } else {
+        newErrors[idx].model_type = '';
+      }
     } else {
       newErrors[idx].model_type = '';
     }
@@ -677,48 +683,54 @@ export default function SettingModels() {
     }
 
     debug(form[idx]);
-    try {
-      const res = await fetchPost('/model/validate', {
-        model_platform: item.id,
-        model_type: form[idx].model_type,
-        api_key: form[idx].apiKey || null,
-        url: form[idx].apiHost,
-        extra_params: external,
-      });
-      if (res.is_tool_calls && res.is_valid) {
-        debug('success');
-        toast(t('setting.validate-success'), {
-          description: t(
-            'setting.the-model-has-been-verified-to-support-function-calling-which-is-required-to-use-nova'
-          ),
-          closeButton: true,
+    const skipModelValidate =
+      item.modelsEndpoint && (!model_type || model_type.trim() === '');
+    if (skipModelValidate) {
+      debug('Skipping model validation, saving API key/host only');
+    } else {
+      try {
+        const res = await fetchPost('/model/validate', {
+          model_platform: item.id,
+          model_type: form[idx].model_type,
+          api_key: form[idx].apiKey || null,
+          url: form[idx].apiHost,
+          extra_params: external,
         });
-      } else {
-        debug('failed', res.message);
-        // Surface error inline on API Key input
+        if (res.is_tool_calls && res.is_valid) {
+          debug('success');
+          toast(t('setting.validate-success'), {
+            description: t(
+              'setting.the-model-has-been-verified-to-support-function-calling-which-is-required-to-use-nova'
+            ),
+            closeButton: true,
+          });
+        } else {
+          debug('failed', res.message);
+          // Surface error inline on API Key input
+          setErrors((prev) => {
+            const next = [...prev];
+            if (!next[idx]) next[idx] = {} as any;
+            next[idx].apiKey = getValidateMessage(res);
+            return next;
+          });
+          showConfigCardRing('error');
+          setLoading(null);
+          return;
+        }
+        debug(res);
+      } catch (e) {
+        debug(e);
+        // Network/exception case: show inline error
         setErrors((prev) => {
           const next = [...prev];
           if (!next[idx]) next[idx] = {} as any;
-          next[idx].apiKey = getValidateMessage(res);
+          next[idx].apiKey = getValidateMessage(e);
           return next;
         });
         showConfigCardRing('error');
         setLoading(null);
         return;
       }
-      debug(res);
-    } catch (e) {
-      debug(e);
-      // Network/exception case: show inline error
-      setErrors((prev) => {
-        const next = [...prev];
-        if (!next[idx]) next[idx] = {} as any;
-        next[idx].apiKey = getValidateMessage(e);
-        return next;
-      });
-      showConfigCardRing('error');
-      setLoading(null);
-      return;
     }
 
     const data: any = {
@@ -1962,36 +1974,65 @@ export default function SettingModels() {
             />
             {/* Model Type Setting */}
             {item.modelsEndpoint ? (
-              <ProviderModelCombobox
-                providerName={item.name}
-                title={t('setting.model-type-setting')}
-                value={form[idx].model_type || ''}
-                onChange={(v) => {
-                  setForm((f) =>
-                    f.map((fi, i) =>
-                      i === idx ? { ...fi, model_type: v } : fi
-                    )
-                  );
-                  setErrors((errs) =>
-                    errs.map((er, i) =>
-                      i === idx ? { ...er, model_type: '' } : er
-                    )
-                  );
-                }}
-                groups={cloudModelsState[item.id]?.groups || []}
-                loading={cloudModelsState[item.id]?.loading || false}
-                error={
-                  cloudModelsState[item.id]?.error ??
-                  errors[idx]?.model_type ??
-                  null
-                }
-                disabled={!form[idx].apiKey}
-                disabledReason="Enter API Key first."
-                onRefresh={() => void fetchCloudProviderModels(idx)}
-                triggerPlaceholder={t('setting.select-model-type', {
-                  defaultValue: 'Select model type',
-                })}
-              />
+              <>
+                <ProviderModelCombobox
+                  providerName={item.name}
+                  title={t('setting.model-type-setting')}
+                  value={form[idx].model_type || ''}
+                  onChange={(v) => {
+                    setForm((f) =>
+                      f.map((fi, i) =>
+                        i === idx ? { ...fi, model_type: v } : fi
+                      )
+                    );
+                    setErrors((errs) =>
+                      errs.map((er, i) =>
+                        i === idx ? { ...er, model_type: '' } : er
+                      )
+                    );
+                  }}
+                  groups={cloudModelsState[item.id]?.groups || []}
+                  loading={cloudModelsState[item.id]?.loading || false}
+                  error={
+                    cloudModelsState[item.id]?.error ??
+                    errors[idx]?.model_type ??
+                    null
+                  }
+                  disabled={!form[idx].apiKey}
+                  disabledReason="Enter API Key first."
+                  onRefresh={() => void fetchCloudProviderModels(idx)}
+                  triggerPlaceholder={t('setting.select-model-type', {
+                    defaultValue: 'Select model type',
+                  })}
+                />
+                {/* Manual fallback when no models loaded yet or fetch failed */}
+                <Input
+                  id={`modelType-manual-${item.id}`}
+                  size="default"
+                  title={t('setting.model-type-manual', {
+                    defaultValue: 'Or type model name manually',
+                  })}
+                  state={errors[idx]?.model_type ? 'error' : 'default'}
+                  note={errors[idx]?.model_type ?? undefined}
+                  placeholder={`${t('setting.enter-your-model-type')} ${
+                    item.name
+                  } ${t('setting.model-type')}`}
+                  value={form[idx].model_type}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setForm((f) =>
+                      f.map((fi, i) =>
+                        i === idx ? { ...fi, model_type: v } : fi
+                      )
+                    );
+                    setErrors((errs) =>
+                      errs.map((er, i) =>
+                        i === idx ? { ...er, model_type: '' } : er
+                      )
+                    );
+                  }}
+                />
+              </>
             ) : (
               <Input
                 id={`modelType-${item.id}`}
