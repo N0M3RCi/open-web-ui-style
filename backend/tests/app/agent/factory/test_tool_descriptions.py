@@ -41,6 +41,7 @@ class DummyTaskLock:
 def _patch_toolkit_creation_side_effects(monkeypatch, tmp_path, project_id):
     import app.agent.toolkit.human_toolkit as human_toolkit
     import app.agent.toolkit.terminal_toolkit as terminal_toolkit
+    import app.agent.toolkit.video_download_toolkit as video_download_toolkit
 
     monkeypatch.setattr(
         human_toolkit, "get_task_lock", lambda api_task_id: DummyTaskLock()
@@ -49,6 +50,25 @@ def _patch_toolkit_creation_side_effects(monkeypatch, tmp_path, project_id):
         terminal_toolkit.TerminalToolkit,
         "_setup_cloned_environment",
         lambda self: None,
+    )
+    monkeypatch.setattr(
+        video_download_toolkit.VideoDownloaderToolkit,
+        "__init__",
+        lambda self,
+        api_task_id,
+        working_directory=None,
+        cookies_path=None,
+        timeout=None: None,
+    )
+    monkeypatch.setattr(
+        video_download_toolkit.VideoDownloaderToolkit,
+        "get_tools",
+        lambda self: [],
+    )
+    monkeypatch.setattr(
+        video_download_toolkit.VideoDownloaderToolkit,
+        "toolkit_name",
+        classmethod(lambda cls: "Video Downloader"),
     )
     monkeypatch.setitem(
         task_locks, project_id, TaskLock(project_id, asyncio.Queue(), {})
