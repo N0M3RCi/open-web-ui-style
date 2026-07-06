@@ -23,7 +23,12 @@ export function showCreditsToast() {
       {i18n.t('chat.you-ve-reached-the-limit-of-your-current-plan')}
       <a
         className="cursor-pointer underline"
-        onClick={() => (window.location.href = `${SITE_URL}/pricing`)}
+        onClick={() => {
+          const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
+          window.location.href = isLocal
+            ? '/history?tab=settings'
+            : `${SITE_URL}/pricing`;
+        }}
       >
         {i18n.t('chat.upgrade')}
       </a>{' '}
