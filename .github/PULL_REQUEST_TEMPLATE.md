@@ -31,4 +31,4 @@ Closes #
 
 ### Contribution Guidelines Acknowledgement
 
-- [ ] I have read and agree to the [Nova Contribution Guideline](https://github.com/nova-ai/nova/blob/main/CONTRIBUTING.md#nova-contribution-guideline)
+- [ ] I have read and agree to the [M3RCI Contribution Guideline](https://github.com/N0M3RCi/open-web-ui-style/blob/main/CONTRIBUTING.md#merci-contribution-guideline)
