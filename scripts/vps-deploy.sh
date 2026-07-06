@@ -3,8 +3,24 @@ set -euo pipefail
 
 APP_DIR="/opt/open-web-ui-style"
 DEPLOY_LOG="/var/log/open-web-ui-deploy.log"
+LOCK_FILE="/tmp/open-web-ui-deploy.lock"
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting deploy check..." >> "$DEPLOY_LOG"
+# Prevent concurrent runs (e.g. rapid webhook triggers)
+if [ -f "$LOCK_FILE" ]; then
+    OLD_PID=$(cat "$LOCK_FILE" 2>/dev/null || echo "")
+    if [ -n "$OLD_PID" ] && kill -0 "$OLD_PID" 2>/dev/null; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] Deploy already running (PID $OLD_PID), skipping." >> "$DEPLOY_LOG"
+        exit 0
+    fi
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] Stale lock file found, removing." >> "$DEPLOY_LOG"
+    rm -f "$LOCK_FILE"
+fi
+
+# Write our PID to the lock file and clean up on exit
+echo "$$" > "$LOCK_FILE"
+trap 'rm -f "$LOCK_FILE"' EXIT
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting deploy check (PID $$)..." >> "$DEPLOY_LOG"
 
 cd "$APP_DIR"
 
