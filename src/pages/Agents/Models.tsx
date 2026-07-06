@@ -208,7 +208,9 @@ export default function SettingModels() {
   const [_collapsed, _setCollapsed] = useState(false);
 
   // Sidebar selected tab - default to cloud
-  const [selectedTab, setSelectedTab] = useState<SidebarTab>('cloud');
+  const [selectedTab, setSelectedTab] = useState<SidebarTab>(() =>
+    import.meta.env.VITE_USE_LOCAL_PROXY === 'true' ? 'byok-gemini' : 'cloud'
+  );
 
   // Subscription sub-accordion state (nested inside Custom Model)
   const [subscriptionCollapsed, setSubscriptionCollapsed] = useState(false);
