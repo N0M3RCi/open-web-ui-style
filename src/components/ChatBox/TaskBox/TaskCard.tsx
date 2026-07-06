@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-const TASK_CARD_EXPAND_STORAGE_PREFIX = 'nova:task-card-expanded';
+const TASK_CARD_EXPAND_STORAGE_PREFIX = 'merci:task-card-expanded';
 
 function getTaskCardExpandStorageKey(
   chatId: string | undefined,

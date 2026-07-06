@@ -28,12 +28,14 @@ import { ConnectionProvider } from './context/ConnectionContext';
 import { createHost, HostProvider } from './host';
 import './i18n';
 import { injectHost } from './store/chatStore';
+import { migrateStorageKeys } from './lib/storageMigrator';
 import './style/index.css';
 
 // If you want use Node.js, the`nodeIntegration` needs to be enabled in the Main process.
 // import './demos/node'
 const host = createHost();
 injectHost(host);
+migrateStorageKeys();
 const Router = isWeb() ? BrowserRouter : HashRouter;
 const initialChannel = isWeb() ? 'web' : 'desktop';
 

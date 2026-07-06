@@ -346,7 +346,7 @@ export const usePageTabStore = create<PageTabState>()(
         set((state) => ({ filePreviewOpen: !state.filePreviewOpen })),
     }),
     {
-      name: 'nova-page-tab',
+      name: 'merci-page-tab',
       version: 1,
       // v1: Project.mode becomes the source of truth. Drop the legacy global
       // sessionSidePanelMode so mode no longer drifts between Projects.

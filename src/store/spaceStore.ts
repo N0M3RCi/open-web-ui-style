@@ -1444,7 +1444,7 @@ export const useSpaceStore = create<SpaceStore>()(
       },
     }),
     {
-      name: 'nova-space-store',
+      name: 'merci-space-store',
       version: SPACE_STORE_PERSIST_VERSION,
       migrate: (persistedState) => {
         const state = persistedState as Partial<SpaceStore> | undefined;

@@ -39,5 +39,5 @@ export function getAuthEnvironmentKey(): string {
     `stack:${normalizeIdentityPart(import.meta.env.VITE_STACK_PROJECT_ID)}`,
   ];
   const key = parts.filter(Boolean).join('|');
-  return key || 'nova:local-default';
+  return key || 'merci:local-default';
 }

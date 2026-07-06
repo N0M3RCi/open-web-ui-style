@@ -20,7 +20,7 @@ interface WorkspaceInstructionMdProps {
 }
 
 function storageKey(projectId: string) {
-  return `nova-instructions-md-${projectId}`;
+  return `merci-instructions-md-${projectId}`;
 }
 
 export function WorkspaceInstructionMd({

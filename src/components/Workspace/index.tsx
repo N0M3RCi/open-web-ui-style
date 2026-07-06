@@ -53,7 +53,7 @@ import { toast } from 'sonner';
 
 const EMPTY_TASK_ASSIGNING: Agent[] = [];
 
-const MEMORY_STORAGE_KEY = 'nova-sidebar-instructions-memory-on';
+const MEMORY_STORAGE_KEY = 'merci-sidebar-instructions-memory-on';
 
 function readMemoryInitial(): boolean {
   if (typeof window === 'undefined') return true;

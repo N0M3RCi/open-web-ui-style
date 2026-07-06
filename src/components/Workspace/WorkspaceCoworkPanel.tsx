@@ -25,7 +25,7 @@ import { Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const ONBOARDING_KEY = 'nova-workspace-onboarding-checked';
+const ONBOARDING_KEY = 'merci-workspace-onboarding-checked';
 
 const ONBOARDING_STEP_IDS = [1, 2, 3, 4] as const;
 const LAST_ONBOARDING_STEP_ID =
