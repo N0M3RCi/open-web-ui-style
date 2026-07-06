@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { INIT_PROVODERS } from '@/lib/llm';
+import { fetchProviderModels } from '@/lib/providerModels';
 import type { Provider } from '@/types';
 import {
   Check,
@@ -62,6 +63,44 @@ function isValidUrl(value: string): boolean {
   } catch {
     return false;
   }
+}
+
+/**
+ * Try to fetch models using the backend proxy endpoint, fall back to
+ * direct browser fetch, and finally allow manual model name entry.
+ */
+async function tryFetchModels(
+  apiHost: string,
+  apiKey: string
+): Promise<{ models: ModelInfo[]; method: 'proxy' | 'direct' | 'none' }> {
+  const baseHost = apiHost.replace(/\/+$/, '');
+  const modelsUrl = `${baseHost}/models`;
+
+  // 1) Try backend proxy (works in production, avoids CORS)
+  try {
+    const payload = await proxyFetchGet(
+      `/api/v1/providers/models/fetch?url=${encodeURIComponent(modelsUrl)}&api_key=${encodeURIComponent(apiKey)}`
+    );
+    const list: ModelInfo[] = Array.isArray(payload?.data)
+      ? payload.data
+      : Array.isArray(payload)
+        ? payload
+        : [];
+    if (list.length > 0) return { models: list, method: 'proxy' };
+  } catch {
+    // proxy failed — fall through
+  }
+
+  // 2) Direct browser fetch (works for CORS-enabled APIs)
+  try {
+    const groups = await fetchProviderModels(apiHost, '/models', apiKey);
+    const list = groups.flatMap((g) => g.models);
+    if (list.length > 0) return { models: list, method: 'direct' };
+  } catch {
+    // direct fetch also failed
+  }
+
+  return { models: [], method: 'none' };
 }
 
 export default function Models() {
@@ -192,37 +231,20 @@ export default function Models() {
     setModels([]);
     setSelectedModel('');
 
-    try {
-      // Build the models URL: strip trailing slash from host, append /models
-      const baseHost = apiHost.replace(/\/+$/, '');
-      const modelsUrl = `${baseHost}/models`;
+    const { models: fetched } = await tryFetchModels(apiHost, apiKey);
+    setModels(fetched);
 
-      // Fetch models through the backend proxy to avoid CORS
-      const payload = await proxyFetchGet(
-        `/api/v1/providers/models/fetch?url=${encodeURIComponent(modelsUrl)}&api_key=${encodeURIComponent(apiKey)}`
+    if (fetched.length > 0) {
+      toast.success(
+        `Found ${fetched.length} model${fetched.length > 1 ? 's' : ''}`
       );
-
-      // Handle both { data: [...] } and [...] response formats
-      const rawModels: { id: string }[] = Array.isArray(payload?.data)
-        ? payload.data
-        : Array.isArray(payload)
-          ? payload
-          : [];
-
-      setModels(rawModels);
-
-      if (rawModels.length === 0) {
-        toast.error('No models found at this endpoint');
-      } else {
-        toast.success(
-          `Found ${rawModels.length} model${rawModels.length > 1 ? 's' : ''}`
-        );
-      }
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to fetch models');
-    } finally {
-      setFetchingModels(false);
+    } else {
+      toast.error(
+        'Could not fetch models. You can type a model name manually below.'
+      );
     }
+
+    setFetchingModels(false);
   }, [apiKey, apiHost, t]);
 
   // Save provider config to backend
@@ -399,17 +421,48 @@ export default function Models() {
         </div>
       </div>
 
-      {/* Fetch Models */}
+      {/* Model Selection Row */}
       <div className="flex flex-col gap-2">
-        <div className="flex items-end justify-between">
-          <label className="text-label-sm font-semibold text-ds-text-neutral-default-default">
-            Available Models
-          </label>
+        <label className="text-label-sm font-semibold text-ds-text-neutral-default-default">
+          Model
+        </label>
+        <div className="flex flex-row items-end gap-2">
+          {/* Model dropdown (shown when models are fetched) */}
+          <div className="flex-1">
+            {models.length > 0 ? (
+              <Select value={selectedModel} onValueChange={setSelectedModel}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a model" />
+                </SelectTrigger>
+                <SelectContent>
+                  {models.map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.id}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <Input
+                type="text"
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+                placeholder={
+                  fetchingModels
+                    ? 'Fetching models...'
+                    : 'Type model name (e.g. gpt-4o, claude-sonnet-4)'
+                }
+              />
+            )}
+          </div>
+
+          {/* Fetch Models Button */}
           <Button
             variant="outline"
             size="sm"
             onClick={handleFetchModels}
             disabled={fetchingModels || !apiKey || !apiHost}
+            className="shrink-0"
           >
             {fetchingModels ? (
               <>
@@ -424,28 +477,13 @@ export default function Models() {
             )}
           </Button>
         </div>
-
-        {models.length > 0 && (
-          <Select value={selectedModel} onValueChange={setSelectedModel}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a model" />
-            </SelectTrigger>
-            <SelectContent>
-              {models.map((m) => (
-                <SelectItem key={m.id} value={m.id}>
-                  {m.id}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-
-        {models.length === 0 && !fetchingModels && (
-          <p className="text-body-xs text-ds-text-neutral-muted-default">
-            Click &quot;Fetch Models&quot; to list available models from your
-            API endpoint.
-          </p>
-        )}
+        <p className="text-body-xs text-ds-text-neutral-muted-default">
+          {models.length > 0
+            ? `Select a model from the dropdown, or type a model name manually.`
+            : models.length === 0 && !fetchingModels
+              ? `Click "Fetch Models" to auto-detect available models, or type a model name manually.`
+              : ''}
+        </p>
       </div>
 
       {/* Save */}
