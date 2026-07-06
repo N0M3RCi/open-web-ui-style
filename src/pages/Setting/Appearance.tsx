@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import { Button } from '@/components/ui/button';
 import { ColorPicker, normalizeHexColor } from '@/components/ui/colorPicker';
@@ -46,7 +46,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const DEFAULT_EDITABLE_THEME_IDS = [
-  'nova',
+  'merci',
   'camel',
   'claw',
   'starfish',
@@ -73,6 +73,7 @@ function buildMergedCatalog(customThemeCatalog: ThemeCatalog): ThemeCatalog {
 }
 
 function formatThemeLabel(id: string): string {
+  if (id === 'merci') return 'M3RCI';
   if (id === 'whale') return 'Whale';
   if (id === 'custom') return 'Custom';
   if (id === 'camel') return 'CAMEL';
@@ -113,11 +114,11 @@ function ColorSeedEditor({
   };
 
   return (
-    <div className="gap-2 border-ds-border-neutral-subtle-disabled py-4 px-6 flex flex-row items-center justify-between border-x-0 border-t-0 border-b border-solid">
-      <div className="text-body-md font-semibold text-ds-text-neutral-default-default w-24">
+    <div className="flex flex-row items-center justify-between gap-2 border-x-0 border-b border-t-0 border-solid border-ds-border-neutral-subtle-disabled px-6 py-4">
+      <div className="w-24 text-body-md font-semibold text-ds-text-neutral-default-default">
         {label}
       </div>
-      <div className="w-56 gap-2 flex flex-row items-center">
+      <div className="flex w-56 flex-row items-center gap-2">
         <Input
           size="sm"
           value={value}
@@ -133,7 +134,7 @@ function ColorSeedEditor({
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="h-8 w-10 rounded-md border-ds-border-neutral-default-default flex-shrink-0 cursor-pointer border border-solid focus-visible:ring-2 focus-visible:outline-none"
+              className="h-8 w-10 flex-shrink-0 cursor-pointer rounded-md border border-solid border-ds-border-neutral-default-default focus-visible:outline-none focus-visible:ring-2"
               style={{ backgroundColor: normalizedPreview }}
               title={`Pick ${label} color`}
               aria-label={`Pick ${label} color`}
@@ -141,7 +142,7 @@ function ColorSeedEditor({
           </PopoverTrigger>
 
           <PopoverContent
-            className="w-64 p-4 gap-3 bg-ds-bg-neutral-subtle-default rounded-xl flex flex-col"
+            className="flex w-64 flex-col gap-3 rounded-xl bg-ds-bg-neutral-subtle-default p-4"
             side="top"
             align="end"
             sideOffset={8}
@@ -152,7 +153,7 @@ function ColorSeedEditor({
 
             <ColorPicker key={openKey} value={pending} onChange={setPending} />
 
-            <div className="gap-2 flex flex-row justify-end">
+            <div className="flex flex-row justify-end gap-2">
               <PopoverClose asChild>
                 <Button
                   variant="outline"
@@ -191,11 +192,11 @@ function ContrastSlider({
   onChange: (v: number) => void;
 }) {
   return (
-    <div className="gap-2 py-4 px-6 flex w-full flex-row items-center justify-between">
-      <div className="text-body-md font-semibold text-ds-text-neutral-default-default w-24">
+    <div className="flex w-full flex-row items-center justify-between gap-2 px-6 py-4">
+      <div className="w-24 text-body-md font-semibold text-ds-text-neutral-default-default">
         Contrast
       </div>
-      <div className="gap-2 w-80 flex flex-row items-center">
+      <div className="flex w-80 flex-row items-center gap-2">
         <input
           type="range"
           min={0}
@@ -203,10 +204,10 @@ function ContrastSlider({
           step={1}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-          className="h-2 bg-ds-bg-neutral-subtle-disabled accent-ds-bg-brand-default-default my-auto w-full cursor-pointer appearance-none rounded-full"
+          className="my-auto h-2 w-full cursor-pointer appearance-none rounded-full bg-ds-bg-neutral-subtle-disabled accent-ds-bg-brand-default-default"
           aria-label="Theme contrast"
         />
-        <div className="w-10 text-body-sm font-semibold text-ds-text-neutral-muted-default text-center">
+        <div className="w-10 text-center text-body-sm font-semibold text-ds-text-neutral-muted-default">
           {value}
         </div>
       </div>
@@ -408,8 +409,8 @@ export default function AppearanceSettings() {
 
   return (
     <div className="m-auto h-auto w-full flex-1">
-      <div className="px-6 pb-6 pt-8 mx-auto flex w-full max-w-[900px] items-center justify-between">
-        <div className="gap-4 flex w-full flex-row items-center justify-between">
+      <div className="mx-auto flex w-full max-w-[900px] items-center justify-between px-6 pb-6 pt-8">
+        <div className="flex w-full flex-row items-center justify-between gap-4">
           <div className="flex flex-col">
             <div className="text-heading-sm font-bold text-ds-text-neutral-default-default">
               {t('setting.appearance-tab')}
@@ -418,8 +419,8 @@ export default function AppearanceSettings() {
         </div>
       </div>
 
-      <div className="mb-xl gap-6 flex flex-col">
-        <div className="item-center gap-4 rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4 h-18 flex flex-row items-center justify-between">
+      <div className="mb-xl flex flex-col gap-6">
+        <div className="item-center h-18 flex flex-row items-center justify-between gap-4 rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4">
           <div className="text-body-base font-bold text-ds-text-neutral-default-default">
             Mode
           </div>
@@ -432,19 +433,19 @@ export default function AppearanceSettings() {
           >
             <TabsList appearance="default">
               <TabsTrigger value="light">
-                <div className="gap-1 text-label-sm flex items-center">
+                <div className="flex items-center gap-1 text-label-sm">
                   <Sun size={16} />
                   <span>{t('setting.light')}</span>
                 </div>
               </TabsTrigger>
               <TabsTrigger value="dark">
-                <div className="gap-1 text-label-sm flex items-center">
+                <div className="flex items-center gap-1 text-label-sm">
                   <Moon size={16} />
                   <span>{t('setting.dark')}</span>
                 </div>
               </TabsTrigger>
               <TabsTrigger value="system">
-                <div className="gap-1 text-label-sm flex items-center">
+                <div className="flex items-center gap-1 text-label-sm">
                   <Monitor size={16} />
                   <span>{t('setting.system-default')}</span>
                 </div>
@@ -453,14 +454,14 @@ export default function AppearanceSettings() {
           </Tabs>
         </div>
 
-        <div className="item-center gap-4 rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4 flex flex-col">
-          <div className="gap-1 flex flex-col">
+        <div className="item-center flex flex-col gap-4 rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4">
+          <div className="flex flex-col gap-1">
             <div className="text-body-base font-bold text-ds-text-neutral-default-default">
               Theme Customization
             </div>
           </div>
 
-          <div className="gap-3 flex w-full items-center justify-between">
+          <div className="flex w-full items-center justify-between gap-3">
             <div className="min-w-0 flex-1 overflow-x-auto">
               <Tabs value={activeThemeId} onValueChange={handleThemeChange}>
                 <TabsList appearance="default" className="min-w-max">
@@ -470,7 +471,7 @@ export default function AppearanceSettings() {
                       value={option.id}
                       appearance="default"
                     >
-                      <div className="gap-1 text-label-sm flex items-center">
+                      <div className="flex items-center gap-1 text-label-sm">
                         {option.label}
                       </div>
                     </TabsTrigger>
@@ -487,14 +488,14 @@ export default function AppearanceSettings() {
               textWeight="semibold"
               onClick={resetActiveTheme}
             >
-              <div className="gap-1 text-label-sm flex items-center">
+              <div className="flex items-center gap-1 text-label-sm">
                 <RotateCcw />
                 <span>Reset</span>
               </div>
             </Button>
           </div>
 
-          <div className="bg-ds-bg-neutral-subtle-default rounded-2xl flex flex-col">
+          <div className="flex flex-col rounded-2xl bg-ds-bg-neutral-subtle-default">
             <ColorSeedEditor
               label="Accent"
               value={accent}
@@ -514,8 +515,8 @@ export default function AppearanceSettings() {
           </div>
         </div>
 
-        <div className="item-center rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4 h-18 flex flex-row items-center justify-between">
-          <div className="gap-1 flex max-w-[55%] flex-col">
+        <div className="item-center h-18 flex flex-row items-center justify-between rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4">
+          <div className="flex max-w-[55%] flex-col gap-1">
             <div className="text-body-base font-bold text-ds-text-neutral-default-default">
               {t('setting.workspace-main-background')}
             </div>

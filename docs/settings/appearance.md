@@ -4,11 +4,11 @@ description: Customize color mode, themes, contrast, and workspace backgrounds.
 icon: palette
 ---
 
-Appearance settings control Nova's color mode, theme palette, contrast, and Workspace background.
+Appearance settings control color mode, theme palette, contrast, and Workspace background.
 
 ## Open Appearance
 
-1. Open the Nova dashboard.
+1. Open the M3RCI - UniMind dashboard.
 2. Select **Settings**.
 3. Select **Appearance**.
 
@@ -28,7 +28,7 @@ System mode follows the operating-system appearance.
 
 Built-in theme families include:
 
-- Nova
+- M3RCI
 - CAMEL
 - Claw
 - Starfish
