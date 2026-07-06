@@ -49,9 +49,13 @@ npm install --ignore-scripts --no-audit --no-fund 2>> "$DEPLOY_LOG"
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Building web app..." >> "$DEPLOY_LOG"
 npm run build:web 2>> "$DEPLOY_LOG"
 
-# Copy to nginx web root
+# Copy to nginx web roots
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Copying to /var/www/html..." >> "$DEPLOY_LOG"
 rm -rf /var/www/html/*
 cp -r dist-web/* /var/www/html/
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Copying to /var/www/merci..." >> "$DEPLOY_LOG"
+rm -rf /var/www/merci/*
+cp -r dist-web/* /var/www/merci/
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] Deploy complete!" >> "$DEPLOY_LOG"
