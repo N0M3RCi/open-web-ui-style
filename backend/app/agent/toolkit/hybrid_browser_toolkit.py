@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import asyncio
 import json
@@ -620,7 +620,7 @@ class HybridBrowserToolkit(BaseHybridBrowserToolkit, AbstractToolkit):
         if user_data_dir is None:
             # Use browser port to determine profile directory
             browser_port = env("browser_port", "9222")
-            user_data_base = os.path.expanduser("~/.nova/browser_profiles")
+            user_data_base = os.path.expanduser("~/.merci/browser_profiles")
             user_data_dir = os.path.join(
                 user_data_base, f"profile_{browser_port}"
             )
@@ -681,7 +681,7 @@ class HybridBrowserToolkit(BaseHybridBrowserToolkit, AbstractToolkit):
 
     def _should_prime_shared_cdp_tab(self) -> bool:
         enabled = (
-            env("NOVA_INTERIM_SHARED_BROWSER_TAB_ISOLATION", "true")
+            env("MERCI_INTERIM_SHARED_BROWSER_TAB_ISOLATION", "true")
             .strip()
             .lower()
         )
@@ -695,13 +695,13 @@ class HybridBrowserToolkit(BaseHybridBrowserToolkit, AbstractToolkit):
         if self._ws_wrapper is None:
             return
         # === INTERIM(shared-browser tab isolation) remove after camel upstream fix; see docs/REMOTE_CONTROL_SHARED_BROWSER_TAB_ISOLATION_2026-06-15.md ===
-        sentinel_url = f"about:blank#nova-{session_id}"
+        sentinel_url = f"about:blank#merci-{session_id}"
         logger.info(
             "[INTERIM shared-browser tab isolation] Priming session tab",
             extra={"session_id": session_id, "sentinel_url": sentinel_url},
         )
         await self._ws_wrapper.visit_page(sentinel_url)
-        self._ws_wrapper._nova_interim_shared_browser_primed = True
+        self._ws_wrapper._merci_interim_shared_browser_primed = True
 
     async def _ensure_ws_wrapper(self):
         """Ensure WebSocket wrapper is initialized using connection pool."""
@@ -765,7 +765,7 @@ class HybridBrowserToolkit(BaseHybridBrowserToolkit, AbstractToolkit):
 
             if should_prime and not getattr(
                 self._ws_wrapper,
-                "_nova_interim_shared_browser_primed",
+                "_merci_interim_shared_browser_primed",
                 False,
             ):
                 await self._prime_shared_cdp_tab(session_id)

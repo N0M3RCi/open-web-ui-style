@@ -11,5 +11,5 @@
       "description": "Profile for project browser instances"
     }
   },
-  "basePath": "~/.nova/browser_profiles"
+  "basePath": "~/.merci/browser_profiles"
 }

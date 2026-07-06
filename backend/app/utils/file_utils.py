@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 """File system utilities with robust path handling and edge-case safety."""
 
@@ -317,13 +317,13 @@ def get_working_directory(options: Chat, task_lock=None) -> str:
     return normalize_working_path(raw)
 
 
-def sync_nova_skills_to_project(working_directory: str) -> None:
+def sync_merci_skills_to_project(working_directory: str) -> None:
     """
-    Copy skills from ~/.nova/skills into the project's .nova/skills
+    Copy skills from ~/.merci/skills into the project's .nova/skills
     so the agent can load and execute them from the project working directory.
     """
-    src = Path.home() / ".nova" / "skills"
-    dst = Path(working_directory) / ".nova" / "skills"
+    src = Path.home() / ".merci" / "skills"
+    dst = Path(working_directory) / ".merci" / "skills"
     if not src.is_dir():
         return
     try:
@@ -335,7 +335,7 @@ def sync_nova_skills_to_project(working_directory: str) -> None:
                     shutil.rmtree(dest_skill)
                 shutil.copytree(skill_dir, dest_skill)
         logger.debug(
-            "Synced nova skills to project",
+            "Synced merci skills to project",
             extra={
                 "working_directory": working_directory,
                 "destination": str(dst),
@@ -343,7 +343,7 @@ def sync_nova_skills_to_project(working_directory: str) -> None:
         )
     except OSError as e:
         logger.warning(
-            "Failed to sync ~/.nova/skills to project %s: %s",
+            "Failed to sync ~/.merci/skills to project %s: %s",
             working_directory,
             e,
             exc_info=True,

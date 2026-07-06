@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import asyncio
 import datetime
@@ -305,7 +305,7 @@ def _trim_in_process_history(task_lock: TaskLock, keep_recent: int = 4) -> int:
     """Compact in-process conversation + agent snapshot history.
 
     Memory feature already persists the full transcript to
-    ``~/.nova/memory/<...>/conversation.jsonl`` at every Run end; the
+    ``~/.merci/memory/<...>/conversation.jsonl`` at every Run end; the
     in-process ``conversation_history`` and ``agent_memory_history`` lists
     exist only to feed the next workforce turn's prompt. When they grow past
     the 200K-char guard we drop the older entries here and append a marker
@@ -330,7 +330,7 @@ def _trim_in_process_history(task_lock: TaskLock, keep_recent: int = 4) -> int:
         return 0
     marker = (
         f"\n[memory] Compacted {dropped} older in-process turn(s); the full "
-        f"transcript is preserved in ~/.nova/memory under this Project."
+        f"transcript is preserved in ~/.merci/memory under this Project."
     )
     summary = getattr(task_lock, "memory_summary", "") or ""
     if marker.strip() not in summary:
@@ -921,7 +921,7 @@ async def step_solve(options: Chat, request: Request, task_lock: TaskLock):
                         nonlocal summary_task_content
                         try:
                             sub_tasks = await asyncio.to_thread(
-                                workforce.nova_make_sub_tasks,
+                                workforce.merci_make_sub_tasks,
                                 camel_task,
                                 context_for_coordinator,
                                 on_stream_batch,
@@ -1021,7 +1021,7 @@ async def step_solve(options: Chat, request: Request, task_lock: TaskLock):
                 # to both camel_task and sub_tasks
                 new_tasks = add_sub_tasks(camel_task, item.data.task)
                 # Also add new tasks to sub_tasks so
-                # workforce.nova_start uses correct list
+                # workforce.merci_start uses correct list
                 sub_tasks.extend(new_tasks)
                 # Save updated sub_tasks back to
                 # task_lock so Action.start uses
@@ -1286,7 +1286,7 @@ async def step_solve(options: Chat, request: Request, task_lock: TaskLock):
                 task_lock.status = Status.processing
                 if not sub_tasks:
                     sub_tasks = getattr(task_lock, "decompose_sub_tasks", [])
-                task = asyncio.create_task(workforce.nova_start(sub_tasks))
+                task = asyncio.create_task(workforce.merci_start(sub_tasks))
                 task_lock.add_background_task(task)
             elif item.action == Action.task_state:
                 # Track completed task results for the end event
@@ -1984,7 +1984,7 @@ async def step_solve(options: Chat, request: Request, task_lock: TaskLock):
                     )
                     if workforce is not None:
                         task = asyncio.create_task(
-                            workforce.nova_start(camel_task.subtasks)
+                            workforce.merci_start(camel_task.subtasks)
                         )
                         task_lock.add_background_task(task)
             elif item.action == Action.budget_not_enough:

@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import uuid
 from typing import Any
@@ -32,9 +32,9 @@ class WebDeployToolkit(BaseWebDeployToolkit, AbstractToolkit):
         timeout: float | None = None,
         add_branding_tag: bool = True,
         logo_path: str = "../../../../public/favicon.png",
-        tag_text: str = "Created by Nova",
-        tag_url: str = "https://main.nova.ai/",
-        remote_server_ip: str | None = "space.nova.ai",
+        tag_text: str = "Created by M3RCI - UniMind",
+        tag_url: str = "https://main.merci-unimind.ai/",
+        remote_server_ip: str | None = "space.merci-unimind.ai",
         remote_server_port: int = 8080,
     ):
         self.api_task_id = api_task_id

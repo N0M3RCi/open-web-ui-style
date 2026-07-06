@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 """MemoryService — Run/Project/Space lifecycle hooks (§7 of design doc).
 
@@ -85,14 +85,14 @@ def _new_artifact_id() -> str:
 
 
 def _default_memory_token_budget() -> int:
-    raw = os.environ.get("NOVA_MEMORY_TOKEN_BUDGET")
+    raw = os.environ.get("MERCI_MEMORY_TOKEN_BUDGET")
     if not raw:
         return 8000
     try:
         return int(raw)
     except ValueError:
         logger.warning(
-            "Invalid NOVA_MEMORY_TOKEN_BUDGET=%r; using default 8000", raw
+            "Invalid MERCI_MEMORY_TOKEN_BUDGET=%r; using default 8000", raw
         )
         return 8000
 
@@ -111,7 +111,7 @@ def build_durable_context_for_task_lock(
     chat never breaks on a memory glitch.
 
     Shared by Single Agent and Workforce paths so both modes recover from
-    `~/.nova/memory` after restart with the same code path. The mode arg
+    `~/.merci/memory` after restart with the same code path. The mode arg
     drives how the bundle is rendered (single_agent narrative vs
     workforce_coordinator planning view).
     """

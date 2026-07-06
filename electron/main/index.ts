@@ -326,7 +326,7 @@ let profileInitPromise: Promise<void>;
 // Storage strategy:
 // 1. Main window: partition 'persist:main_window' in app userData → M3RCI - UniMind account (persistent)
 // 2. WebView: partition 'persist:user_login' in app userData → will import cookies from tool_controller via session API
-// 3. tool_controller: ~/.nova/browser_profiles/profile_user_login → source of truth for login cookies
+// 3. tool_controller: ~/.merci/browser_profiles/profile_user_login → source of truth for login cookies
 // 4. CDP browser: uses separate profile (doesn't share with main app)
 profileInitPromise = findAvailablePort(browser_port).then(async (port) => {
   browser_port = port;
@@ -548,7 +548,7 @@ function processQueuedProtocolUrls() {
 
 // ==================== auth callback server ====================
 // Local HTTP server for receiving auth callbacks from external login (nova.ai)
-// Works in both dev and production mode, avoids nova:// protocol issues in dev
+// Works in both dev and production mode, avoids merci-unimind:// protocol issues in dev
 let authCallbackServer: http.Server | null = null;
 let authCallbackPort: number | null = null;
 
@@ -606,7 +606,7 @@ const setupSingleInstanceLock = () => {
   // to register the event handlers.
   app.on('second-instance', (event, argv) => {
     log.info('second-instance', argv);
-    const url = argv.find((arg) => arg.startsWith('nova://'));
+    const url = argv.find((arg) => arg.startsWith('merci-unimind://'));
     if (url) handleProtocolUrl(url);
     if (win) win.show();
   });
@@ -2278,7 +2278,7 @@ async function syncDefaultSkillsFromBundle(): Promise<void> {
   }
   if (copiedCount > 0 || updatedCount > 0) {
     log.info(
-      `Synced default skill(s) to ~/.nova/skills: copied=${copiedCount} updated=${updatedCount} from`,
+      `Synced default skill(s) to ~/.merci/skills: copied=${copiedCount} updated=${updatedCount} from`,
       exampleDir
     );
   }
@@ -2851,7 +2851,7 @@ const checkAndStartBackend = async () => {
         },
         {
           ...codexResolverEnv,
-          NOVA_EXAMPLE_SKILLS_DIR: exampleSkillsDir,
+          MERCI_EXAMPLE_SKILLS_DIR: exampleSkillsDir,
         }
       );
 

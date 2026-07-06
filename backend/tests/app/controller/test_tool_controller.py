@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -156,7 +156,7 @@ class TestToolController:
                 _ = (resource_type, session_id, kwargs)
                 return "http://worker-17:9222"
 
-        monkeypatch.delenv("NOVA_CDP_URL", raising=False)
+        monkeypatch.delenv("MERCI_CDP_URL", raising=False)
         tool_controller._clear_connected_cdp_browser("local")
         request = SimpleNamespace(
             state=SimpleNamespace(hands=_FakeRemoteHands()),
@@ -176,7 +176,7 @@ class TestToolController:
     async def test_open_browser_login_uses_dedicated_cookie_port_when_existing(
         self, monkeypatch: pytest.MonkeyPatch
     ):
-        monkeypatch.delenv("NOVA_LOGIN_BROWSER_CDP_PORT", raising=False)
+        monkeypatch.delenv("MERCI_LOGIN_BROWSER_CDP_PORT", raising=False)
 
         with patch(
             "app.controller.tool_controller._is_port_in_use",
@@ -192,7 +192,7 @@ class TestToolController:
     async def test_browser_status_uses_dedicated_cookie_port(
         self, monkeypatch: pytest.MonkeyPatch
     ):
-        monkeypatch.delenv("NOVA_LOGIN_BROWSER_CDP_PORT", raising=False)
+        monkeypatch.delenv("MERCI_LOGIN_BROWSER_CDP_PORT", raising=False)
 
         with patch(
             "app.controller.tool_controller._is_port_in_use",
@@ -285,7 +285,7 @@ class TestToolControllerIntegration:
     def test_launch_cdp_browser_endpoint_integration(
         self, client: TestClient, monkeypatch: pytest.MonkeyPatch
     ):
-        monkeypatch.delenv("NOVA_CDP_URL", raising=False)
+        monkeypatch.delenv("MERCI_CDP_URL", raising=False)
         tool_controller._clear_connected_cdp_browser("local")
 
         with patch(
@@ -306,7 +306,7 @@ class TestToolControllerIntegration:
     def test_connect_list_and_disconnect_cdp_browser_endpoints(
         self, client: TestClient, monkeypatch: pytest.MonkeyPatch
     ):
-        monkeypatch.delenv("NOVA_CDP_URL", raising=False)
+        monkeypatch.delenv("MERCI_CDP_URL", raising=False)
         tool_controller._clear_connected_cdp_browser("local")
 
         with (
@@ -342,7 +342,7 @@ class TestToolControllerIntegration:
     def test_connect_cdp_browser_endpoint_returns_error_when_unreachable(
         self, client: TestClient, monkeypatch: pytest.MonkeyPatch
     ):
-        monkeypatch.delenv("NOVA_CDP_URL", raising=False)
+        monkeypatch.delenv("MERCI_CDP_URL", raising=False)
         tool_controller._clear_connected_cdp_browser("local")
 
         with patch(

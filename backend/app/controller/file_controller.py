@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import asyncio
 import logging
@@ -36,22 +36,22 @@ file_logger = logging.getLogger("file_controller")
 # Config
 MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024  # 50MB
 MAX_FILES_PER_SESSION = 20
-WORKSPACE_ROOT = env("NOVA_WORKSPACE", "~/.nova/workspace")
+WORKSPACE_ROOT = env("MERCI_WORKSPACE", "~/.merci/workspace")
 SESSION_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
 FILE_LIST_SEMAPHORE = asyncio.Semaphore(4)
 SLOW_FILE_LIST_LOG_MS = 300
 
 
-def _get_nova_root() -> Path:
-    """Base root for nova storage (~/nova). Do NOT use env file_save_path
+def _get_merci_root() -> Path:
+    """Base root for merci storage (~/merci). Do NOT use env file_save_path
     here: chat overwrites it to task path, which would break list/stream."""
-    nova = Path.home() / "nova"
-    if nova.exists():
-        return nova
-    dot_nova = Path.home() / ".nova"
-    if dot_nova.exists():
-        return dot_nova
-    return nova  # default to ~/nova
+    merci = Path.home() / ".merci"
+    if merci.exists():
+        return merci
+    legacy = Path.home() / ".merci"
+    if legacy.exists():
+        return legacy
+    return merci  # default to ~/.merci
 
 
 def _get_workspace_root() -> Path:
@@ -162,8 +162,8 @@ def _normalize_relative_path(path: str) -> str:
 
 
 def _get_project_root(email: str, project_id: str) -> Path:
-    """Get project root path: ~/nova/{email}/project_{project_id}/."""
-    root = _get_nova_root()
+    """Get project root path: ~/.merci/{email}/project_{project_id}/."""
+    root = _get_merci_root()
     email_sanitized = _sanitize_email(email)
     return root / email_sanitized / f"project_{project_id}"
 
@@ -178,7 +178,7 @@ def _resolve_project_root(email: str, project_id: str) -> Path:
     if preferred.exists():
         return preferred
 
-    root = _get_nova_root()
+    root = _get_merci_root()
     candidate_name = f"project_{project_id}"
     try:
         for child in root.iterdir():

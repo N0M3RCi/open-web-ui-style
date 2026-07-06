@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,11 +10,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 """LocalMemoryStore acceptance tests (§25 of design doc).
 
-Exercises the M1 surface on a tmpdir root so no real ~/.nova is touched.
+Exercises the M1 surface on a tmpdir root so no real ~/.merci is touched.
 """
 
 from __future__ import annotations
@@ -95,7 +95,7 @@ class TestLazyInit:
 
         s = LocalMemoryStore()
         assert s.root == memory_root()
-        assert s.root == Path.home() / ".nova" / "memory"
+        assert s.root == Path.home() / ".merci" / "memory"
 
 
 # ----- Space-level -----

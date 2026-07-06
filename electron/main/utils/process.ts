@@ -588,7 +588,7 @@ function runBackgroundUvSyncForOptionalDeps(userBackendVenv: string): void {
 }
 
 /**
- * Copy prebuilt backend venv to ~/.nova/venvs/backend-{version} for unified management.
+ * Copy prebuilt backend venv to ~/.merci/venvs/backend-{version} for unified management.
  * The copied venv is the one actually used by the backend (via getVenvPath()).
  * The source venv (prebuilt/extracted) is kept as-is for re-copying on version changes.
  *
@@ -681,7 +681,7 @@ export function ensureBackendVenvAtUserPath(version: string): void {
 }
 
 /**
- * Copy prebuilt terminal venv to ~/.nova/venvs/terminal_base-{version}.
+ * Copy prebuilt terminal venv to ~/.merci/venvs/terminal_base-{version}.
  * @param version App version (used for version-specific venv directory)
  */
 export function ensureTerminalVenvAtUserPath(version: string): void {
@@ -908,7 +908,7 @@ export function checkVenvExistsForPreCheck(version: string): {
  * @returns Path to backend venv
  */
 export function getVenvPath(version: string): string {
-  // For packaged apps, ensure venv is copied to ~/.nova/venvs first
+  // For packaged apps, ensure venv is copied to ~/.merci/venvs first
   if (app.isPackaged) {
     ensureBackendVenvAtUserPath(version);
 
@@ -1054,7 +1054,7 @@ export function findNodejsWheelNpmPath(venvPath: string): string | null {
 
 /**
  * Find nodejs_wheel/bin directory for the node executable.
- * Browser toolkit needs node in PATH (npm/npx use our wrappers from ~/.nova/bin).
+ * Browser toolkit needs node in PATH (npm/npx use our wrappers from ~/.merci/bin).
  */
 export function findNodejsWheelBinPath(venvPath: string): string | null {
   try {

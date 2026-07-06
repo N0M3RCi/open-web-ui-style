@@ -1,15 +1,15 @@
 <div align="center"><a name="readme-top"></a>
 
-[![][image-head]][nova-site]
+[![][image-head]][merci-unimind-site]
 
-[![][image-seperator]][nova-site]
+[![][image-seperator]][merci-unimind-site]
 
-### Nova: The Open Source Cowork Desktop to Unlock Your Exceptional Productivity
+### M3RCI - UniMind: The Open Source Cowork Desktop to Unlock Your Exceptional Productivity
 
 <!-- SHIELD GROUP -->
 
-[![][download-shield]][nova-download]
-[![][github-star]][nova-github]
+[![][download-shield]][merci-unimind-download]
+[![][github-star]][merci-unimind-github]
 [![][social-x-shield]][social-x-link]
 [![][discord-image]][discord-url]<br>
 [![Reddit][reddit-image]][reddit-url]
@@ -23,12 +23,12 @@
 <hr/>
 <div align="center">
 
-**English** · [Português](./README_PT-BR.md) · [简体中文](./README_CN.md) · [日本語](./README_JA.md) · [Official Site][nova-site] · [Documents][docs-site] · [Feedback][github-issue-link]
+**English** · [Português](./README_PT-BR.md) · [简体中文](./README_CN.md) · [日本語](./README_JA.md) · [Official Site][merci-unimind-site] · [Documents][docs-site] · [Feedback][github-issue-link]
 
 </div>
 <br/>
 
-**Nova** is the open source Cowork desktop application, empowering you to build, manage, and deploy a custom AI workforce that can turn your most complex workflows into automated tasks. As a leading open-source Cowork product, Nova brings together the best of open-source collaboration and AI-powered automation.
+**M3RCI - UniMind** is the open source Cowork desktop application, empowering you to build, manage, and deploy a custom AI workforce that can turn your most complex workflows into automated tasks. As a leading open-source Cowork product, M3RCI - UniMind brings together the best of open-source collaboration and AI-powered automation.
 
 Built on [CAMEL-AI][camel-site]'s acclaimed open-source project, our system introduces a **Multi-Agent Workforce** that **boosts productivity** through parallel execution, customization, and privacy protection.
 
@@ -83,11 +83,11 @@ Built on [CAMEL-AI][camel-site]'s acclaimed open-source project, our system intr
 
 ## **🚀 Getting Started with Open Source Cowork**
 
-> **🔓 Build in Public** — Nova is **100% open source** from day one. Every feature, every commit, every decision is transparent. We believe the best AI tools should be built openly with the community, not behind closed doors.
+> **🔓 Build in Public** — M3RCI - UniMind is **100% open source** from day one. Every feature, every commit, every decision is transparent. We believe the best AI tools should be built openly with the community, not behind closed doors.
 
 ### 🏠 Local Deployment (Recommended)
 
-The recommended way to run Nova — fully standalone with complete control over your data, no cloud account required.
+The recommended way to run M3RCI - UniMind — fully standalone with complete control over your data, no cloud account required.
 
 👉 **[Full Local Deployment Guide](./server/README_EN.md)**
 
@@ -110,12 +110,12 @@ For a quick preview using our cloud backend — get started in seconds:
 
 ```bash
 git clone https://github.com/N0M3RCi/open-web-ui-style.git
-cd nova
+cd merci-unimind
 npm install
 npm run dev
 ```
 
-> Note: This mode connects to Nova cloud services and requires account registration. For a fully standalone experience, use [Local Deployment](#-local-deployment-recommended) instead.
+> Note: This mode connects to M3RCI - UniMind cloud services and requires account registration. For a fully standalone experience, use [Local Deployment](#-local-deployment-recommended) instead.
 
 #### Updating Dependencies
 
@@ -138,11 +138,11 @@ For organizations requiring maximum security, customization, and control:
 - **Scalable Enterprise Deployment**
 - **Negotiated SLAs** & implementation services
 
-📧 For further details, please contact us at [info@nova.ai](mailto:info@nova.ai).
+📧 For further details, please contact us at [info@merci-unimind.ai](mailto:info@merci-unimind.ai).
 
 ### ☁️ Cloud Version
 
-For teams who prefer managed infrastructure, we also offer a cloud platform. The fastest way to experience Nova's multi-agent AI capabilities without setup complexity. We'll host the models, APIs, and cloud storage, ensuring Nova runs flawlessly.
+For teams who prefer managed infrastructure, we also offer a cloud platform. The fastest way to experience M3RCI - UniMind's multi-agent AI capabilities without setup complexity. We'll host the models, APIs, and cloud storage, ensuring M3RCI - UniMind runs flawlessly.
 
 - **Instant Access** - Start building multi-agent workflows in minutes.
 - **Managed Infrastructure** - We handle scaling, updates, and maintenance.
@@ -150,58 +150,58 @@ For teams who prefer managed infrastructure, we also offer a cloud platform. The
 
 <br/>
 
-[![image-public-beta]][nova-download]
+[![image-public-beta]][merci-unimind-download]
 
 <div align="right">
-<a href="https://www.merci-unimind.ai/download">Get started at Nova.ai →</a>
+<a href="https://www.merci-unimind.ai/download">Get started at M3RCI - UniMind →</a>
 </div>
 
 ## **✨ Key features - Open Source Cowork**
 
-Unlock the full potential of exceptional productivity with Nova's open-source Cowork powerful features — built for seamless integration, smarter task execution, and boundless automation.
+Unlock the full potential of exceptional productivity with M3RCI - UniMind's open-source Cowork powerful features — built for seamless integration, smarter task execution, and boundless automation.
 
 ### 🏭 Workforce
 
-Employs a team of specialized AI agents that collaborate to solve complex tasks. Nova's open-source Cowork dynamically breaks down tasks and activates multiple agents to work **in parallel.**
+Employs a team of specialized AI agents that collaborate to solve complex tasks. M3RCI - UniMind's open-source Cowork dynamically breaks down tasks and activates multiple agents to work **in parallel.**
 
-Nova pre-defined the following agent workers:
+M3RCI - UniMind pre-defined the following agent workers:
 
 - **Developer Agent:** Writes and executes code, runs terminal commands.
 - **Browser Agent:** Searches the web and extracts content.
 - **Document Agent:** Creates and manages documents.
 - **Multi-Modal Agent:** Processes images and audio.
 
-![Workforce](https://nova-ai.github.io/.github/assets/gif/feature_dynamic_workforce.gif)
+![Workforce](https://merci-unimind.github.io/.github/assets/gif/feature_dynamic_workforce.gif)
 
 <br/>
 
 ### 🧠 Comprehensive Model Support
 
-Deploy the Nova open-source Cowork desktop locally with your preferred models.
+Deploy the M3RCI - UniMind open-source Cowork desktop locally with your preferred models.
 
-![Model](https://nova-ai.github.io/.github/assets/gif/feature_local_model.gif)
+![Model](https://merci-unimind.github.io/.github/assets/gif/feature_local_model.gif)
 
 <br/>
 
 ### 🔌 MCP Tools Integration (MCP)
 
-Nova comes with massive built-in **Model Context Protocol (MCP)** tools (for web browsing, code execution, Notion, Google suite, Slack etc.), and also lets you **install your own tools**. Equip agents with exactly the right tools for your scenarios – even integrate internal APIs or custom functions – to enhance their capabilities.
+M3RCI - UniMind comes with massive built-in **Model Context Protocol (MCP)** tools (for web browsing, code execution, Notion, Google suite, Slack etc.), and also lets you **install your own tools**. Equip agents with exactly the right tools for your scenarios – even integrate internal APIs or custom functions – to enhance their capabilities.
 
-![MCP](https://nova-ai.github.io/.github/assets/gif/feature_add_mcps.gif)
+![MCP](https://merci-unimind.github.io/.github/assets/gif/feature_add_mcps.gif)
 
 <br/>
 
 ### ✋ Human-in-the-Loop
 
-If a task gets stuck or encounters uncertainty, Nova will automatically request human input.
+If a task gets stuck or encounters uncertainty, M3RCI - UniMind will automatically request human input.
 
-![Human-in-the-loop](https://nova-ai.github.io/.github/assets/gif/feature_human_in_the_loop.gif)
+![Human-in-the-loop](https://merci-unimind.github.io/.github/assets/gif/feature_human_in_the_loop.gif)
 
 <br/>
 
 ### 👐 100% Open Source
 
-Nova is completely open-sourced. You can download, inspect, and modify the code, ensuring transparency and fostering a community-driven ecosystem for multi-agent innovation.
+M3RCI - UniMind is completely open-sourced. You can download, inspect, and modify the code, ensuring transparency and fostering a community-driven ecosystem for multi-agent innovation.
 
 ![Opensource][image-opensource]
 
@@ -209,7 +209,7 @@ Nova is completely open-sourced. You can download, inspect, and modify the code,
 
 ## 🧩 Use Cases - Open Source Cowork
 
-Discover how developers worldwide leverage Nova's open-source Cowork capabilities to automate complex workflows and boost productivity across diverse industries.
+Discover how developers worldwide leverage M3RCI - UniMind's open-source Cowork capabilities to automate complex workflows and boost productivity across diverse industries.
 
 ### 1. Palm Springs Tennis Trip Itinerary with Slack Summary [Replay ▶️](https://www.merci-unimind.ai/download?share_token=IjE3NTM0MzUxNTEzMzctNzExMyI.aIeysw.MUeG6ZcBxI1GqvPDvn4dcv-CDWw__1753435151337-7113)
 
@@ -288,7 +288,7 @@ Please add this signature image to the Signature Areas in the PDF. You could ins
 
 ## 🛠️ Tech Stack
 
-Nova open-source Cowork desktop is built on modern, reliable technologies that ensure scalability, performance, and extensibility.
+M3RCI - UniMind open-source Cowork desktop is built on modern, reliable technologies that ensure scalability, performance, and extensibility.
 
 ### Backend
 
@@ -311,7 +311,7 @@ Nova open-source Cowork desktop is built on modern, reliable technologies that e
 
 > [!IMPORTANT]
 >
-> **Star Nova**, You will receive all release notifications from GitHub without any delay ~ ⭐️
+> **Star M3RCI - UniMind**, You will receive all release notifications from GitHub without any delay ~ ⭐️
 
 ![][image-star-us]
 
@@ -331,12 +331,12 @@ Our open-source Cowork continues to evolve with input from the community. Here's
 
 ## [🤝 Contributing][contribution-link]
 
-We believe in building trust and embracing all forms of open-source collaborations. Your creative contributions help drive the innovation of `Nova`. Explore our GitHub issues and projects to dive in and show us what you’ve got 🤝❤️ [Contribution Guideline][contribution-link]
+We believe in building trust and embracing all forms of open-source collaborations. Your creative contributions help drive the innovation of `M3RCI - UniMind`. Explore our GitHub issues and projects to dive in and show us what you’ve got 🤝❤️ [Contribution Guideline][contribution-link]
 
 ## Contributors
 
 <a href="https://github.com/N0M3RCi/open-web-ui-style/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=nova-ai/nova" />
+  <img src="https://contrib.rocks/image?repo=N0M3RCi/open-web-ui-style" />
 </a>
 
 Made with [contrib.rocks](https://contrib.rocks).
@@ -345,7 +345,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 ## [❤️ Sponsor][sponsor-link]
 
-Nova is built on top of [CAMEL-AI.org][camel-ai-org-github]'s research and infrastructures. [Sponsoring CAMEL-AI.org][sponsor-link] will make `Nova` better.
+M3RCI - UniMind is built on top of [CAMEL-AI.org][camel-ai-org-github]'s research and infrastructures. [Sponsoring CAMEL-AI.org][sponsor-link] will make `M3RCI - UniMind` better.
 
 ## **📄 Open Source License**
 
@@ -353,7 +353,7 @@ This repository is licensed under the [Apache License 2.0](LICENSE).
 
 ## 🌐 Community & Contact
 
-For more information please contact info@nova.ai
+For more information please contact info@merci-unimind.ai
 
 - **GitHub Issues:** Report bugs, request features, and track development. [Submit an issue][github-issue-link]
 
@@ -371,7 +371,7 @@ For more information please contact info@nova.ai
 
 <!-- Social -->
 
-<!-- camel & nova -->
+<!-- camel & merci-unimind -->
 
 <!-- marketing -->
 
@@ -384,25 +384,25 @@ For more information please contact info@nova.ai
 [contribution-link]: https://github.com/N0M3RCi/open-web-ui-style/blob/main/CONTRIBUTING.md
 [discord-image]: https://img.shields.io/discord/1082486657678311454?logo=discord&labelColor=%20%235462eb&logoColor=%20%23f5f5f5&color=%20%235462eb
 [discord-url]: https://discord.com/invite/CNcNpquyDc
-[docs-site]: https://docs.nova.ai
-[download-shield]: https://img.shields.io/badge/Download%20Nova-363AF5?style=plastic
-[nova-download]: https://www.merci-unimind.ai/download
-[nova-github]: https://github.com/N0M3RCi/open-web-ui-style
-[nova-site]: https://www.merci-unimind.ai
+[docs-site]: https://docs.merci-unimind.ai
+[download-shield]: https://img.shields.io/badge/Download%20M3RCI-363AF5?style=plastic
+[merci-unimind-download]: https://www.merci-unimind.ai/download
+[merci-unimind-github]: https://github.com/N0M3RCi/open-web-ui-style
+[merci-unimind-site]: https://www.merci-unimind.ai
 [github-issue-link]: https://github.com/N0M3RCi/open-web-ui-style/issues
-[github-star]: https://img.shields.io/github/stars/nova-ai?color=F5F4F0&labelColor=gray&style=plastic&logo=github
-[image-head]: https://nova-ai.github.io/.github/assets/head.png
+[github-star]: https://img.shields.io/github/stars/N0M3RCi/open-web-ui-style?color=F5F4F0&labelColor=gray&style=plastic&logo=github
+[image-head]: https://merci-unimind.github.io/.github/assets/head.png
 [image-join-us]: https://camel-ai.github.io/camel_asset/graphics/join_us.png
-[image-opensource]: https://nova-ai.github.io/.github/assets/opensource.png
-[image-public-beta]: https://nova-ai.github.io/.github/assets/banner.png
-[image-seperator]: https://nova-ai.github.io/.github/assets/seperator.png
-[image-star-us]: https://nova-ai.github.io/.github/assets/star-us.gif
-[join-us]: https://nova-ai.notion.site/nova-ai-careers
+[image-opensource]: https://merci-unimind.github.io/.github/assets/opensource.png
+[image-public-beta]: https://merci-unimind.github.io/.github/assets/banner.png
+[image-seperator]: https://merci-unimind.github.io/.github/assets/seperator.png
+[image-star-us]: https://merci-unimind.github.io/.github/assets/star-us.gif
+[join-us]: https://merci-unimind.notion.site/merci-unimind-careers
 [join-us-image]: https://img.shields.io/badge/Join%20Us-yellow?style=plastic
 [reddit-image]: https://img.shields.io/reddit/subreddit-subscribers/CamelAI?style=plastic&logo=reddit&label=r%2FCAMEL&labelColor=white
 [reddit-url]: https://www.reddit.com/r/CamelAI/
-[social-x-link]: https://x.com/Nova_AI
-[social-x-shield]: https://img.shields.io/badge/-%40Nova_AI-white?labelColor=gray&logo=x&logoColor=white&style=plastic
+[social-x-link]: https://x.com/N0M3RCi
+[social-x-shield]: https://img.shields.io/badge/-%40N0M3RCi-white?labelColor=gray&logo=x&logoColor=white&style=plastic
 [sponsor-link]: https://github.com/sponsors/camel-ai
 [sponsor-shield]: https://img.shields.io/badge/-Sponsor%20CAMEL--AI-1d1d1d?logo=github&logoColor=white&style=plastic
 [wechat-image]: https://img.shields.io/badge/WeChat-CamelAIOrg-brightgreen?logo=wechat&logoColor=white

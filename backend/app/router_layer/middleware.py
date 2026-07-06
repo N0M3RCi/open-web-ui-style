@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 """Channel/Session header middleware for Phase 2 Message Router."""
 
@@ -84,11 +84,11 @@ class ChannelSessionMiddleware:
         session_id = _get_header(scope, "X-Session-ID")
         user_id = _get_header(scope, "X-User-ID")
         hands_override = _get_header(scope, "X-Hands-Override")
-        debug_override_enabled = _is_truthy(env("NOVA_DEBUG", "false"))
+        debug_override_enabled = _is_truthy(env("MERCI_DEBUG", "false"))
 
         if hands_override and not debug_override_enabled:
             logger.warning(
-                "Ignoring X-Hands-Override because NOVA_DEBUG is disabled"
+                "Ignoring X-Hands-Override because MERCI_DEBUG is disabled"
             )
             hands_override = None
 

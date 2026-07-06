@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import logging
 import os
@@ -39,7 +39,7 @@ class GoogleCalendarToolkit(BaseGoogleCalendarToolkit, AbstractToolkit):
         # Can be overridden by env.
         self._token_path = env("GOOGLE_CALENDAR_TOKEN_PATH") or os.path.join(
             os.path.expanduser("~"),
-            ".nova",
+            ".merci",
             "tokens",
             "google_calendar",
             "google_calendar_token.json",
@@ -50,7 +50,7 @@ class GoogleCalendarToolkit(BaseGoogleCalendarToolkit, AbstractToolkit):
     def _build_canonical_token_path(cls) -> str:
         return env("GOOGLE_CALENDAR_TOKEN_PATH") or os.path.join(
             os.path.expanduser("~"),
-            ".nova",
+            ".merci",
             "tokens",
             "google_calendar",
             "google_calendar_token.json",
@@ -274,7 +274,7 @@ class GoogleCalendarToolkit(BaseGoogleCalendarToolkit, AbstractToolkit):
                         "<h1>Authorization successful!"
                         "</h1><p>You can close this "
                         "window and return to "
-                        "Nova.</p>"
+                        "M3RCI - UniMind.</p>"
                     )
                     creds = flow.run_local_server(
                         port=0,
@@ -297,7 +297,7 @@ class GoogleCalendarToolkit(BaseGoogleCalendarToolkit, AbstractToolkit):
                 # Save credentials to token file
                 token_path = env("GOOGLE_CALENDAR_TOKEN_PATH") or os.path.join(
                     os.path.expanduser("~"),
-                    ".nova",
+                    ".merci",
                     "tokens",
                     "google_calendar",
                     "google_calendar_token.json",

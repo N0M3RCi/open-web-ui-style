@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-The following versions of Nova are currently being supported with security updates:
+The following versions of M3RCI - UniMind are currently being supported with security updates:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -11,11 +11,11 @@ The following versions of Nova are currently being supported with security updat
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Nova, please report it responsibly:
+If you discover a security vulnerability in M3RCI - UniMind, please report it responsibly:
 
 ### How to Report
 
-- **Email**: Send details to info@nova.ai
+- **Email**: Send details to info@merci-unimind.ai
 - **GitHub**: Use GitHub's private security advisory feature
 - **Include**: Detailed description, steps to reproduce, and potential impact
 

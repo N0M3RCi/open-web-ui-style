@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import asyncio
 import logging
@@ -172,15 +172,15 @@ class Workforce(BaseWorkforce):
             quality_score=80,
         )
 
-    def nova_make_sub_tasks(
+    def merci_make_sub_tasks(
         self,
         task: Task,
         coordinator_context: str = "",
         on_stream_batch=None,
         on_stream_text=None,
     ):
-        """Split process_task method to nova_make_sub_tasks
-        and nova_start method.
+        """Split process_task method to merci_make_sub_tasks
+        and merci_start method.
 
         Args:
             task: The main task to decompose
@@ -193,7 +193,7 @@ class Workforce(BaseWorkforce):
                 streaming text chunks
         """
         logger.debug(
-            "[DECOMPOSE] nova_make_sub_tasks called",
+            "[DECOMPOSE] merci_make_sub_tasks called",
             extra={"api_task_id": self.api_task_id, "task_id": task.id},
         )
 
@@ -236,11 +236,11 @@ class Workforce(BaseWorkforce):
         )
         return subtasks
 
-    async def nova_start(self, subtasks: list[Task]):
+    async def merci_start(self, subtasks: list[Task]):
         """start the workforce"""
         logger.debug(
             (
-                f"[WF-LIFECYCLE] nova_start called with "
+                f"[WF-LIFECYCLE] merci_start called with "
                 f"{len(subtasks)} subtasks"
             ),
             extra={"api_task_id": self.api_task_id},

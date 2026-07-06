@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 """Unit tests for Chat and AgentModelConfig model configuration."""
 
 import json
@@ -168,14 +168,14 @@ class TestChatSkillConfigUserId:
     def test_skill_config_user_id_prefers_canonical_user_dir(
         self, tmp_path, monkeypatch
     ):
-        nova_root = tmp_path / ".nova"
+        nova_root = tmp_path / ".merci"
         legacy_dir = nova_root / "alice"
         legacy_dir.mkdir(parents=True)
         (legacy_dir / "skills-config.json").write_text(
             json.dumps({"version": 1, "skills": {"pdf": {"enabled": False}}}),
             encoding="utf-8",
         )
-        monkeypatch.setattr(skill_config_service, "NOVA_ROOT", nova_root)
+        monkeypatch.setattr(skill_config_service, "MERCI_ROOT", nova_root)
 
         chat = Chat(
             task_id="task-1",
@@ -207,7 +207,7 @@ class TestChatSkillConfigUserId:
 
 
 class TestIsCloud:
-    """Tests for Chat.is_cloud detection of nova-managed proxy URLs."""
+    """Tests for Chat.is_cloud detection of merci-managed proxy URLs."""
 
     def _chat_with_url(self, api_url: str | None) -> Chat:
         return Chat(
@@ -223,13 +223,13 @@ class TestIsCloud:
 
     def test_is_cloud_matches_legacy_hyphenated_host(self):
         assert self._chat_with_url(
-            "https://nova-proxy.example.com"
+            "https://merci-proxy.example.com"
         ).is_cloud()
 
     def test_is_cloud_matches_current_proxy_host(self):
-        # `proxy.nova.ai` is the actual prod/dev hostname (no hyphen).
-        assert self._chat_with_url("https://proxy.nova.ai").is_cloud()
-        assert self._chat_with_url("https://proxy.nova.ai/").is_cloud()
+        # `proxy.merci-unimind.ai` is the actual prod/dev hostname (no hyphen).
+        assert self._chat_with_url("https://proxy.merci-unimind.ai").is_cloud()
+        assert self._chat_with_url("https://proxy.merci-unimind.ai/").is_cloud()
 
     def test_is_cloud_false_for_user_configured_endpoints(self):
         assert not self._chat_with_url("https://api.openai.com/v1").is_cloud()
@@ -264,7 +264,7 @@ class TestFileSavePath:
 
         assert resolved == (
             tmp_path
-            / "nova"
+            / ".merci"
             / "user_42"
             / "project_project-1"
             / "task_run-1"
@@ -276,7 +276,7 @@ class TestFileSavePath:
     ):
         monkeypatch.setattr(Path, "home", lambda: tmp_path)
         legacy_path = (
-            tmp_path / "nova" / "alice" / "project_project-1" / "task_run-1"
+            tmp_path / ".merci" / "alice" / "project_project-1" / "task_run-1"
         )
         legacy_path.mkdir(parents=True)
 
@@ -289,7 +289,7 @@ class TestFileSavePath:
     ):
         monkeypatch.setattr(Path, "home", lambda: tmp_path)
         legacy_path = (
-            tmp_path / "nova" / "alice" / "project_project-1" / "task_run-1"
+            tmp_path / ".merci" / "alice" / "project_project-1" / "task_run-1"
         )
         legacy_path.mkdir(parents=True)
 

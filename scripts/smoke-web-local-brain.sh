@@ -66,9 +66,9 @@ assert_html_doc() {
 echo "[smoke] starting backend on ${BRAIN_HOST}:${BRAIN_PORT}"
 (
   cd "${ROOT_DIR}/backend"
-  NOVA_BRAIN_HOST="${BRAIN_HOST}" \
-  NOVA_BRAIN_PORT="${BRAIN_PORT}" \
-  NOVA_DEBUG="false" \
+  MERCI_BRAIN_HOST="${BRAIN_HOST}" \
+  MERCI_BRAIN_PORT="${BRAIN_PORT}" \
+  MERCI_DEBUG="false" \
   uv run python main.py >"${BACKEND_LOG}" 2>&1
 ) &
 BACKEND_PID=$!
