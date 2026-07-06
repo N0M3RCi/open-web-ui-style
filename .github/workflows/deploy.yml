@@ -1,0 +1,50 @@
+name: Deploy to VPS
+
+'on':
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to fastvps.hosting
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build web app
+        run: |
+          npm ci --ignore-scripts
+          npm run build:web
+
+      - name: Deploy via rsync over SSH
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
+          ARGS: '-rlgoDzvc -i --delete'
+          SOURCE: 'dist-web/'
+          REMOTE_HOST: ${{ secrets.VPS_HOST }}
+          REMOTE_USER: ${{ secrets.VPS_USER }}
+          TARGET: ${{ secrets.VPS_TARGET_DIR }}
+
+      - name: Restart app on VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            echo "=== Post-deploy steps ==="
+
+            # Install deps if package.json changed
+            cd ${{ secrets.VPS_TARGET_DIR }}
+            npm ci --ignore-scripts
+
+            echo "Deploy finished at $(date)"
