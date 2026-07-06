@@ -40,7 +40,7 @@ You can configure more than one provider and change the preferred model later.
 1. Clone the Nova repository:
 
    ```bash
-   git clone https://github.com/nova-ai/nova.git
+   git clone https://github.com/N0M3RCi/open-web-ui-style.git
    cd nova
    ```
 

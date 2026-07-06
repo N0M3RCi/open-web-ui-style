@@ -109,14 +109,14 @@ Product documentation lives in `docs/`.
 ## Community and support
 
 <CardGroup cols={3}>
-  <Card title="GitHub Issues" icon="github" href="https://github.com/nova-ai/nova/issues">
+  <Card title="GitHub Issues" icon="github" href="https://github.com/N0M3RCi/open-web-ui-style/issues">
     Report reproducible bugs and feature requests. Please include Nova version, operating system, deployment mode, model provider, reproduction steps, expected and actual behavior, and sanitized logs.
   </Card>
   <Card title="Discord Community" icon="discord" href="https://discord.camel-ai.org/">
     Join our Discord community to ask questions, share ideas, and connect with other Nova users and contributors.
   </Card>
-  <Card title="Email" icon="envelope" href="mailto:info@nova.ai">
-    Reach out to us at info@nova.ai for general inquiries and support.
+  <Card title="Email" icon="envelope" href="mailto:merci-unimind@proton.me">
+    Reach out to us at merci-unimind@proton.me for general inquiries and support.
   </Card>
 </CardGroup>
 

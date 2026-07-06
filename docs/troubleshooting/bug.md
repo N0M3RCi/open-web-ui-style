@@ -16,7 +16,7 @@ description: 'Follow these simple steps to report bugs and help improve our prod
 1. Click **Save diagnostics and open email**
 1. Choose where to save the **diagnostics ZIP** (it includes app logs and a `bug_report.txt` file)
 
-Your default email app opens addressed to **info@nova.ai** with a pre-filled message.
+Your default email app opens addressed to **merci-unimind@proton.me** with a pre-filled message.
 
 ### Step 3: Send the email
 
@@ -39,7 +39,7 @@ Your default email app opens addressed to **info@nova.ai** with a pre-filled mes
 
 Developers and technical users are welcome to report issues directly through our GitHub issues:
 
-- **Repository URL**: https://github.com/nova-ai/nova
+- **Repository URL**: https://github.com/N0M3RCi/open-web-ui-style
 - Submit detailed issues with reproduction steps
 
 **Optional:** In the same **Report a bug** dialog, use **Download logs** to save a single log file (without the full diagnostics ZIP).

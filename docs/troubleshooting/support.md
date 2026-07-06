@@ -3,7 +3,7 @@ title: Support
 description: Find answers to frequently asked questions.
 ---
 
-For account and billing questions, email our support team at [info@nova.ai](mailto:info@nova.ai).
+For account and billing questions, email our support team at [merci-unimind@proton.me](mailto:merci-unimind@proton.me).
 
 Nova offers flexible plans for every type of user, from individuals to large enterprises. Our services are divided into two main categories: Cloud and Self-Hosted.
 
@@ -21,11 +21,11 @@ Our Cloud Service is a subscription-based offering that gives you access to Nova
 > _Unused Credits from your monthly plan allowance do not roll over to the next month._
 > _Credits from Add-On Packages will carry over to subsequent billing cycles._
 >
-> _See your Credits Usage directly in Settings → Account → [Manage](https://www.nova.ai/dashboard)._
+> _See your Credits Usage directly in Settings → Account → [Manage](https://www.merci-unimind.ai/dashboard)._
 
 ### Self-Hosted Service
 
-For users who require more control, privacy, and customization, we offer self-hosted solutions. To view more open-source information, please visit [GitHub](https://github.com/nova-ai/nova).
+For users who require more control, privacy, and customization, we offer self-hosted solutions. To view more open-source information, please visit [GitHub](https://github.com/N0M3RCi/open-web-ui-style).
 
 - **Free:** Designed for individual users, open-source developers, small teams, or non-commercial projects. This plan requires you to host your own models and provide your own API keys.
 
@@ -33,7 +33,7 @@ For users who require more control, privacy, and customization, we offer self-ho
 
 - **Custom:** A bespoke solution for enterprise clients with specific needs for features, support, security and control.
 
-For inquiries about our Scalable and Custom plans, please please refer to our [**License**](https://github.com/nova-ai/nova) or email us at **info@nova.ai**.
+For inquiries about our Scalable and Custom plans, please please refer to our [**License**](https://github.com/N0M3RCi/open-web-ui-style) or email us at **merci-unimind@proton.me**.
 
 ## Credits & Billing
 
@@ -82,7 +82,7 @@ If your balance becomes negative, it will be displayed as **0**. This means your
 - You can cancel any subscription or Add-On Pack purchase within 7 days for a full refund.
   - Plan resets to Free and billing cycle resets to registration date.
   - Credits balance re‑computed according to Free‑tier rules.
-- How do I cancel my subscription? Please contact **info@nova.ai.**
+- How do I cancel my subscription? Please contact **merci-unimind@proton.me.**
 - You can download invoices from the payment confirmation email sent to your registered email address.
 
-For any questions about your bill or account status, email us anytime at [info@nova.ai](mailto:info@nova.ai).
+For any questions about your bill or account status, email us anytime at [merci-unimind@proton.me](mailto:merci-unimind@proton.me).

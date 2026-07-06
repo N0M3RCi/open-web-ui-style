@@ -221,7 +221,7 @@ At Nova, we manage our project through a structured workflow that ensures effici
 
 #### Issue Item Stage
 
-Our [issues](https://github.com/nova-ai/nova/issues) page on GitHub is regularly updated with bugs, improvements, and feature requests. We have a handy set of labels to help you sort through and find issues that interest you. Feel free to use these labels to keep things organized.
+Our [issues](https://github.com/N0M3RCi/open-web-ui-style/issues) page on GitHub is regularly updated with bugs, improvements, and feature requests. We have a handy set of labels to help you sort through and find issues that interest you. Feel free to use these labels to keep things organized.
 
 When you start working on an issue, please assign it to yourself so that others know it's being taken care of.
 
@@ -231,14 +231,14 @@ We do our best to keep these issues up to date, but considering the fast-paced n
 
 Here’s how to engage with our issues effectively:
 
-- Go to [GitHub Issues](https://github.com/nova-ai/nova/issues), create a new issue, choose the category, and fill in the required information.
+- Go to [GitHub Issues](https://github.com/N0M3RCi/open-web-ui-style/issues), create a new issue, choose the category, and fill in the required information.
 - Ensure the issue has a proper title and update the Assignees, Labels, Projects (select Backlog status), Development, and Milestones.
 - Discuss the issue during team meetings, then move it to the Analysis Done column.
 - At the beginning of each sprint, share the analyzed issue and move it to the Sprint Planned column if you are going to work on this issue in the sprint.
 
 #### Pull Request Item Stage
 
-- Go to [GitHub Pulls](https://github.com/nova-ai/nova/pulls), create a new PR, choose the branch, and fill in the information, linking the related issue.
+- Go to [GitHub Pulls](https://github.com/N0M3RCi/open-web-ui-style/pulls), create a new PR, choose the branch, and fill in the information, linking the related issue.
 - Ensure the PR has a proper title and update the Reviewers (convert to draft), Assignees, Labels, Projects (select Developing status), Development, and Milestones.
 - If the PR is related to a roadmap, link the roadmap to the PR.
 - Move the PR item through the stages: Developing, Stuck, Reviewing (click ready for review), Merged. The linked issue will close automatically when the PR is merged.
@@ -260,7 +260,7 @@ Our aim is to make the developer setup as straightforward as possible. If you en
 ## Quick Start 🚀
 
 ```bash
-git clone https://github.com/nova-ai/nova.git
+git clone https://github.com/N0M3RCi/open-web-ui-style.git
 cd nova
 npm install
 npm run dev

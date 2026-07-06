@@ -109,7 +109,7 @@ For a quick preview using our cloud backend — get started in seconds:
 #### Steps
 
 ```bash
-git clone https://github.com/nova-ai/nova.git
+git clone https://github.com/N0M3RCi/open-web-ui-style.git
 cd nova
 npm install
 npm run dev
@@ -153,7 +153,7 @@ For teams who prefer managed infrastructure, we also offer a cloud platform. The
 [![image-public-beta]][nova-download]
 
 <div align="right">
-<a href="https://www.nova.ai/download">Get started at Nova.ai →</a>
+<a href="https://www.merci-unimind.ai/download">Get started at Nova.ai →</a>
 </div>
 
 ## **✨ Key features - Open Source Cowork**
@@ -211,7 +211,7 @@ Nova is completely open-sourced. You can download, inspect, and modify the code,
 
 Discover how developers worldwide leverage Nova's open-source Cowork capabilities to automate complex workflows and boost productivity across diverse industries.
 
-### 1. Palm Springs Tennis Trip Itinerary with Slack Summary [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM0MzUxNTEzMzctNzExMyI.aIeysw.MUeG6ZcBxI1GqvPDvn4dcv-CDWw__1753435151337-7113)
+### 1. Palm Springs Tennis Trip Itinerary with Slack Summary [Replay ▶️](https://www.merci-unimind.ai/download?share_token=IjE3NTM0MzUxNTEzMzctNzExMyI.aIeysw.MUeG6ZcBxI1GqvPDvn4dcv-CDWw__1753435151337-7113)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>We are two tennis fans and want to go see the tennis tournament ... <kbd></summary>
@@ -221,7 +221,7 @@ We are two tennis fans and want to go see the tennis tournament in Palm Springs 
 
 <br>
 
-### 2. Generate Q2 Report from CSV Bank Data [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM1MjY4OTE4MDgtODczOSI.aIjJmQ.WTdoX9mATwrcBr_w53BmGEHPo8U__1753526891808-8739)
+### 2. Generate Q2 Report from CSV Bank Data [Replay ▶️](https://www.merci-unimind.ai/download?share_token=IjE3NTM1MjY4OTE4MDgtODczOSI.aIjJmQ.WTdoX9mATwrcBr_w53BmGEHPo8U__1753526891808-8739)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>Please help me prepare a Q2 financial statement based on my bank ... <kbd></summary>
@@ -231,7 +231,7 @@ Please help me prepare a Q2 financial statement based on my bank transfer record
 
 <br>
 
-### 3. UK Healthcare Market Research Report Automation [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTMzOTM1NTg3OTctODcwNyI.aIey-Q.Jh9QXzYrRYarY0kz_qsgoj3ewX0__1753393558797-8707)
+### 3. UK Healthcare Market Research Report Automation [Replay ▶️](https://www.merci-unimind.ai/download?share_token=IjE3NTMzOTM1NTg3OTctODcwNyI.aIey-Q.Jh9QXzYrRYarY0kz_qsgoj3ewX0__1753393558797-8707)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>Analyze the UK healthcare industry to support the planning ... <kbd></summary>
@@ -241,7 +241,7 @@ Analyze the UK healthcare industry to support the planning of my next company. P
 
 <br>
 
-### 4. German Electric Skateboard Market Feasibility [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM2NTI4MjY3ODctNjk2Ig.aIjGiA.t-qIXxk_BZ4ENqa-yVIm0wMVyXU__1753652826787-696)
+### 4. German Electric Skateboard Market Feasibility [Replay ▶️](https://www.merci-unimind.ai/download?share_token=IjE3NTM2NTI4MjY3ODctNjk2Ig.aIjGiA.t-qIXxk_BZ4ENqa-yVIm0wMVyXU__1753652826787-696)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>We are a company that produces high-end electric skateboards ... <kbd></summary>
@@ -256,7 +256,7 @@ We are a company that produces high-end electric skateboards, and we are conside
 
 <br>
 
-### 5. SEO Audit for Workforce Multiagent Launch [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM2OTk5NzExNDQtNTY5NiI.aIex0w.jc_NIPmfIf9e3zGt-oG9fbMi3K4__1753699971144-5696)
+### 5. SEO Audit for Workforce Multiagent Launch [Replay ▶️](https://www.merci-unimind.ai/download?share_token=IjE3NTM2OTk5NzExNDQtNTY5NiI.aIex0w.jc_NIPmfIf9e3zGt-oG9fbMi3K4__1753699971144-5696)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>To support the launch of our new Workforce Multiagent product ... <kbd></summary>
@@ -266,7 +266,7 @@ To support the launch of our new Workforce Multiagent product, please run a thor
 
 <br>
 
-### 6. Identify Duplicate Files in Downloads [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM3NjAzODgxNzEtMjQ4Ig.aIhKLQ.epOG--0Nj0o4Bqjtdqm9OZdaqRQ__1753760388171-248)
+### 6. Identify Duplicate Files in Downloads [Replay ▶️](https://www.merci-unimind.ai/download?share_token=IjE3NTM3NjAzODgxNzEtMjQ4Ig.aIhKLQ.epOG--0Nj0o4Bqjtdqm9OZdaqRQ__1753760388171-248)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>I have a folder named mydocs inside my Documents directory ... <kbd></summary>
@@ -276,7 +276,7 @@ I have a folder named mydocs inside my Documents directory. Please scan it and i
 
 <br>
 
-### 7. Add Signature to PDF [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTQwOTU0ODM0NTItNTY2MSI.aJCHrA.Mg5yPOFqj86H_GQvvRNditzepXc__1754095483452-5661)
+### 7. Add Signature to PDF [Replay ▶️](https://www.merci-unimind.ai/download?share_token=IjE3NTQwOTU0ODM0NTItNTY2MSI.aJCHrA.Mg5yPOFqj86H_GQvvRNditzepXc__1754095483452-5661)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>Please add this signature image to the Signature Areas in the PDF ... <kbd></summary>
@@ -335,7 +335,7 @@ We believe in building trust and embracing all forms of open-source collaboratio
 
 ## Contributors
 
-<a href="https://github.com/nova-ai/nova/graphs/contributors">
+<a href="https://github.com/N0M3RCi/open-web-ui-style/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=nova-ai/nova" />
 </a>
 
@@ -381,15 +381,15 @@ For more information please contact info@nova.ai
 [camel-ai-org-github]: https://github.com/camel-ai
 [camel-github]: https://github.com/camel-ai/camel
 [camel-site]: https://www.camel-ai.org
-[contribution-link]: https://github.com/nova-ai/nova/blob/main/CONTRIBUTING.md
+[contribution-link]: https://github.com/N0M3RCi/open-web-ui-style/blob/main/CONTRIBUTING.md
 [discord-image]: https://img.shields.io/discord/1082486657678311454?logo=discord&labelColor=%20%235462eb&logoColor=%20%23f5f5f5&color=%20%235462eb
 [discord-url]: https://discord.com/invite/CNcNpquyDc
 [docs-site]: https://docs.nova.ai
 [download-shield]: https://img.shields.io/badge/Download%20Nova-363AF5?style=plastic
-[nova-download]: https://www.nova.ai/download
-[nova-github]: https://github.com/nova-ai/nova
-[nova-site]: https://www.nova.ai
-[github-issue-link]: https://github.com/nova-ai/nova/issues
+[nova-download]: https://www.merci-unimind.ai/download
+[nova-github]: https://github.com/N0M3RCi/open-web-ui-style
+[nova-site]: https://www.merci-unimind.ai
+[github-issue-link]: https://github.com/N0M3RCi/open-web-ui-style/issues
 [github-star]: https://img.shields.io/github/stars/nova-ai?color=F5F4F0&labelColor=gray&style=plastic&logo=github
 [image-head]: https://nova-ai.github.io/.github/assets/head.png
 [image-join-us]: https://camel-ai.github.io/camel_asset/graphics/join_us.png
