@@ -87,6 +87,7 @@ export default function History() {
     }
   };
 
+  const hour = new Date().getHours();
   const timeGreetingKey =
     hour >= 5 && hour < 12
       ? 'layout.greeting-morning'
