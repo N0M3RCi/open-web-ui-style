@@ -14,30 +14,17 @@
 
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/authStore';
-import { useStackApp } from '@stackframe/react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { proxyFetchGet, proxyFetchPost } from '@/api/http';
+import { proxyFetchPost } from '@/api/http';
 import WindowControls from '@/components/WindowControls';
-import { useHost } from '@/host';
-import {
-  DESKTOP_LOGIN_CALLBACK_URL,
-  getExternalLoginUrl,
-  getWebLoginCallbackUrl,
-} from '@/pages/loginUtils';
 import { useTranslation } from 'react-i18next';
 
 import background from '@/assets/custom/background.png';
 import eigentLogo from '@/assets/logo/eigent_icon.png';
 
-const IS_LOCAL_MODE = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
-let lock = false;
-
 export default function Login() {
-  const host = useHost();
-  // Always call hooks unconditionally - React Hooks must be called in the same order
-  const _stackApp = useStackApp();
   const {
     setAuth,
     setModelType,
@@ -50,10 +37,7 @@ export default function Login() {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [generalError, setGeneralError] = useState('');
-  const [callbackUrl, setCallbackUrl] = useState<string | null>(null);
   const titlebarRef = useRef<HTMLDivElement>(null);
-  const handledWebTokenRef = useRef<string | null>(null);
-  const isDesktopHost = !!host?.ipcRenderer && !!host?.electronAPI;
   const redirectTo =
     new URLSearchParams(location.search).get('redirect') || '/';
 
@@ -96,7 +80,7 @@ export default function Login() {
     [t]
   );
 
-  // Auto login for local mode - calls /api/v1/user/auto-login
+  // Auto login
   const handleAutoLogin = async () => {
     setGeneralError('');
     setIsLoading(true);
@@ -123,313 +107,15 @@ export default function Login() {
     }
   };
 
-  // Hybrid/app mode: handle Stack Auth callback (reuse existing OAuth flow)
-  const handleLoginByStack = useCallback(
-    async (token: string) => {
-      try {
-        const data = await proxyFetchPost(
-          '/api/v1/login-by_stack?token=' + token,
-          {
-            token: token,
-          }
-        );
-
-        const errorMessage = getLoginErrorMessage(data);
-        if (errorMessage) {
-          setGeneralError(errorMessage);
-          return;
-        }
-        setModelType('cloud');
-        setAuth({ email: data.email, ...data });
-        const localProxyValue = import.meta.env.VITE_USE_LOCAL_PROXY || null;
-        setLocalProxyValue(localProxyValue);
-        navigate(redirectTo, { replace: true });
-      } catch (error: any) {
-        console.error('Login failed:', error);
-        setGeneralError(
-          t('layout.login-failed-please-check-your-email-and-password')
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [
-      navigate,
-      setAuth,
-      setModelType,
-      setLocalProxyValue,
-      setGeneralError,
-      setIsLoading,
-      redirectTo,
-      getLoginErrorMessage,
-      t,
-    ]
-  );
-
-  const handleGetToken = useCallback(
-    async (code: string) => {
-      const code_verifier = localStorage.getItem('stack-oauth-outer-');
-      const formData = new URLSearchParams();
-      formData.append(
-        'redirect_uri',
-        import.meta.env.PROD
-          ? `${import.meta.env.VITE_BASE_URL}/api/v1/redirect/callback`
-          : `${import.meta.env.VITE_PROXY_URL}/api/v1/redirect/callback`
-      );
-      formData.append('code_verifier', code_verifier || '');
-      formData.append('code', code);
-      formData.append('grant_type', 'authorization_code');
-      formData.append('client_id', 'aa49cdd0-318e-46bd-a540-0f1e5f2b391f');
-      formData.append(
-        'client_secret',
-        'pck_t13egrd9ve57tz52kfcd2s4h1zwya5502z43kr5xv5cx8'
-      );
-
-      try {
-        const res = await fetch(
-          'https://api.stack-auth.com/api/v1/auth/oauth/token',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-            },
-            body: formData,
-          }
-        );
-        const data = await res.json();
-        return data.access_token;
-      } catch (error) {
-        console.error(error);
-        setIsLoading(false);
-      }
-    },
-    [setIsLoading]
-  );
-
-  const handleAuthCode = useCallback(
-    async (event: any, code: string) => {
-      if (lock || location.pathname !== '/login') return;
-
-      lock = true;
-      setIsLoading(true);
-      let accessToken = await handleGetToken(code);
-      handleLoginByStack(accessToken);
-      setTimeout(() => {
-        lock = false;
-      }, 1500);
-    },
-    [location.pathname, handleLoginByStack, handleGetToken, setIsLoading]
-  );
-
-  const handleTokenLogin = useCallback(
-    async (token: string) => {
-      if (!token) return;
-
-      setGeneralError('');
-      setIsLoading(true);
-      setModelType('cloud');
-      setAuth({ email: '', token, username: '', user_id: 0 });
-      setLocalProxyValue(import.meta.env.VITE_USE_LOCAL_PROXY || null);
-      try {
-        const userInfo = await proxyFetchGet('/api/v1/user');
-        if (userInfo && userInfo.email) {
-          setAuth({
-            token,
-            email: userInfo.email,
-            username:
-              userInfo.username ||
-              userInfo.nickname ||
-              userInfo.fullname ||
-              userInfo.email?.split('@')[0] ||
-              '',
-            user_id:
-              userInfo.id || JSON.parse(atob(token.split('.')[1])).id || 0,
-          });
-        }
-        navigate(redirectTo, { replace: true });
-      } catch (e) {
-        console.error('Failed to fetch user info:', e);
-        setGeneralError(t('layout.login-failed-please-try-again'));
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [
-      navigate,
-      setAuth,
-      setGeneralError,
-      setIsLoading,
-      setLocalProxyValue,
-      setModelType,
-      redirectTo,
-      t,
-    ]
-  );
-
-  // Listen for direct token callback from Electron (eigent.ai login redirect)
-  useEffect(() => {
-    if (!host?.ipcRenderer) return;
-
-    const handleTokenReceived = async (_event: any, token: string) => {
-      await handleTokenLogin(token);
-    };
-
-    host.ipcRenderer.on('auth-token-received', handleTokenReceived);
-
-    return () => {
-      host.ipcRenderer?.off('auth-token-received', handleTokenReceived);
-    };
-  }, [handleTokenLogin, host]);
-
-  // Listen for auth code callback from Electron (Stack Auth OAuth flow)
-  useEffect(() => {
-    if (!host?.ipcRenderer) return;
-    host.ipcRenderer.on('auth-code-received', handleAuthCode);
-    return () => {
-      host.ipcRenderer?.off('auth-code-received', handleAuthCode);
-    };
-  }, [handleAuthCode, host]);
-
-  useEffect(() => {
-    if (IS_LOCAL_MODE || isDesktopHost) return;
-
-    const token = new URLSearchParams(location.search).get('token');
-    if (!token || handledWebTokenRef.current === token) return;
-
-    handledWebTokenRef.current = token;
-    handleTokenLogin(token);
-  }, [handleTokenLogin, isDesktopHost, location.search]);
-
-  useEffect(() => {
-    if (!host?.electronAPI?.getPlatform) {
-      return;
-    }
-    const p = host.electronAPI.getPlatform();
-    if (p === 'darwin') {
-      titlebarRef.current?.classList.add('mac');
-    }
-  }, [host]);
-
-  // Handle before-close event for login page
-  useEffect(() => {
-    if (!host?.ipcRenderer || !host?.electronAPI) return;
-
-    const handleBeforeClose = () => {
-      host.electronAPI.closeWindow(true);
-    };
-
-    host.ipcRenderer.on('before-close', handleBeforeClose);
-
-    return () => {
-      host.ipcRenderer?.off('before-close', handleBeforeClose);
-    };
-  }, [host]);
-
-  // Hybrid/app mode: prepare auth callback URL on mount (don't auto-open browser)
-  useEffect(() => {
-    if (IS_LOCAL_MODE) return;
-
-    const prepareCallbackUrl = async () => {
-      let cbUrl: string;
-      if (!isDesktopHost) {
-        cbUrl = getWebLoginCallbackUrl(window.location.origin);
-      } else if (import.meta.env.PROD) {
-        cbUrl = DESKTOP_LOGIN_CALLBACK_URL;
-      } else {
-        cbUrl = DESKTOP_LOGIN_CALLBACK_URL;
-        try {
-          const url = await host?.ipcRenderer?.invoke('get-auth-callback-url');
-          if (url) cbUrl = url;
-        } catch {
-          // Fallback to eigent:// protocol
-        }
-      }
-      setCallbackUrl(cbUrl);
-    };
-
-    prepareCallbackUrl();
-  }, [host, isDesktopHost]);
-
-  // Render local mode: "Start Eigent" button only
-  const renderLocalMode = () => (
-    <div className="w-80 pt-8 relative flex flex-1 flex-col items-center justify-center">
-      <img
-        src={eigentLogo}
-        className="top-10 h-16 w-16 absolute left-1/2 -translate-x-1/2"
-      />
-      <div className="mb-8 text-heading-lg font-bold text-ds-text-neutral-default-default">
-        Eigent
-      </div>
-      {generalError && (
-        <p className="mb-4 mt-1 text-label-md text-ds-text-status-error-strong-default">
-          {generalError}
-        </p>
-      )}
-      <Button
-        onClick={handleAutoLogin}
-        size="lg"
-        variant="primary"
-        className="w-full rounded-full"
-        disabled={isLoading}
-      >
-        <span className="flex-1">
-          {isLoading ? t('layout.logging-in') : 'Start Eigent'}
-        </span>
-      </Button>
-    </div>
-  );
-
-  // Render hybrid/app mode: waiting for external login callback
-  const renderHybridMode = () => (
-    <div className="w-80 pt-8 relative flex flex-1 flex-col items-center justify-center">
-      <img
-        src={eigentLogo}
-        className="top-10 h-16 w-16 absolute left-1/2 -translate-x-1/2"
-      />
-      <div className="mb-4 text-heading-lg font-bold text-ds-text-neutral-default-default">
-        {t('layout.login')}
-      </div>
-      {isLoading && (
-        <p className="mb-6 text-label-md text-ds-text-neutral-muted-default text-center">
-          {t('layout.logging-in')}...
-        </p>
-      )}
-      <Button
-        onClick={() => {
-          setIsLoading(true);
-          const resolvedCallbackUrl =
-            callbackUrl ||
-            (isDesktopHost
-              ? DESKTOP_LOGIN_CALLBACK_URL
-              : getWebLoginCallbackUrl(window.location.origin));
-          const loginUrl = getExternalLoginUrl(resolvedCallbackUrl);
-
-          if (isDesktopHost) {
-            window.open(loginUrl, '_blank', 'noopener,noreferrer');
-            return;
-          }
-
-          window.location.assign(loginUrl);
-        }}
-        size="lg"
-        variant="primary"
-        className="w-full rounded-full"
-      >
-        <span className="flex-1">{t('layout.log-in')}</span>
-      </Button>
-    </div>
-  );
-
   return (
     <div className="relative flex h-full flex-col overflow-hidden">
       {/* Titlebar with drag region and window controls */}
       <div
-        className="left-0 right-0 top-0 !h-9 py-1 pl-2 absolute z-50 flex items-center justify-between"
+        className="absolute left-0 right-0 top-0 z-50 flex !h-9 items-center justify-between py-1 pl-2"
         id="login-titlebar"
         ref={titlebarRef}
         style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
       >
-        {/* Center drag region */}
         <div
           className="flex h-full flex-1 items-center"
           style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
@@ -437,7 +123,6 @@ export default function Login() {
           <div className="h-10 flex-1"></div>
         </div>
 
-        {/* Right window controls */}
         <div
           style={
             {
@@ -452,19 +137,41 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Main content - image extends to top, form has padding */}
-      <div
-        className={`gap-2 px-1 pb-1 pt-10 flex h-full items-center justify-center`}
-      >
+      {/* Main content */}
+      <div className="flex h-full items-center justify-center gap-2 px-1 pb-1 pt-10">
         <div
-          className="min-h-0 rounded-2xl bg-ds-bg-neutral-subtle-default px-2 pb-2 flex h-full w-full flex-col items-center justify-center overflow-hidden"
+          className="flex h-full min-h-0 w-full flex-col items-center justify-center overflow-hidden rounded-2xl bg-ds-bg-neutral-subtle-default px-2 pb-2"
           style={{
             backgroundImage: `url(${background})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
-          {IS_LOCAL_MODE ? renderLocalMode() : renderHybridMode()}
+          <div className="relative flex w-80 flex-1 flex-col items-center justify-center pt-8">
+            <img
+              src={eigentLogo}
+              className="absolute left-1/2 top-10 h-16 w-16 -translate-x-1/2"
+            />
+            <div className="mb-8 text-heading-lg font-bold text-ds-text-neutral-default-default">
+              Eigent
+            </div>
+            {generalError && (
+              <p className="mb-4 mt-1 text-label-md text-ds-text-status-error-strong-default">
+                {generalError}
+              </p>
+            )}
+            <Button
+              onClick={handleAutoLogin}
+              size="lg"
+              variant="primary"
+              className="w-full rounded-full"
+              disabled={isLoading}
+            >
+              <span className="flex-1">
+                {isLoading ? t('layout.logging-in') : 'Start Eigent'}
+              </span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>
