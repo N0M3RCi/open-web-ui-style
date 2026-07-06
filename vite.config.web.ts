@@ -33,17 +33,30 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     resolve: {
-      alias: {
-        '@': path.join(__dirname, 'src'),
-        '@stackframe/react': path.join(
-          __dirname,
-          'src/__stackframe_vendor__/index.js'
-        ),
-        '@stackframe/stack-shared': path.join(
-          __dirname,
-          'package/@stackframe/stack-shared'
-        ),
-      },
+      alias: [
+        { find: '@', replacement: path.join(__dirname, 'src') },
+        {
+          find: '@stackframe/react',
+          replacement: path.join(
+            __dirname,
+            'src/__stackframe_vendor__/index.js'
+          ),
+        },
+        {
+          find: '@stackframe/stack-shared/dist',
+          replacement: path.join(
+            __dirname,
+            'package/@stackframe/stack-shared/dist/esm'
+          ),
+        },
+        {
+          find: '@stackframe/stack-shared',
+          replacement: path.join(
+            __dirname,
+            'package/@stackframe/stack-shared/dist/esm/index.js'
+          ),
+        },
+      ],
     },
     plugins: [react()],
     optimizeDeps: {
