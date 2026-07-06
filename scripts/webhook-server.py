@@ -30,8 +30,45 @@ BRANCH = os.environ.get('BRANCH', 'main')
 PORT = int(os.environ.get('WEBHOOK_PORT', '9000'))
 
 
+def get_deploy_status():
+    """Return last deploy info from log."""
+    try:
+        with open('/var/log/open-web-ui-deploy.log') as f:
+            lines = f.readlines()
+            last = lines[-1].strip() if lines else 'No deployments yet'
+            return last
+    except Exception:
+        return 'Status unavailable'
+
+
+_STATUS_HTML = """<!DOCTYPE html>
+<html><head><title>Webhook Server</title>
+<meta charset="utf-8">
+<style>
+body{{font-family:sans-serif;max-width:600px;margin:50px auto;padding:20px;}}
+h1{{color:#333;}}p{{color:#555;}}
+.status{{background:#e8f5e9;padding:15px;border-radius:8px;}}
+</style></head><body>
+<h1>Webhook Server</h1>
+<p>This endpoint accepts POST requests from GitHub for auto-deploy.</p>
+<div class="status">
+<strong>Last deploy:</strong> {status}
+</div>
+</body></html>"""
+
+
 class WebhookHandler(http.server.BaseHTTPRequestHandler):
-    """Handle GET /health and POST /webhook for GitHub push events."""
+    """Handle GET /webhook for status, POST /webhook for GitHub push events."""
+
+    def do_GET(self):
+        if self.path == '/webhook':
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.end_headers()
+            status = get_deploy_status()
+            self.wfile.write(_STATUS_HTML.format(status=status).encode())
+            return
+        self.send_error(404)
 
     def do_POST(self):
         if self.path != '/webhook':
@@ -72,14 +109,6 @@ class WebhookHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b'Deploy started')
-
-    def do_GET(self):
-        if self.path == '/health':
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(b'OK')
-            return
-        self.send_error(404)
 
     def log_message(self, format, *args):
         sys.stderr.write('[webhook] {}\n'.format(format % args))
