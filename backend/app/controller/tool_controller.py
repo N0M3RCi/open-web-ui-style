@@ -913,7 +913,9 @@ async def open_browser_login():
         # This is the SOURCE OF TRUTH for login data
         # On M3RCI - UniMind startup, this data will be copied
         # to WebView partition (one-way sync)
-        browser_profiles_base = os.path.expanduser("~/.merci/browser_profiles")
+        browser_profiles_base = os.path.expanduser(
+            "~/.merci/browser_profiles"
+        )
         user_data_dir = os.path.join(
             browser_profiles_base, "profile_user_login"
         )

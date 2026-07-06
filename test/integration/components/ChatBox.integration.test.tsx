@@ -126,18 +126,20 @@ describe('ChatBox Integration Tests - Different ChatStore Configurations', () =>
         });
         chatStore.addMessages(taskId, {
           id: 'assistant-msg-1',
-          role: 'agent',
+          role: 'assistant',
           content: '',
           step: 'to_sub_tasks',
-          summaryTask: 'Calculator App|Build a simple calculator app',
-          taskInfo: [
-            { id: 'task-1', content: 'Create UI components', status: '' },
-            {
-              id: 'task-2',
-              content: 'Implement calculator logic',
-              status: '',
-            },
-          ],
+          data: {
+            summary_task: 'Calculator App|Build a simple calculator app',
+            sub_tasks: [
+              { id: 'task-1', content: 'Create UI components', status: '' },
+              {
+                id: 'task-2',
+                content: 'Implement calculator logic',
+                status: '',
+              },
+            ],
+          },
         });
         chatStore.setSummaryTask(
           taskId,
@@ -197,7 +199,7 @@ describe('ChatBox Integration Tests - Different ChatStore Configurations', () =>
         });
         chatStore.addMessages(taskId, {
           id: 'assistant-1',
-          role: 'agent',
+          role: 'assistant',
           content: 'I am doing well, thank you! layout.how-can-i-help-you?',
           attaches: [],
         });
@@ -281,7 +283,7 @@ describe('ChatBox Integration Tests - Different ChatStore Configurations', () =>
         });
         chatStore.addMessages(taskId, {
           id: 'assistant-1',
-          role: 'agent',
+          role: 'assistant',
           content: 'I have generated the report for you.',
           step: 'end',
           fileList: [
@@ -338,7 +340,7 @@ describe('ChatBox Integration Tests - Different ChatStore Configurations', () =>
         });
         chatStore.addMessages(taskId, {
           id: 'assistant-1',
-          role: 'agent',
+          role: 'assistant',
           content: 'Which option would you prefer: A or B?',
           agent_name: 'decision-agent',
         });
@@ -408,7 +410,9 @@ describe('ChatBox Integration Tests - Different ChatStore Configurations', () =>
             <ChatBox />
           </TestWrapper>
         );
-        expect(screen.getByText(/layout.welcome-to-nova/i)).toBeInTheDocument();
+        expect(
+          screen.getByText(/layout.welcome-to-nova/i)
+        ).toBeInTheDocument();
         return;
       }
 

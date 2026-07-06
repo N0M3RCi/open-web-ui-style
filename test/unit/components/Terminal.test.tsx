@@ -296,7 +296,7 @@ describe('Terminal Component', async () => {
         const calls = (mockTerminal.writeln as any).mock.calls
           .flat()
           .map(String);
-        const found = calls.some((c: string) => c.includes('[Nova]'));
+        const found = calls.some((c) => c.includes('[Nova]'));
         expect(found).toBe(true);
       });
     });
@@ -382,8 +382,8 @@ describe('Terminal Component', async () => {
 
       // Be tolerant: component may write a backspace sequence or simply have written the character earlier.
       const writes = (mockTerminal.write as any).mock.calls.flat().map(String);
-      const hasBackspace = writes.some((w: string) => w.includes('\b'));
-      const hasChar = writes.some((w: string) => w === 'a');
+      const hasBackspace = writes.some((w) => w.includes('\b'));
+      const hasChar = writes.some((w) => w === 'a');
       expect(hasBackspace || hasChar).toBe(true);
     });
 
@@ -414,9 +414,9 @@ describe('Terminal Component', async () => {
 
       const writes = (mockTerminal.write as any).mock.calls.flat().map(String);
       const hasLeft = writes.some(
-        (w: string) => w === '\x1b[D' || w.includes('\x1b[D')
+        (w) => w === '\x1b[D' || w.includes('\x1b[D')
       );
-      const hasChar = writes.some((w: string) => w === 'a');
+      const hasChar = writes.some((w) => w === 'a');
       expect(hasLeft || hasChar).toBe(true);
     });
 
@@ -458,9 +458,9 @@ describe('Terminal Component', async () => {
 
       const writes = (mockTerminal.write as any).mock.calls.flat().map(String);
       const hasRight = writes.some(
-        (w: string) => w === '\x1b[C' || w.includes('\x1b[C')
+        (w) => w === '\x1b[C' || w.includes('\x1b[C')
       );
-      const hasChar = writes.some((w: string) => w === 'a');
+      const hasChar = writes.some((w) => w === 'a');
       expect(hasRight || hasChar).toBe(true);
     });
 
@@ -611,10 +611,10 @@ describe('Terminal Component', async () => {
           const calls = (mockTerminal.writeln as any).mock.calls
             .flat()
             .map(String);
-          const hasStart = calls.some((c: string) =>
+          const hasStart = calls.some((c) =>
             c.includes('--- Previous Output ---')
           );
-          const hasEnd = calls.some((c: string) =>
+          const hasEnd = calls.some((c) =>
             c.includes('--- End Previous Output ---')
           );
           expect(hasStart).toBe(true);

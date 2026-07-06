@@ -224,9 +224,19 @@ export function useExecutionSubscription(enabled: boolean = true) {
         ? import.meta.env.VITE_PROXY_URL
         : import.meta.env.VITE_BASE_URL;
 
-      // Convert http/https to ws/wss
-      const wsProtocol = baseURL.startsWith('https') ? 'wss' : 'ws';
-      const wsURL = baseURL.replace(/^https?:\/\//, ''); // Remove protocol
+      // When the base URL is a relative path (e.g. /api), derive the protocol
+      // from the page location so mixed-content errors are avoided on HTTPS.
+      const isRelative = baseURL.startsWith('/');
+      const wsProtocol = isRelative
+        ? window.location.protocol === 'https:'
+          ? 'wss'
+          : 'ws'
+        : baseURL.startsWith('https')
+          ? 'wss'
+          : 'ws';
+      const wsURL = isRelative
+        ? window.location.host
+        : baseURL.replace(/^https?:\/\//, '');
       const fullURL = `${wsProtocol}://${wsURL}/api/v1/execution/subscribe`;
 
       debug('[ExecutionSubscription] Connecting to:', fullURL);

@@ -15,19 +15,19 @@ uv run python main.py
 
 ### Environment Variables (Standalone)
 
-| Variable                         | Default           | Description                                                                               |
-| -------------------------------- | ----------------- | ----------------------------------------------------------------------------------------- |
-| `NOVA_BRAIN_PORT`                | 5001              | Listening port                                                                            |
-| `NOVA_BRAIN_HOST`                | 0.0.0.0           | Listening address                                                                         |
-| `NOVA_DEBUG`                     | -                 | Set to 1/true to enable reload                                                            |
+| Variable                           | Default             | Description                                                                               |
+| ---------------------------------- | ------------------- | ----------------------------------------------------------------------------------------- |
+| `NOVA_BRAIN_PORT`                | 5001                | Listening port                                                                            |
+| `NOVA_BRAIN_HOST`                | 0.0.0.0             | Listening address                                                                         |
+| `NOVA_DEBUG`                     | -                   | Set to 1/true to enable reload                                                            |
 | `NOVA_WORKSPACE`                 | ~/.nova/workspace | Working directory                                                                         |
-| `NOVA_DEPLOYMENT_TYPE`           | (auto)            | `local` / `cloud_vm` / `sandbox` / `docker`; determines Hands capabilities (see ADR-0006) |
-| `NOVA_HANDS_MODE`                | -                 | Set to `remote` to enable `RemoteHands` (remote cluster resource mode)                    |
-| `NOVA_HANDS_CLUSTER_CONFIG_FILE` | -                 | Path to `RemoteHands` config file (TOML); **recommended**                                 |
-| `NOVA_HANDS_TERMINAL`            | -                 | Override terminal hand: `1`/`true`/`yes` or `0`/`false`/`no`                              |
-| `NOVA_HANDS_BROWSER`             | -                 | Override browser hand                                                                     |
-| `NOVA_HANDS_FILESYSTEM`          | -                 | Override filesystem scope: `full` / `workspace_only`                                      |
-| `NOVA_HANDS_MCP`                 | -                 | Override MCP mode: `all` / `allowlist`                                                    |
+| `NOVA_DEPLOYMENT_TYPE`           | (auto)              | `local` / `cloud_vm` / `sandbox` / `docker`; determines Hands capabilities (see ADR-0006) |
+| `NOVA_HANDS_MODE`                | -                   | Set to `remote` to enable `RemoteHands` (remote cluster resource mode)                    |
+| `NOVA_HANDS_CLUSTER_CONFIG_FILE` | -                   | Path to `RemoteHands` config file (TOML); **recommended**                                 |
+| `NOVA_HANDS_TERMINAL`            | -                   | Override terminal hand: `1`/`true`/`yes` or `0`/`false`/`no`                              |
+| `NOVA_HANDS_BROWSER`             | -                   | Override browser hand                                                                     |
+| `NOVA_HANDS_FILESYSTEM`          | -                   | Override filesystem scope: `full` / `workspace_only`                                      |
+| `NOVA_HANDS_MCP`                 | -                   | Override MCP mode: `all` / `allowlist`                                                    |
 
 RemoteHands config file example:
 

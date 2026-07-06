@@ -12,7 +12,6 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
-import { describe, expect, it } from 'vitest';
 import {
   buildVersionedReleaseBaseUrl,
   getGitHubReleaseChannel,
@@ -36,9 +35,9 @@ describe('githubReleaseCdnProvider', () => {
   });
 
   it('normalizes the CDN base URL before building versioned release paths', () => {
-    expect(normalizeCdnReleaseBaseUrl('https://cdn.nova.ai/releases///')).toBe(
-      'https://cdn.nova.ai/releases'
-    );
+    expect(
+      normalizeCdnReleaseBaseUrl('https://cdn.nova.ai/releases///')
+    ).toBe('https://cdn.nova.ai/releases');
   });
 
   it('builds versioned CDN URLs for updater downloads', () => {
