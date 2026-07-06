@@ -108,8 +108,9 @@ const ProtectedRoute = () => {
       }
     }
 
-    // Local mode: auto-login when no token
-    if (IS_LOCAL_MODE && !token) {
+    // Local mode: always auto-login to get a fresh token,
+    // even when a (possibly stale) token exists from a previous session.
+    if (IS_LOCAL_MODE) {
       proxyFetchPost('/api/v1/user/auto-login', {})
         .then((data) => {
           if (data && data.token) {
