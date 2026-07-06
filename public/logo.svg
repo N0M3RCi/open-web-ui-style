@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="216" height="216" viewBox="0 0 216 216">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a6b6a"/>
+      <stop offset="100%" stop-color="#2d9f9d"/>
+    </linearGradient>
+  </defs>
+  <rect width="216" height="216" rx="32" fill="#1c1c1e"/>
+  <!-- M monogram -->
+  <path d="M36 168V48l36 54 36-54 36 54 36-54v120" fill="none" stroke="url(#g)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Neural dots -->
+  <circle cx="72" cy="102" r="4" fill="#1a6b6a" opacity="0.6"/>
+  <circle cx="144" cy="102" r="4" fill="#1a6b6a" opacity="0.6"/>
+  <circle cx="108" cy="78" r="4" fill="#1a6b6a" opacity="0.6"/>
+  <!-- 3 badge -->
+  <rect x="116" y="36" width="28" height="28" rx="8" fill="#1a6b6a"/>
+  <text x="130" y="56" text-anchor="middle" fill="#faf7f4" font-family="Inter,sans-serif" font-weight="700" font-size="18">3</text>
+  <!-- Circuit traces -->
+  <path d="M72 102h18m-18 0V60" fill="none" stroke="#1a6b6a" stroke-width="2" opacity="0.3"/>
+  <path d="M144 102h-18m18 0V60" fill="none" stroke="#1a6b6a" stroke-width="2" opacity="0.3"/>
+</svg>

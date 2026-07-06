@@ -151,7 +151,7 @@ Click the gear icon in the top-right corner to open Settings. Here’s a brief o
 
 - **Account:** Manage your subscription or log out.
 - **Language:** Nova supports multiple languages, including English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文), Japanese (日本語), Korean (한국어), French (Français), German (Deutsch), Spanish (Español), Italian (Italiano), Russian (Русский), and Arabic (العربية).
-- **Appearance:** Nova now supports custom themes, allowing you to personalize the look and feel of your workspace.
+- **Appearance:** M3RCI - UniMind supports custom themes, allowing you to personalize the look and feel of your workspace.
 
 > **Screenshot placeholder:** Add a current screenshot for “General”.
 
