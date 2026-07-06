@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import { proxyFetchGet, proxyFetchPut } from '@/api/http';
 import { Button } from '@/components/ui/button';
@@ -42,8 +42,8 @@ export default function SettingPrivacy() {
   return (
     <div className="m-auto h-auto w-full flex-1">
       {/* Header Section */}
-      <div className="px-6 pb-6 pt-8 mx-auto flex w-full max-w-[900px] items-center justify-between">
-        <div className="gap-4 flex w-full flex-row items-center justify-between">
+      <div className="mx-auto flex w-full max-w-[900px] items-center justify-between px-6 pb-6 pt-8">
+        <div className="flex w-full flex-row items-center justify-between gap-4">
           <div className="flex flex-col">
             <div className="text-heading-sm font-bold text-ds-text-neutral-default-default">
               {t('setting.privacy')}
@@ -53,11 +53,11 @@ export default function SettingPrivacy() {
       </div>
 
       {/* Content Section */}
-      <div className="mb-8 gap-6 flex flex-col">
+      <div className="mb-8 flex flex-col gap-6">
         {/* How We Handle Your Data Section */}
         <div className="rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4">
-          <div className="gap-4 flex items-start justify-between">
-            <div className="gap-2 flex flex-1 flex-col">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-1 flex-col gap-2">
               <div className="text-body-base font-bold text-ds-text-neutral-default-default">
                 {t('setting.how-we-handle-your-data')}
               </div>
@@ -88,7 +88,7 @@ export default function SettingPrivacy() {
             </Button>
           </div>
           {isHowWeHandleOpen && (
-            <div className="mr-10 mt-4 border-ds-border-neutral-default-default border-x-0 border-t-[0.5px] border-b-0 border-solid">
+            <div className="mr-10 mt-4 border-x-0 border-b-0 border-t-[0.5px] border-solid border-ds-border-neutral-default-default">
               <ol
                 id="how-we-handle-your-data"
                 className="pl-5 text-body-sm font-normal text-ds-text-neutral-default-default"
@@ -113,10 +113,10 @@ export default function SettingPrivacy() {
           )}
         </div>
 
-        {/* Help Improve Nova Section */}
+        {/* Help Improve M3RCI - UniMind Section */}
         <div className="rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4">
-          <div className="gap-md flex items-center justify-between">
-            <div className="gap-2 flex flex-col">
+          <div className="flex items-center justify-between gap-md">
+            <div className="flex flex-col gap-2">
               <div className="text-body-base font-bold text-ds-text-neutral-default-default">
                 {t('setting.help-improve-nova')}
               </div>

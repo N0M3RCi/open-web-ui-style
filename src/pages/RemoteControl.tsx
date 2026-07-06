@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import {
   extendRemoteControlSession,
@@ -383,7 +383,7 @@ export default function RemoteControlPage() {
               <p className="text-muted-foreground mt-1 text-xs">
                 {bridgeOnline
                   ? 'Desktop is online'
-                  : 'Desktop is offline. Keep Nova open on the original computer and stay on the chat view.'}
+                  : 'Desktop is offline. Keep M3RCI - UniMind open on the original computer and stay on the chat view.'}
               </p>
             </div>
             <div

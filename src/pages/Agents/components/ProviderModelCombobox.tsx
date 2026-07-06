@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import { Loader2, RotateCcw } from 'lucide-react';
 import { useMemo } from 'react';
@@ -56,7 +56,7 @@ function splitPrefix(id: string): [string, string] {
 
 /**
  * Model-type picker for providers that expose a `/models` endpoint
- * (Nebius, OrcaRouter). A full-width {@link Select} (matching the Nova Cloud
+ * (Nebius, OrcaRouter). A full-width {@link Select} (matching the M3RCI - UniMind Cloud
  * model select) with a trailing rounded "Refresh" button to re-fetch the list.
  */
 export function ProviderModelCombobox({
@@ -103,12 +103,12 @@ export function ProviderModelCombobox({
   return (
     <div className="flex w-full flex-col">
       {title ? (
-        <div className="mb-1.5 gap-1 text-body-sm font-bold text-ds-text-neutral-default-default flex items-center">
+        <div className="mb-1.5 flex items-center gap-1 text-body-sm font-bold text-ds-text-neutral-default-default">
           {title}
         </div>
       ) : null}
 
-      <div className="gap-2 flex w-full items-center">
+      <div className="flex w-full items-center gap-2">
         <Select
           value={value || undefined}
           onValueChange={onChange}
@@ -126,7 +126,7 @@ export function ProviderModelCombobox({
           </SelectTrigger>
           <SelectContent>
             {!hasAnyModels && !orphanValue ? (
-              <div className="px-3 py-6 text-xs text-ds-text-neutral-muted-default text-center">
+              <div className="px-3 py-6 text-center text-xs text-ds-text-neutral-muted-default">
                 {emptyMessage}
               </div>
             ) : (
@@ -168,7 +168,7 @@ export function ProviderModelCombobox({
           onClick={onRefresh}
           disabled={disabled || loading}
           aria-label={`Refresh ${providerName} models`}
-          className="text-body-sm shrink-0"
+          className="shrink-0 text-body-sm"
         >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />

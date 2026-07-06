@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import larkIcon from '@/assets/icon/lark.png';
 import telegramIcon from '@/assets/icon/telegram.svg';
@@ -322,7 +322,7 @@ function LogPanel({ logs }: { logs: RemoteControlLogEntry[] }) {
 const REMOTE_CONTROL_TITLE_MAX_LENGTH = 80;
 
 function buildRemoteControlTitle(spaceName?: string | null): string {
-  const base = spaceName?.trim() || 'Nova Remote Control';
+  const base = spaceName?.trim() || 'M3RCI - UniMind Remote Control';
   const text = base.replace(/\s+/g, ' ').trim();
   if (text.length <= REMOTE_CONTROL_TITLE_MAX_LENGTH) return text;
   return `${text.slice(0, REMOTE_CONTROL_TITLE_MAX_LENGTH - 3).trimEnd()}...`;
@@ -439,7 +439,7 @@ export function WorkspaceDispatch() {
       if (!bridgeReady) {
         toast.error('Remote control is still connecting.', {
           description:
-            'Keep Nova Desktop open and try again in a few seconds.',
+            'Keep M3RCI - UniMind Desktop open and try again in a few seconds.',
         });
         return;
       }
@@ -484,7 +484,7 @@ export function WorkspaceDispatch() {
       if (code === 'BRIDGE_OFFLINE') {
         toast.error('Remote control bridge is offline.', {
           description:
-            'Keep Nova Desktop open and wait for the bridge to reconnect, then try again.',
+            'Keep M3RCI - UniMind Desktop open and wait for the bridge to reconnect, then try again.',
         });
       } else {
         toast.error(err?.message || 'Failed to create remote control link.');
