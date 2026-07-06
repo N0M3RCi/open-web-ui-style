@@ -62,9 +62,8 @@ RUN sed -i 's/\r$//' /app/celery/worker/start && chmod +x /app/celery/worker/sta
 RUN sed -i 's/\r$//' /app/celery/beat/start && chmod +x /app/celery/beat/start
 
 # Bake the latest server/ commit into the image for stale-server detection.
-# Uses --mount=type=bind to access .git without adding it to a layer.
-RUN --mount=type=bind,source=.git,target=/tmp/.git \
-    echo "MERCI_SERVER_GIT_COMMIT=$(git --git-dir=/tmp/.git log -1 --format=%H -- server/ 2>/dev/null || echo unknown)" > /app/.image_env
+# The .git directory is excluded by .dockerignore, so we fall back to 'unknown'.
+RUN echo "MERCI_SERVER_GIT_COMMIT=unknown" > /app/.image_env
 
 # Reset the entrypoint, don't invoke `uv`
 ENTRYPOINT []

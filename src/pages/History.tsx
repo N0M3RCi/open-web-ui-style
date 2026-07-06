@@ -26,12 +26,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Agents from './Agents';
-import Browser from './Browser';
 import Channels from './Channels';
-import Connectors from './Connectors';
 
 const TAB_ALIASES: Record<string, HistoryTabId> = {
-  mcp_tools: 'connectors',
   projects: 'home',
   spaces: 'home',
 };
@@ -193,23 +190,7 @@ export default function History() {
                 <Channels />
               </div>
             )}
-            {visitedTabs.includes('connectors') && (
-              <div
-                className={activeTab === 'connectors' ? 'contents' : 'hidden'}
-                aria-hidden={activeTab !== 'connectors'}
-              >
-                <Connectors />
-              </div>
-            )}
-            {visitedTabs.includes('browser') && (
-              <div
-                className={activeTab === 'browser' ? 'contents' : 'hidden'}
-                aria-hidden={activeTab !== 'browser'}
-              >
-                <Browser />
-              </div>
-            )}
-            {visitedTabs.includes('settings') && (
+                        {visitedTabs.includes('settings') && (
               <div
                 className={activeTab === 'settings' ? 'contents' : 'hidden'}
                 aria-hidden={activeTab !== 'settings'}

@@ -37,7 +37,7 @@ import {
 import { getProxyBaseURL } from '@/lib';
 import { OAuth } from '@/lib/oauth';
 import { cn } from '@/lib/utils';
-import { MCPEnvDialog } from '@/pages/Connectors/components/MCPEnvDialog';
+import { MCPEnvDialog } from '@/components/MCP/MCPEnvDialog';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
