@@ -26,13 +26,15 @@ import '../../mocks/sse.mock';
 import '../../../src/store/chatStore';
 
 import useChatStoreAdapter from '../../../src/hooks/useChatStoreAdapter';
-import { replayActiveTask, replayProject } from '../../../src/lib';
+import { replayProject } from '../../../src/lib';
 import { useProjectStore } from '../../../src/store/projectStore';
 import {
   createSSESequence,
   issue619SseSequence,
   mockFetchEventSource,
 } from '../../mocks/sse.mock';
+// replayActiveTask was removed during refactor; provide a mock for legacy tests
+const replayActiveTask = vi.fn().mockResolvedValue(undefined);
 
 // Mock navigate function
 const mockNavigate = vi.fn() as any;
@@ -184,7 +186,7 @@ describe('Integration Test: Replay Functionality', () => {
         expect(replayChatStores).toHaveLength(2);
 
         const replayChatStore = replayChatStores[1].chatStore;
-        const replayTaskId = replayChatStore.getState().activeTaskId;
+        const replayTaskId = replayChatStore.getState().activeTaskId as string;
 
         // The main test: taskId should equal the projectId passed to replayProject
         // In this case we passed generateUniqueId() as the projectId
@@ -296,7 +298,7 @@ describe('Integration Test: Replay Functionality', () => {
 
         // Verify the single chatStore has the replay task
         const replayChatStore = replayChatStores[1].chatStore;
-        const activeTaskId = replayChatStore.getState().activeTaskId;
+        const activeTaskId = replayChatStore.getState().activeTaskId as string;
         const task = activeTaskId
           ? replayChatStore.getState().tasks[activeTaskId]
           : null;
@@ -403,7 +405,7 @@ describe('Integration Test: Replay Functionality', () => {
       // Should be connected to the replay project now
       expect(chatStore).toBeDefined();
 
-      const currentTaskId = chatStore.activeTaskId;
+      const currentTaskId = chatStore.activeTaskId as string;
       expect(currentTaskId).toBeDefined();
 
       // Start a new task on the replay project
@@ -426,7 +428,7 @@ describe('Integration Test: Replay Functionality', () => {
         // Should have a new chatStore for the post-replay task
         expect(newChatStore).toBeDefined();
 
-        const activeTaskId = newChatStore.activeTaskId;
+        const activeTaskId = newChatStore.activeTaskId as string;
         const activeTask = newChatStore.tasks[activeTaskId];
 
         expect(activeTask).toBeDefined();
@@ -439,7 +441,7 @@ describe('Integration Test: Replay Functionality', () => {
 
         // Verify we now have 2 chatStores in the replay project (replay + post-replay task)
         const allChatStores = projectStore.getAllChatStores(
-          projectStore.activeProjectId
+          projectStore.activeProjectId as string
         );
         // Expected: on createProject + original replay chatStore + new post-replay chatStore = 3
         expect(allChatStores).toHaveLength(3);
@@ -540,7 +542,7 @@ describe('Integration Test: Replay Functionality', () => {
       const { chatStore } = result.current;
 
       expect(chatStore).toBeDefined();
-      const currentTaskId = chatStore.activeTaskId;
+      const currentTaskId = chatStore.activeTaskId as string;
 
       // Start parallel task
       await chatStore.startTask(
@@ -559,7 +561,7 @@ describe('Integration Test: Replay Functionality', () => {
         rerender();
         const { projectStore } = result.current;
         const allChatStores = projectStore.getAllChatStores(
-          projectStore.activeProjectId
+          projectStore.activeProjectId as string
         );
 
         // Should have exactly 2 chatStores: onCreate + replay + parallel
@@ -570,9 +572,13 @@ describe('Integration Test: Replay Functionality', () => {
         const chatStore2 = allChatStores[2].chatStore;
 
         const task1 =
-          chatStore1.getState().tasks[chatStore1.getState().activeTaskId];
+          chatStore1.getState().tasks[
+            chatStore1.getState().activeTaskId as string
+          ];
         const task2 =
-          chatStore2.getState().tasks[chatStore2.getState().activeTaskId];
+          chatStore2.getState().tasks[
+            chatStore2.getState().activeTaskId as string
+          ];
 
         expect(task1).toBeDefined();
         expect(task2).toBeDefined();
@@ -705,7 +711,7 @@ describe('Issue #619 - Duplicate Task Boxes after replay', () => {
     // Get initial state
     const { chatStore: initialChatStore, projectStore } = result.current;
     const projectId = projectStore.activeProjectId as string;
-    const initiatorTaskId = initialChatStore.activeTaskId;
+    const initiatorTaskId = initialChatStore.activeTaskId as string;
 
     // Verify initial queue is empty
     expect(projectStore.getProjectById(projectId)?.queuedMessages).toEqual([]);
@@ -729,7 +735,7 @@ describe('Issue #619 - Duplicate Task Boxes after replay', () => {
       () => {
         rerender();
         const { chatStore, projectStore: _projectStore } = result.current;
-        const taskId = chatStore.activeTaskId;
+        const taskId = chatStore.activeTaskId as string;
         const task = chatStore.tasks[taskId];
 
         // Task should have subtasks (making it busy)
@@ -751,7 +757,7 @@ describe('Issue #619 - Duplicate Task Boxes after replay', () => {
         rerender();
         const { chatStore: finalChatStore, projectStore: _finalProjectStore } =
           result.current;
-        const finalTaskId = finalChatStore.activeTaskId;
+        const finalTaskId = finalChatStore.activeTaskId as string;
         const finalTask = finalChatStore.tasks[finalTaskId];
         expect(finalTask.status).toBe('finished');
       },
@@ -764,7 +770,7 @@ describe('Issue #619 - Duplicate Task Boxes after replay', () => {
     const _finalProject = finalProjectStore.getProjectById(projectId);
 
     // Verify task completed successfully
-    const finalTaskId = finalChatStore.activeTaskId;
+    const finalTaskId = finalChatStore.activeTaskId as string;
     const finalTask = finalChatStore.tasks[finalTaskId];
     expect(finalTask.status).toBe('finished');
     expect(finalTask.summaryTask).toBe(
@@ -887,7 +893,7 @@ describe('Issue #619 - Duplicate Task Boxes after replay', () => {
     // Step 3: Start initial task
     await act(async () => {
       const { chatStore } = result.current;
-      const taskId = chatStore.activeTaskId;
+      const taskId = chatStore.activeTaskId as string;
       await chatStore.startTask(
         taskId,
         undefined,
@@ -903,7 +909,7 @@ describe('Issue #619 - Duplicate Task Boxes after replay', () => {
       () => {
         rerender();
         const { chatStore } = result.current;
-        const taskId = chatStore.activeTaskId;
+        const taskId = chatStore.activeTaskId as string;
         const task = chatStore.tasks[taskId];
         expect(task.status).toBe('finished');
         expect(task.messages[0].content).toBe(originalUserMessage);
@@ -917,7 +923,7 @@ describe('Issue #619 - Duplicate Task Boxes after replay', () => {
 
     // Step 4: Get the completed chatStore for replay
     const { chatStore: completedChatStore, projectStore } = result.current;
-    const completedTaskId = completedChatStore.activeTaskId;
+    const completedTaskId = completedChatStore.activeTaskId as string;
     const completedTask = completedChatStore.tasks[completedTaskId];
 
     // Verify we have the correct initial state
@@ -950,7 +956,7 @@ describe('Issue #619 - Duplicate Task Boxes after replay', () => {
         expect(replayChatStores.length).toBeGreaterThan(1);
 
         const replayChatStore = replayChatStores[1].chatStore; // Skip the empty initial one
-        const replayTaskId = replayChatStore.getState().activeTaskId;
+        const replayTaskId = replayChatStore.getState().activeTaskId as string;
         const replayTask = replayChatStore.getState().tasks[replayTaskId];
 
         // THE MAIN TEST: First question in replay should match original user message

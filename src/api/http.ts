@@ -263,22 +263,34 @@ async function handleResponse(
 // Encapsulate common methods
 export const fetchGet = (
   url: string,
-  params?: any,
-  headers?: any,
+  params?: Record<string, any>,
+  headers?: Record<string, string>,
   options?: FetchRequestOptions
 ) => fetchRequest('GET', url, params, headers, options);
 
-export const fetchPost = (url: string, data?: any, headers?: any) =>
-  fetchRequest('POST', url, data, headers);
+export const fetchPost = (
+  url: string,
+  data?: Record<string, any>,
+  headers?: Record<string, string>
+) => fetchRequest('POST', url, data, headers);
 
-export const fetchPut = (url: string, data?: any, headers?: any) =>
-  fetchRequest('PUT', url, data, headers);
+export const fetchPut = (
+  url: string,
+  data?: Record<string, any>,
+  headers?: Record<string, string>
+) => fetchRequest('PUT', url, data, headers);
 
-export const fetchPatch = (url: string, data?: any, headers?: any) =>
-  fetchRequest('PATCH', url, data, headers);
+export const fetchPatch = (
+  url: string,
+  data?: Record<string, any>,
+  headers?: Record<string, string>
+) => fetchRequest('PATCH', url, data, headers);
 
-export const fetchDelete = (url: string, data?: any, headers?: any) =>
-  fetchRequest('DELETE', url, data, headers);
+export const fetchDelete = (
+  url: string,
+  data?: Record<string, any>,
+  headers?: Record<string, string>
+) => fetchRequest('DELETE', url, data, headers);
 
 /** POST FormData to Brain base URL (for file uploads). */
 export async function fetchPostForm(
@@ -427,20 +439,35 @@ async function proxyFetchRequest(
   return handleResponse(fetch(fullUrl, options));
 }
 
-export const proxyFetchGet = (url: string, params?: any, headers?: any) =>
-  proxyFetchRequest('GET', url, params, headers);
+export const proxyFetchGet = (
+  url: string,
+  params?: Record<string, any>,
+  headers?: Record<string, string>
+) => proxyFetchRequest('GET', url, params, headers);
 
-export const proxyFetchPost = (url: string, data?: any, headers?: any) =>
-  proxyFetchRequest('POST', url, data, headers);
+export const proxyFetchPost = (
+  url: string,
+  data?: Record<string, any>,
+  headers?: Record<string, string>
+) => proxyFetchRequest('POST', url, data, headers);
 
-export const proxyFetchPut = (url: string, data?: any, headers?: any) =>
-  proxyFetchRequest('PUT', url, data, headers);
+export const proxyFetchPut = (
+  url: string,
+  data?: Record<string, any>,
+  headers?: Record<string, string>
+) => proxyFetchRequest('PUT', url, data, headers);
 
-export const proxyFetchPatch = (url: string, data?: any, headers?: any) =>
-  proxyFetchRequest('PATCH', url, data, headers);
+export const proxyFetchPatch = (
+  url: string,
+  data?: Record<string, any>,
+  headers?: Record<string, string>
+) => proxyFetchRequest('PATCH', url, data, headers);
 
-export const proxyFetchDelete = (url: string, data?: any, headers?: any) =>
-  proxyFetchRequest('DELETE', url, data, headers);
+export const proxyFetchDelete = (
+  url: string,
+  data?: Record<string, any>,
+  headers?: Record<string, string>
+) => proxyFetchRequest('DELETE', url, data, headers);
 
 // File upload function with FormData
 export async function uploadFile(
