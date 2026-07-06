@@ -89,7 +89,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
     let chatStore = result.current.getActiveChatStore(projectId)!;
     expect(chatStore).toBeDefined();
     const initiatorTaskId = chatStore.getState().activeTaskId!;
-    expect(initiatorTaskId).toBeDefined();
+    expect(initiatorTaskId as string).toBeDefined();
   });
 
   afterEach(() => {
@@ -147,7 +147,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
       // 6. Start task
       // NOTE: startTask creates a NEW chatStore and switches to it, the old chatStore is no longer active
       await chatStore.startTask(
-        initiatorTaskId,
+        initiatorTaskId as string,
         undefined,
         undefined,
         undefined,
@@ -184,7 +184,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
         //Two chatStores - first initial
         expect(
-          projectStore.getAllChatStores(projectStore.activeProjectId)
+          projectStore.getAllChatStores(projectStore.activeProjectId as string)
         ).toHaveLength(2);
       },
       { timeout: 1000 }
@@ -231,15 +231,19 @@ describe('Integration Test: Case 2 - same session new chat', () => {
     expect(Object.keys(chatStore.tasks)).toHaveLength(1);
     //Initial ChatStore + appendedOne
     expect(
-      projectStore.getAllChatStores(projectStore.activeProjectId)
+      projectStore.getAllChatStores(projectStore.activeProjectId as string)
     ).toHaveLength(2);
     //Make all tasks are skipped after end
-    chatStore.tasks[chatStore.activeTaskId].taskRunning.forEach((task: any) => {
-      expect(task.status).toBe('skipped');
-    });
-    chatStore.tasks[chatStore.activeTaskId].taskInfo.forEach((task: any) => {
-      expect(task.status).toBe('skipped');
-    });
+    chatStore.tasks[chatStore.activeTaskId as string].taskRunning.forEach(
+      (task: any) => {
+        expect(task.status).toBe('skipped');
+      }
+    );
+    chatStore.tasks[chatStore.activeTaskId as string].taskInfo.forEach(
+      (task: any) => {
+        expect(task.status).toBe('skipped');
+      }
+    );
 
     // Test: Start second chat session with different events
     await act(async () => {
@@ -296,7 +300,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
       const userMessage = 'Build a todo app';
       await chatStore.startTask(
-        initiatorTaskId,
+        initiatorTaskId as string,
         undefined,
         undefined,
         undefined,
@@ -321,7 +325,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
         // Should now have 3 chat stores (initial + 2 task sessions)
         expect(
-          projectStore.getAllChatStores(projectStore.activeProjectId)
+          projectStore.getAllChatStores(projectStore.activeProjectId as string)
         ).toHaveLength(3);
       },
       { timeout: 1500 }
@@ -352,19 +356,19 @@ describe('Integration Test: Case 2 - same session new chat', () => {
     expect(Object.keys(secondChatStore.tasks)).toHaveLength(1);
     //Initial ChatStore + appendedOne
     expect(
-      projectStore.getAllChatStores(projectStore.activeProjectId)
+      projectStore.getAllChatStores(projectStore.activeProjectId as string)
     ).toHaveLength(3);
     //Make all tasks are skipped after end
-    secondChatStore.tasks[secondChatStore.activeTaskId].taskRunning.forEach(
-      (task: any) => {
-        expect(task.status).toBe('skipped');
-      }
-    );
-    secondChatStore.tasks[secondChatStore.activeTaskId].taskInfo.forEach(
-      (task: any) => {
-        expect(task.status).toBe('skipped');
-      }
-    );
+    secondChatStore.tasks[
+      secondChatStore.activeTaskId as string
+    ].taskRunning.forEach((task: any) => {
+      expect(task.status).toBe('skipped');
+    });
+    secondChatStore.tasks[
+      secondChatStore.activeTaskId as string
+    ].taskInfo.forEach((task: any) => {
+      expect(task.status).toBe('skipped');
+    });
   });
 
   it('should handle individual SSE events with precise timing', async () => {
@@ -383,7 +387,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
       const { chatStore } = result.current;
       const initiatorTaskId = chatStore.activeTaskId;
       await chatStore.startTask(
-        initiatorTaskId,
+        initiatorTaskId as string,
         undefined,
         undefined,
         undefined,
@@ -547,7 +551,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
     await act(async () => {
       const userMessage1 = 'Build a calculator app';
       await initialChatStore.startTask(
-        initiatorTaskId,
+        initiatorTaskId as string,
         undefined,
         undefined,
         undefined,
@@ -564,7 +568,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
         // Should have 2 chatStores: initial + first task
         const allChatStores = projectStore.getAllChatStores(
-          projectStore.activeProjectId
+          projectStore.activeProjectId as string
         );
         expect(allChatStores).toHaveLength(2);
 
@@ -574,7 +578,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
         // Verify first task details
         const activeTaskId = currentChatStore.activeTaskId;
-        const activeTask = currentChatStore.tasks[activeTaskId];
+        const activeTask = currentChatStore.tasks[activeTaskId as string];
         expect(activeTask).toBeDefined();
         expect(activeTask.hasMessages).toBe(true);
         expect(activeTask.messages[0].content).toBe('Build a calculator app');
@@ -588,7 +592,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
         rerender();
         const { chatStore: currentChatStore } = result.current;
         const activeTaskId = currentChatStore.activeTaskId;
-        const activeTask = currentChatStore.tasks[activeTaskId];
+        const activeTask = currentChatStore.tasks[activeTaskId as string];
 
         // Check that SSE events have been processed
         expect(activeTask.summaryTask).toBe(
@@ -608,7 +612,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
         rerender();
         const { chatStore: currentChatStore } = result.current;
         const activeTaskId = currentChatStore.activeTaskId;
-        const activeTask = currentChatStore.tasks[activeTaskId];
+        const activeTask = currentChatStore.tasks[activeTaskId as string];
 
         expect(activeTask.status).toBe('finished');
 
@@ -625,16 +629,16 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
         // Ensure the project has been properly updated with the appended first chatStore
         const allChatStores = projectStore.getAllChatStores(
-          projectStore.activeProjectId
+          projectStore.activeProjectId as string
         );
         expect(allChatStores).toHaveLength(2);
 
         // Verify the active chatStore is properly set and ready for next task
         const activeChatStore = projectStore.getActiveChatStore(
-          projectStore.activeProjectId
+          projectStore.activeProjectId as string
         );
         expect(activeChatStore).toBeDefined();
-        expect(activeChatStore.getState()?.activeTaskId).toBeDefined();
+        expect(activeChatStore!.getState()?.activeTaskId).toBeDefined();
 
         console.log('Project append completed, ready for second task');
       },
@@ -649,7 +653,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
       const userMessage2 = 'Build a todo app';
       await currentChatStore.startTask(
-        currentInitiatorTaskId,
+        currentInitiatorTaskId as string,
         undefined,
         undefined,
         undefined,
@@ -666,7 +670,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
         // Should now have 3 chatStores: initial + first task + second task
         const allChatStores = projectStore.getAllChatStores(
-          projectStore.activeProjectId
+          projectStore.activeProjectId as string
         );
         expect(allChatStores).toHaveLength(3);
 
@@ -676,7 +680,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
 
         // Verify second task details
         const activeTaskId = currentChatStore.activeTaskId;
-        const activeTask = currentChatStore.tasks[activeTaskId];
+        const activeTask = currentChatStore.tasks[activeTaskId as string];
         expect(activeTask).toBeDefined();
         expect(activeTask.hasMessages).toBe(true);
         expect(activeTask.messages[0].content).toBe('Build a todo app');
@@ -690,7 +694,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
         rerender();
         const { chatStore: currentChatStore } = result.current;
         const activeTaskId = currentChatStore.activeTaskId;
-        const activeTask = currentChatStore.tasks[activeTaskId];
+        const activeTask = currentChatStore.tasks[activeTaskId as string];
 
         // Check that SSE events have been processed
         expect(activeTask.summaryTask).toBe('Second Task|Build a todo app');
@@ -708,7 +712,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
         rerender();
         const { chatStore: currentChatStore } = result.current;
         const activeTaskId = currentChatStore.activeTaskId;
-        const activeTask = currentChatStore.tasks[activeTaskId];
+        const activeTask = currentChatStore.tasks[activeTaskId as string];
 
         expect(activeTask.status).toBe('finished');
 
@@ -720,7 +724,7 @@ describe('Integration Test: Case 2 - same session new chat', () => {
     // Final verification: Both chatStores should have separate states
     const { projectStore: finalProjectStore } = result.current;
     const allFinalChatStores = finalProjectStore.getAllChatStores(
-      finalProjectStore.activeProjectId
+      finalProjectStore.activeProjectId as string
     );
 
     // Verify we have 3 separate chatStores with their own states
@@ -741,7 +745,9 @@ describe('Integration Test: Case 2 - same session new chat', () => {
     const firstTaskId =
       firstChatStoreFromProject.chatStore.getState().activeTaskId;
     const firstTask =
-      firstChatStoreFromProject.chatStore.getState().tasks[firstTaskId];
+      firstChatStoreFromProject.chatStore.getState().tasks[
+        firstTaskId as string
+      ];
     expect(firstTask.messages[0].content).toBe('Build a calculator app');
     expect(firstTask.summaryTask).toBe('First Task|Build a calculator app');
 
@@ -749,7 +755,9 @@ describe('Integration Test: Case 2 - same session new chat', () => {
     const secondTaskId =
       secondChatStoreFromProject.chatStore.getState().activeTaskId;
     const secondTask =
-      secondChatStoreFromProject.chatStore.getState().tasks[secondTaskId];
+      secondChatStoreFromProject.chatStore.getState().tasks[
+        secondTaskId as string
+      ];
     expect(secondTask.messages[0].content).toBe('Build a todo app');
     expect(secondTask.summaryTask).toBe('Second Task|Build a todo app');
 
