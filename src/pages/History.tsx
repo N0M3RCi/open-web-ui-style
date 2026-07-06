@@ -21,7 +21,6 @@ import AlertDialog from '@/components/ui/alertDialog';
 import WordCarousel from '@/components/ui/WordCarousel';
 import HomeHub from '@/pages/Home';
 import Setting from '@/pages/Setting';
-import { useAuthStore } from '@/store/authStore';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -39,9 +38,6 @@ export default function History() {
   const [searchParams] = useSearchParams();
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const { username, email } = useAuthStore();
-  const displayName = username || email || '';
-
   const activeTab = useMemo(() => {
     const tabFromUrl = searchParams.get('tab');
     if (tabFromUrl) {
@@ -91,23 +87,6 @@ export default function History() {
     }
   };
 
-  const formatWelcomeName = (raw: string): string => {
-    if (!raw) return '';
-    if (/^[^@]+@gmail\.com$/i.test(raw)) {
-      const local = raw.split('@')[0];
-      const pretty = local.replace(/[._-]+/g, ' ').trim();
-      return pretty
-        .split(/\s+/)
-        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-        .join(' ');
-    }
-    return raw;
-  };
-
-  const welcomeName = formatWelcomeName(displayName);
-
-  /** User's local time: morning 5–12, afternoon 12–17, evening/night otherwise */
-  const hour = new Date().getHours();
   const timeGreetingKey =
     hour >= 5 && hour < 12
       ? 'layout.greeting-morning'
@@ -147,7 +126,7 @@ export default function History() {
               gradient="linear-gradient(90deg, var(--ds-text-brand-subtle-default) 0%, var(--ds-text-brand-muted-default) 100%)"
             />
             <span className="history-welcome-headline text-heading-xl font-bold italic tracking-tight text-ds-text-brand-default-default">
-              {`, ${welcomeName} !`}
+              !
             </span>
           </p>
         </div>
@@ -190,7 +169,7 @@ export default function History() {
                 <Channels />
               </div>
             )}
-                        {visitedTabs.includes('settings') && (
+            {visitedTabs.includes('settings') && (
               <div
                 className={activeTab === 'settings' ? 'contents' : 'hidden'}
                 aria-hidden={activeTab !== 'settings'}
