@@ -1,0 +1,17 @@
+# Backend & server Python code (not needed for web build)
+backend
+server
+
+# Python virtual environments
+.venv
+__pycache__
+*.pyc
+
+# Git
+.git
+
+# Local build artifacts
+dist
+dist-web
+.vite
+node_modules
