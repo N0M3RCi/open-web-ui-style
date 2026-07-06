@@ -55,6 +55,16 @@ const CUSTOM_PROVIDER: Provider = {
 
 type ModelInfo = { id: string };
 
+/** Basic URL validation: accept http/https with a host. */
+function isValidUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 export default function Models() {
   const { t } = useTranslation();
 
@@ -111,12 +121,16 @@ export default function Models() {
         setApiKey(saved.api_key || '');
         setApiHost(saved.endpoint_url || '');
       }
-    } catch {
-      // Silently fail - providers will be empty
+    } catch (err: any) {
+      toast.error(
+        err?.message ||
+          t('setting.failed-to-load-providers') ||
+          'Failed to load provider configuration'
+      );
     } finally {
       setLoadingProviders(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadProviders();
@@ -167,6 +181,13 @@ export default function Models() {
       );
       return;
     }
+    if (!isValidUrl(apiHost)) {
+      toast.error(
+        t('setting.invalid-endpoint-url') ||
+          'Invalid URL format. Must start with http:// or https://'
+      );
+      return;
+    }
 
     setFetchingModels(true);
     setModels([]);
@@ -203,6 +224,13 @@ export default function Models() {
     if (!apiHost) {
       toast.error(
         t('setting.endpoint-url-can-not-be-empty') || 'Base URL is required'
+      );
+      return;
+    }
+    if (!isValidUrl(apiHost)) {
+      toast.error(
+        t('setting.invalid-endpoint-url') ||
+          'Invalid URL format. Must start with http:// or https://'
       );
       return;
     }

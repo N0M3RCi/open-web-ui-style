@@ -93,6 +93,14 @@ export default function Login() {
         return;
       }
 
+      if (!data?.token) {
+        setGeneralError(
+          t('layout.login-failed-please-try-again') ||
+            'Invalid response from server'
+        );
+        return;
+      }
+
       setAuth({ email: data.email, ...data });
       setLocalProxyValue(import.meta.env.VITE_USE_LOCAL_PROXY || null);
       setModelType('custom');

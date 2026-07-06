@@ -267,7 +267,7 @@ export default function Workspace({
 
     if (!hasModel) {
       toast.error(t('layout.please-select-model-first'));
-      navigate('/history?tab=agents');
+      navigate('/history?tab=settings&subtab=models');
       return;
     }
 
