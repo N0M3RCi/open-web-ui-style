@@ -20,8 +20,8 @@ import {
   proxyFetchPost,
 } from '@/api/http';
 
-const DESKTOP_INSTANCE_STORAGE_KEY = 'nova_desktop_instance_id';
-const BRIDGE_READY_EVENT = 'nova-remote-control-bridge-ready';
+const DESKTOP_INSTANCE_STORAGE_KEY = 'merci_desktop_instance_id';
+const BRIDGE_READY_EVENT = 'merci-remote-control-bridge-ready';
 
 let remoteControlBridgeConnected = false;
 

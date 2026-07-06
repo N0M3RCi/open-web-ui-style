@@ -86,7 +86,7 @@ interface PageTabState {
   ) => void;
   /**
    * Optional absolute path override for the agent folder (per project).
-   * When unset for a project, the default Nova project folder is used.
+   * When unset for a project, the default M3RCI - UniMind project folder is used.
    */
   customAgentFolderPathByProjectId: Record<string, string>;
   setProjectCustomAgentFolderPath: (

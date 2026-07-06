@@ -69,7 +69,7 @@ interface McpItem {
   mcp_name?: string;
 }
 
-type WorkerModelMode = 'nova' | 'custom' | 'local';
+type WorkerModelMode = 'merci' | 'custom' | 'local';
 
 interface WorkerModelOption {
   value: string;
@@ -123,7 +123,7 @@ export function AddWorker({
   // Model configuration state
   const [showModelConfig, setShowModelConfig] = useState(false);
   const [workerModelMode, setWorkerModelMode] =
-    useState<WorkerModelMode>('nova');
+    useState<WorkerModelMode>('merci');
   const [workerModelName, setWorkerModelName] = useState('');
   const [customModelOptions, setCustomModelOptions] = useState<
     WorkerModelOption[]
@@ -135,7 +135,7 @@ export function AddWorker({
   const fetchCloudModels = useCloudModelStore(
     (state) => state.fetchCloudModels
   );
-  const novaModelOptions = useMemo<WorkerModelOption[]>(
+  const merciModelOptions = useMemo<WorkerModelOption[]>(
     () =>
       cloudModels.map((model) => ({
         value: model.id,
@@ -298,7 +298,7 @@ export function AddWorker({
     setSecretVisible({});
     setNameError('');
     setShowModelConfig(false);
-    setWorkerModelMode('nova');
+    setWorkerModelMode('merci');
     setWorkerModelName('');
     setCustomModelOptions([]);
     setLocalModelOptions([]);
@@ -308,11 +308,11 @@ export function AddWorker({
     Record<WorkerModelMode, WorkerModelOption[]>
   >(
     () => ({
-      nova: novaModelOptions,
+      merci: merciModelOptions,
       custom: customModelOptions,
       local: localModelOptions,
     }),
-    [customModelOptions, novaModelOptions, localModelOptions]
+    [customModelOptions, merciModelOptions, localModelOptions]
   );
 
   const activeWorkerModelOptions = workerModelOptions[workerModelMode];
@@ -784,7 +784,7 @@ export function AddWorker({
                             />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="nova">
+                            <SelectItem value="merci">
                               {t('setting.nova-cloud')}
                             </SelectItem>
                             <SelectItem value="custom">
