@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 """
 BrainCapabilities — Brain capability set, determined by deployment env. Everything revolves around what the Brain can operate.
@@ -59,24 +59,24 @@ def _is_running_in_docker() -> bool:
 
 def _probe_cdp_browser() -> bool:
     """Check if CDP browser is configured/available."""
-    if env("EIGENT_CDP_URL"):
+    if env("NOVA_CDP_URL"):
         return True
-    cdp_json = Path.home() / ".eigent" / "cdp.json"
+    cdp_json = Path.home() / ".nova" / "cdp.json"
     if cdp_json.exists():
         return True
     # Electron persists CDP pool here; if present, browser capability is likely available.
-    cdp_pool = Path.home() / ".eigent" / "cdp-browsers.json"
+    cdp_pool = Path.home() / ".nova" / "cdp-browsers.json"
     return cdp_pool.exists()
 
 
 def _is_electron_runtime() -> bool:
     """Detect whether Brain is launched by Electron desktop host."""
-    return env("EIGENT_RUNTIME", "").lower().strip() == "electron"
+    return env("NOVA_RUNTIME", "").lower().strip() == "electron"
 
 
 def _can_launch_local_cdp_browser() -> bool:
     """Check if local runtime can provision a CDP browser on demand."""
-    if os.environ.get("EIGENT_BRAIN_LAUNCH_BROWSER", "true").lower() in (
+    if os.environ.get("NOVA_BRAIN_LAUNCH_BROWSER", "true").lower() in (
         "false",
         "0",
         "no",
@@ -115,7 +115,7 @@ class BrainCapabilities:
     """used when mcp_mode=allowlist"""
 
     workspace_root: Path = field(
-        default_factory=lambda: Path("~/.eigent/workspace").expanduser()
+        default_factory=lambda: Path("~/.nova/workspace").expanduser()
     )
     """workspace root path"""
 
@@ -135,13 +135,13 @@ class BrainCapabilities:
 def detect_capabilities(config: dict | None = None) -> BrainCapabilities:
     """
     Detect Brain capabilities, two-layer decision:
-    1. Deployment env: EIGENT_DEPLOYMENT_TYPE / Docker auto-detect
-    2. Env var overrides: EIGENT_HANDS_*
+    1. Deployment env: NOVA_DEPLOYMENT_TYPE / Docker auto-detect
+    2. Env var overrides: NOVA_HANDS_*
     """
     cfg = config or {}
 
     # 1. Deployment env determines base capabilities
-    deployment = env("EIGENT_DEPLOYMENT_TYPE") or ""
+    deployment = env("NOVA_DEPLOYMENT_TYPE") or ""
     deployment = deployment.lower().strip()
 
     if deployment in DEPLOYMENT_FULL:
@@ -156,7 +156,7 @@ def detect_capabilities(config: dict | None = None) -> BrainCapabilities:
                 filesystem_scope="workspace_only",
                 mcp_mode="all",  # MCP available in all deployment modes
                 workspace_root=Path(
-                    env("EIGENT_WORKSPACE", "~/.eigent/workspace")
+                    env("NOVA_WORKSPACE", "~/.nova/workspace")
                 ).expanduser(),
                 deployment_type="docker",
             )
@@ -179,7 +179,7 @@ def detect_capabilities(config: dict | None = None) -> BrainCapabilities:
                 filesystem_scope="full",
                 mcp_mode="all",
                 workspace_root=Path(
-                    env("EIGENT_WORKSPACE", "~/.eigent/workspace")
+                    env("NOVA_WORKSPACE", "~/.nova/workspace")
                 ).expanduser(),
                 deployment_type="cloud_vm"
                 if deployment == "cloud_vm"
@@ -193,29 +193,29 @@ def detect_capabilities(config: dict | None = None) -> BrainCapabilities:
             filesystem_scope="workspace_only",
             mcp_mode="all",  # MCP available in all deployment modes
             workspace_root=Path(
-                env("EIGENT_WORKSPACE", "~/.eigent/workspace")
+                env("NOVA_WORKSPACE", "~/.nova/workspace")
             ).expanduser(),
             deployment_type=deployment or "sandbox",
         )
 
     # 2. Env var overrides
-    if env("EIGENT_HANDS_TERMINAL") is not None:
-        caps.has_terminal = env("EIGENT_HANDS_TERMINAL", "true").lower() in (
+    if env("NOVA_HANDS_TERMINAL") is not None:
+        caps.has_terminal = env("NOVA_HANDS_TERMINAL", "true").lower() in (
             "1",
             "true",
             "yes",
         )
-    if env("EIGENT_HANDS_BROWSER") is not None:
-        caps.has_browser = env("EIGENT_HANDS_BROWSER", "false").lower() in (
+    if env("NOVA_HANDS_BROWSER") is not None:
+        caps.has_browser = env("NOVA_HANDS_BROWSER", "false").lower() in (
             "1",
             "true",
             "yes",
         )
-    if env("EIGENT_HANDS_FILESYSTEM") is not None:
-        caps.filesystem_scope = env("EIGENT_HANDS_FILESYSTEM", "full")
-    if env("EIGENT_HANDS_MCP") is not None:
-        caps.mcp_mode = env("EIGENT_HANDS_MCP", "all")
-    if env("EIGENT_CDP_URL"):
+    if env("NOVA_HANDS_FILESYSTEM") is not None:
+        caps.filesystem_scope = env("NOVA_HANDS_FILESYSTEM", "full")
+    if env("NOVA_HANDS_MCP") is not None:
+        caps.mcp_mode = env("NOVA_HANDS_MCP", "all")
+    if env("NOVA_CDP_URL"):
         caps.has_browser = True
 
     # 3. Config file overrides

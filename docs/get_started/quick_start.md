@@ -1,10 +1,10 @@
 ---
 title: Quick Start
-description: Get started with Eigent in just a few minutes!
+description: Get started with Nova in just a few minutes!
 icon: rocket
 ---
 
-This guide will walk you through building your first multi-agent workforce using Eigent.
+This guide will walk you through building your first multi-agent workforce using Nova.
 
 ## Create Your First Task
 
@@ -53,14 +53,14 @@ This is the filing cabinet for your workforce. Any files your agents create or u
 
 You can always find your task files in a dedicated folder on your machine.
 
-- **Windows:** `C:\Users\[YourUsername]\eigent\[YourEmailPrefix]\task_[TaskID]`
-- **Mac:** `/Users/[YourUsername]/eigent/[YourEmailPrefix]/task_[TaskID]`
+- **Windows:** `C:\Users\[YourUsername]\nova\[YourEmailPrefix]\task_[TaskID]`
+- **Mac:** `/Users/[YourUsername]/nova/[YourEmailPrefix]/task_[TaskID]`
 
 Cloud version users: outputs are also saved in your cloud workspace according to your subscription tier. Visit the Support page for more details.
 
 ### Pre-built Agents
 
-Eigent comes with four ready-to-work agents. Each is equipped with a specific set of tools and shines at specific tasks—click to explore:
+Nova comes with four ready-to-work agents. Each is equipped with a specific set of tools and shines at specific tasks—click to explore:
 
 1. **Developer Agent** – writes, debugs and executes code
 1. **Browser Agent** – fetches and gathers info from the web
@@ -86,7 +86,7 @@ Now that you have a workforce, let's put it to work.
 
 ### Step 1: Define Your Goal
 
-Type your task in the top Message Box. Be as descriptive as you like. For example, ask Eigent to conduct an UK healthcare market research . You can attach files (like docs, data, images) by clicking the **paperclip icon** in the Message Box.Then, hit **Send**.
+Type your task in the top Message Box. Be as descriptive as you like. For example, ask Nova to conduct an UK healthcare market research . You can attach files (like docs, data, images) by clicking the **paperclip icon** in the Message Box.Then, hit **Send**.
 
 ### Step 2: Review Subtask Flow
 
@@ -97,7 +97,7 @@ Once you send your task, our **Coordinator Agent** and **Task Agent** kick in to
 
 ### Step 3: Lauch the Task
 
-Once you're happy with the plan, hit **Start Task.** Eigent will automatically assign each subtask to the best agent for the job based on the tools they have.
+Once you're happy with the plan, hit **Start Task.** Nova will automatically assign each subtask to the best agent for the job based on the tools they have.
 
 > **Video placeholder:** Add a current video walkthrough for “Launch the Task”. Include captions.
 
@@ -150,8 +150,8 @@ Click the gear icon in the top-right corner to open Settings. Here’s a brief o
 ### **General**
 
 - **Account:** Manage your subscription or log out.
-- **Language:** Eigent supports multiple languages, including English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文), Japanese (日本語), Korean (한국어), French (Français), German (Deutsch), Spanish (Español), Italian (Italiano), Russian (Русский), and Arabic (العربية).
-- **Appearance:** Eigent now supports custom themes, allowing you to personalize the look and feel of your workspace.
+- **Language:** Nova supports multiple languages, including English, Simplified Chinese (简体中文), Traditional Chinese (繁體中文), Japanese (日本語), Korean (한국어), French (Français), German (Deutsch), Spanish (Español), Italian (Italiano), Russian (Русский), and Arabic (العربية).
+- **Appearance:** Nova now supports custom themes, allowing you to personalize the look and feel of your workspace.
 
 > **Screenshot placeholder:** Add a current screenshot for “General”.
 
@@ -160,7 +160,7 @@ Click the gear icon in the top-right corner to open Settings. Here’s a brief o
 <aside>
 
 **⚠️ Important: Cloud vs. Self-hosted**
-Eigent can run in two modes. Your choice here affects how you are billed and what models are available.
+Nova can run in two modes. Your choice here affects how you are billed and what models are available.
 
 </aside>
 

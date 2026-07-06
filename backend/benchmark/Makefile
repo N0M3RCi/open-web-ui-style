@@ -1,8 +1,8 @@
 .PHONY: clean clean-browser-logs clean-camel-logs clean-working-dirs
 
 BROWSER_LOG_DIR := $(abspath ../browser_log)
-CAMEL_LOG_DIR := $(HOME)/.eigent/benchmark
-WORKING_DIR := $(HOME)/eigent/benchmark
+CAMEL_LOG_DIR := $(HOME)/.nova/benchmark
+WORKING_DIR := $(HOME)/nova/benchmark
 
 clean: clean-browser-logs clean-camel-logs clean-working-dirs
 	@echo "All benchmark artifacts cleaned."

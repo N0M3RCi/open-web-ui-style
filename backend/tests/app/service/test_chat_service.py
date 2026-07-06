@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import asyncio
 import time
@@ -711,7 +711,7 @@ class TestInProcessHistoryCompaction:
             "[memory] Compacted 12 older in-process turn"
             in lock.memory_summary
         )
-        assert "~/.eigent/memory" in lock.memory_summary
+        assert "~/.nova/memory" in lock.memory_summary
 
     def test_marker_not_duplicated_across_compactions(self):
         lock = self._make_task_lock(convo_entries=10, snapshot_entries=10)
@@ -1338,7 +1338,7 @@ class TestChatServiceIntegration:
         ):
             mock_question_agent.return_value = MagicMock()
             mock_summary_agent.return_value = MagicMock()
-            mock_workforce.eigent_make_sub_tasks.return_value = []
+            mock_workforce.nova_make_sub_tasks.return_value = []
 
             # Convert async generator to list
             responses = []

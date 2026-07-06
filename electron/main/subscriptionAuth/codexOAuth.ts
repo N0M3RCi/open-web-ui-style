@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 const CODEX_OAUTH_AUTH_URL_ENV = 'CODEX_OAUTH_AUTH_URL';
 const CODEX_OAUTH_TOKEN_URL_ENV = 'CODEX_OAUTH_TOKEN_URL';
@@ -19,7 +19,7 @@ const CODEX_OAUTH_SCOPES_ENV = 'CODEX_OAUTH_SCOPES';
 const CODEX_OAUTH_REDIRECT_URI_ENV = 'CODEX_OAUTH_REDIRECT_URI';
 const CODEX_OAUTH_ORIGINATOR_ENV = 'CODEX_OAUTH_ORIGINATOR';
 
-// Keep this module free of Electron APIs so future eigent-cli code can share
+// Keep this module free of Electron APIs so future nova-cli code can share
 // the Codex provider constants and override behavior.
 export const DEFAULT_CODEX_OAUTH_AUTH_URL =
   'https://auth.openai.com/oauth/authorize';

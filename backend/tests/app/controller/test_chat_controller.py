@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import os
 from types import SimpleNamespace
@@ -126,7 +126,7 @@ class TestChatController:
     async def test_post_chat_sets_cdp_url_when_browser_ready(
         self, sample_chat_data, mock_request, mock_task_lock
     ):
-        """Web mode should set EIGENT_CDP_URL after successful browser ensure."""
+        """Web mode should set NOVA_CDP_URL after successful browser ensure."""
         chat_data = Chat(**sample_chat_data)
         mock_request.state = SimpleNamespace()
 
@@ -170,7 +170,7 @@ class TestChatController:
     async def test_post_chat_clears_cdp_url_when_browser_unavailable(
         self, sample_chat_data, mock_request, mock_task_lock
     ):
-        """Web mode should mark browser unavailable and clear EIGENT_CDP_URL."""
+        """Web mode should mark browser unavailable and clear NOVA_CDP_URL."""
         chat_data = Chat(**sample_chat_data)
         mock_request.state = SimpleNamespace()
 
@@ -196,7 +196,7 @@ class TestChatController:
             patch("pathlib.Path.home", return_value=MagicMock()),
             patch.dict(
                 os.environ,
-                {"EIGENT_CDP_URL": "http://127.0.0.1:9222"},
+                {"NOVA_CDP_URL": "http://127.0.0.1:9222"},
                 clear=True,
             ),
         ):
@@ -240,7 +240,7 @@ class TestChatController:
             patch("pathlib.Path.home", return_value=MagicMock()),
             patch.dict(
                 os.environ,
-                {"EIGENT_CDP_URL": "http://worker-17:9222"},
+                {"NOVA_CDP_URL": "http://worker-17:9222"},
                 clear=True,
             ),
         ):

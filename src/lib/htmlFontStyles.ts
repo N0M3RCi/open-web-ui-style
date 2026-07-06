@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,17 +10,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 /**
  * Scoped font style for HTML fragments rendered in the main document (e.g. CSV in FolderComponent).
  * Uses a wrapper class so styles do not leak to the rest of the app (sidebar, file list, etc.).
  */
-const SCOPED_FONT_STYLE = `<style data-eigent-fonts>
-  .eigent-file-content *, .eigent-file-content *::before, .eigent-file-content *::after {
+const SCOPED_FONT_STYLE = `<style data-nova-fonts>
+  .nova-file-content *, .nova-file-content *::before, .nova-file-content *::after {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   }
-  .eigent-file-content code, .eigent-file-content pre, .eigent-file-content kbd, .eigent-file-content samp {
+  .nova-file-content code, .nova-file-content pre, .nova-file-content kbd, .nova-file-content samp {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
   }
 </style>`;
@@ -29,7 +29,7 @@ const SCOPED_FONT_STYLE = `<style data-eigent-fonts>
  * Unscoped font style for full HTML documents rendered in an iframe (e.g. HtmlRenderer).
  * Safe there because the iframe has its own document.
  */
-export const FONT_STYLE_TAG = `<style data-eigent-fonts>
+export const FONT_STYLE_TAG = `<style data-nova-fonts>
   *, *::before, *::after {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   }
@@ -54,7 +54,7 @@ export function injectFontStyles(html: string): string {
   }
   // Fragment (e.g. CSV table): scope to wrapper so styles don't affect sidebar/app
   return (
-    SCOPED_FONT_STYLE + '<div class="eigent-file-content">' + html + '</div>'
+    SCOPED_FONT_STYLE + '<div class="nova-file-content">' + html + '</div>'
   );
 }
 
@@ -175,20 +175,20 @@ export function deferInlineScriptsUntilLoad(html: string): string {
       );
       const deferredRunner = [
         '(function(){',
-        'var __eigentRun=function(){',
-        "var __eigentScript=document.createElement('script');",
-        'var __eigentCurrentScript=document.currentScript;',
-        'if(__eigentCurrentScript&&__eigentCurrentScript.nonce){__eigentScript.nonce=__eigentCurrentScript.nonce;}',
-        `__eigentScript.text=${serializedContent};`,
+        'var __novaRun=function(){',
+        "var __novaScript=document.createElement('script');",
+        'var __novaCurrentScript=document.currentScript;',
+        'if(__novaCurrentScript&&__novaCurrentScript.nonce){__novaScript.nonce=__novaCurrentScript.nonce;}',
+        `__novaScript.text=${serializedContent};`,
         'try{',
-        '(document.head||document.body||document.documentElement).appendChild(__eigentScript);',
-        '}catch(__eigentErr){',
-        "console.error('[HtmlRenderer] Deferred inline script execution failed:',__eigentErr);",
+        '(document.head||document.body||document.documentElement).appendChild(__novaScript);',
+        '}catch(__novaErr){',
+        "console.error('[HtmlRenderer] Deferred inline script execution failed:',__novaErr);",
         '}finally{',
-        'if(__eigentScript.parentNode){__eigentScript.remove();}',
+        'if(__novaScript.parentNode){__novaScript.remove();}',
         '}',
         '};',
-        "if(document.readyState==='complete'){__eigentRun();}else{window.addEventListener('load',__eigentRun,{once:true});}",
+        "if(document.readyState==='complete'){__novaRun();}else{window.addEventListener('load',__novaRun,{once:true});}",
         '})();',
       ].join('');
       result += `${openTag}${deferredRunner}</script>`;

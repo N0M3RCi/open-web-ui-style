@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import useChatStoreAdapter from '@/hooks/useChatStoreAdapter';
 import { FitAddon } from '@xterm/addon-fit';
@@ -50,7 +50,7 @@ export default function TerminalComponent({
   const cursorPosRef = useRef<number>(0); // cursor position ref, for event handling
 
   // terminal configuration
-  const promptText = 'Eigent:~$ '; // prompt text
+  const promptText = 'Nova:~$ '; // prompt text
   const isInitialized = useRef<boolean>(false); // initialization identifier, prevent duplicate initialization
 
   // synchronize state to ref, for event handling
@@ -167,7 +167,7 @@ export default function TerminalComponent({
 
       // only show welcome information when needed
       if (showWelcome) {
-        terminal.writeln('\x1b[32m=== Eigent Terminal ===\x1b[0m');
+        terminal.writeln('\x1b[32m=== Nova Terminal ===\x1b[0m');
         terminal.writeln(`\x1b[32mInstance: ${instanceId}\x1b[0m`);
         terminal.writeln('\x1b[32mReady for commands...\x1b[0m');
         terminal.writeln('');
@@ -261,7 +261,7 @@ export default function TerminalComponent({
 
         if (formattedOutput.trim()) {
           xtermRef.current.writeln(
-            `\x1b[36m[Eigent]\x1b[0m ${formattedOutput}`
+            `\x1b[36m[Nova]\x1b[0m ${formattedOutput}`
           );
         } else {
           xtermRef.current.writeln('');
@@ -310,7 +310,7 @@ export default function TerminalComponent({
 
       // only show switch information on main instance
       if (showWelcome) {
-        xtermRef.current.writeln('\x1b[32m=== Eigent Terminal ===\x1b[0m');
+        xtermRef.current.writeln('\x1b[32m=== Nova Terminal ===\x1b[0m');
         xtermRef.current.writeln(`\x1b[32mInstance: ${instanceId}\x1b[0m`);
         xtermRef.current.writeln('\x1b[32mTask switched...\x1b[0m');
         xtermRef.current.writeln('');
@@ -329,7 +329,7 @@ export default function TerminalComponent({
 
             if (formattedOutput.trim()) {
               xtermRef.current?.writeln(
-                `\x1b[36m[Eigent]\x1b[0m ${formattedOutput}`
+                `\x1b[36m[Nova]\x1b[0m ${formattedOutput}`
               );
             }
           });

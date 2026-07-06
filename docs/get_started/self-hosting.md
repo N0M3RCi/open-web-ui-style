@@ -1,10 +1,10 @@
 ---
 title: Self-hosting
-description: Run Eigent with your own backend, model providers, and local workspace.
+description: Run Nova with your own backend, model providers, and local workspace.
 icon: server
 ---
 
-Self-host Eigent when you need control over model providers, credentials, project files, or the infrastructure that runs your agents. A self-hosted installation uses the open-source Eigent application and lets you connect cloud APIs, OpenAI-compatible endpoints, or local inference servers.
+Self-host Nova when you need control over model providers, credentials, project files, or the infrastructure that runs your agents. A self-hosted installation uses the open-source Nova application and lets you connect cloud APIs, OpenAI-compatible endpoints, or local inference servers.
 
 This page describes the recommended setup path. Exact deployment requirements can change between releases, so use the repository files and release notes as the source of truth for version-specific values.
 
@@ -25,11 +25,11 @@ Local model requirements depend on the model and runtime. Large models can requi
 
 ## Choose a deployment model
 
-Eigent supports three common arrangements:
+Nova supports three common arrangements:
 
 | Arrangement           | Model execution                               | Best for                                         |
 | --------------------- | --------------------------------------------- | ------------------------------------------------ |
-| Managed application   | Eigent Cloud                                  | Fast evaluation with minimal setup               |
+| Managed application   | Nova Cloud                                  | Fast evaluation with minimal setup               |
 | Self-hosted with BYOK | External provider APIs                        | Infrastructure control with hosted model quality |
 | Fully local           | Ollama, vLLM, SGLang, LM Studio, or LLaMA.cpp | Private environments and local experimentation   |
 
@@ -37,11 +37,11 @@ You can configure more than one provider and change the preferred model later.
 
 ## Set up the repository
 
-1. Clone the Eigent repository:
+1. Clone the Nova repository:
 
    ```bash
-   git clone https://github.com/eigent-ai/eigent.git
-   cd eigent
+   git clone https://github.com/nova-ai/nova.git
+   cd nova
    ```
 
 2. Install the frontend dependencies:
@@ -58,19 +58,19 @@ You can configure more than one provider and change the preferred model later.
    npm run dev
    ```
 
-5. In Eigent, open **Agents > Models** and configure a model provider.
+5. In Nova, open **Agents > Models** and configure a model provider.
 
 <Note>
-The first development start can take longer because Eigent prepares frontend and backend dependencies.
+The first development start can take longer because Nova prepares frontend and backend dependencies.
 </Note>
 
-> **Screenshot placeholder:** Add a screenshot of Eigent running locally with **Agents > Models** open. Crop the image to the application window and hide credentials.
+> **Screenshot placeholder:** Add a screenshot of Nova running locally with **Agents > Models** open. Crop the image to the application window and hide credentials.
 
 ## Configure a model
 
 For the fastest self-hosted setup, connect an existing provider:
 
-1. In Eigent, open **Agents > Models**.
+1. In Nova, open **Agents > Models**.
 2. Expand **Bring Your Own Key**.
 3. Select a provider.
 4. Enter the API key, endpoint, and model name required by that provider.
@@ -115,21 +115,21 @@ Review the Electron signing, packaging, and backend dependency requirements befo
 3. Review release notes and environment changes.
 4. Reinstall dependencies when lockfiles changed.
 5. Run the relevant tests and build command.
-6. Start Eigent and validate models, connectors, browser sessions, and existing Spaces.
+6. Start Nova and validate models, connectors, browser sessions, and existing Spaces.
 
 ## Troubleshooting
 
 ### The application starts without a model
 
-Open **Agents > Models** and configure at least one cloud, BYOK, or local provider. Eigent blocks new tasks when no valid model is available.
+Open **Agents > Models** and configure at least one cloud, BYOK, or local provider. Nova blocks new tasks when no valid model is available.
 
 ### A local model cannot be reached
 
-Confirm that the runtime is running, the endpoint includes the expected `/v1` path, and the port is accessible from the Eigent process.
+Confirm that the runtime is running, the endpoint includes the expected `/v1` path, and the port is accessible from the Nova process.
 
 ### MCP tools fail during startup
 
-Review the MCP command, arguments, environment variables, and executable path. Run the server independently to confirm that it starts before adding it to Eigent.
+Review the MCP command, arguments, environment variables, and executable path. Run the server independently to confirm that it starts before adding it to Nova.
 
 ### Browser connection fails
 
@@ -139,9 +139,9 @@ Confirm that Chrome or Chromium was started with remote debugging and that the c
 
 <CardGroup>
   <Card title="Provider reference" icon="list" href="/models/provider-reference">
-    Compare every cloud and local model provider supported by Eigent.
+    Compare every cloud and local model provider supported by Nova.
   </Card>
-  <Card title="Open-source Eigent" icon="code-branch" href="/open-source/overview">
+  <Card title="Open-source Nova" icon="code-branch" href="/open-source/overview">
     Review the repository architecture and extension points.
   </Card>
   <Card title="Brain architecture" icon="diagram-project" href="/core/brain-architecture">

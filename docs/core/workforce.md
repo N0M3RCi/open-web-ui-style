@@ -1,6 +1,6 @@
 ---
 title: Workforce
-description: Understand core concepts and features that power Eigent.
+description: Understand core concepts and features that power Nova.
 icon: cubes
 ---
 
@@ -66,7 +66,7 @@ If a worker fails a task, the coordinator agent will:
 
 ## Worker Nodes
 
-Eigent comes with a set of pre-configured agents, each designed for a specific domain of expertise. These agents are equipped with a curated set of toolkits to make them effective right out of the box.
+Nova comes with a set of pre-configured agents, each designed for a specific domain of expertise. These agents are equipped with a curated set of toolkits to make them effective right out of the box.
 
 ### DeveloperAgent
 

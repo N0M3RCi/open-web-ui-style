@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 # STATUS: full-rewrite (uses OAuthService, H12 code/state XSS validation)
 import json
@@ -65,7 +65,7 @@ def oauth_callback(app: str, request: Request, code: Optional[str] = None, state
     safe_state = _validate_oauth_param(state, "state", _OAUTH_STATE_MAX_LEN)
     safe_app = _validate_oauth_param(app, "provider", 64) or ""
     query = f"provider={quote(safe_app, safe='')}&code={quote(safe_code, safe='')}&state={quote(safe_state, safe='')}"
-    redirect_url = f"eigent://callback/oauth?{query}"
+    redirect_url = f"nova://callback/oauth?{query}"
     html_content = f"""
     <html>
         <head>

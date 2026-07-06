@@ -1,14 +1,14 @@
 ---
 title: Dashboard overview
-description: Navigate Eigent's Home dashboard and manage Spaces, Projects, Tasks, and Triggers.
+description: Navigate Nova's Home dashboard and manage Spaces, Projects, Tasks, and Triggers.
 icon: grid-2
 ---
 
-The Home dashboard is the management surface for work across Eigent. Use it to find active work, review history, organize projects, and manage automations without opening each project first.
+The Home dashboard is the management surface for work across Nova. Use it to find active work, review history, organize projects, and manage automations without opening each project first.
 
 ## Open the dashboard
 
-1. Open Eigent.
+1. Open Nova.
 2. In the main navigation, select **Home**.
 3. Select **Spaces**, **Projects**, **Tasks**, or **Triggers**.
 
@@ -20,7 +20,7 @@ The active section appears in the URL, so returning to the same link restores th
 
 ### Spaces
 
-Spaces are top-level work areas. A Space can use an Eigent-managed scratch folder or connect directly to a local folder. Each Space contains projects, tasks, files, and triggers.
+Spaces are top-level work areas. A Space can use an Nova-managed scratch folder or connect directly to a local folder. Each Space contains projects, tasks, files, and triggers.
 
 ### Projects
 
@@ -62,8 +62,8 @@ The exact status of a card still appears in its metadata.
 ## Start new work
 
 1. In the Home toolbar, open the create menu.
-2. Choose **Start from scratch** for an Eigent-managed workspace, or **Use local folder** to connect existing files.
-3. Eigent opens the new Space in the Workspace.
+2. Choose **Start from scratch** for an Nova-managed workspace, or **Use local folder** to connect existing files.
+3. Nova opens the new Space in the Workspace.
 4. Enter a task, select Single Agent or Workforce mode, and send the request.
 
 > **Video placeholder:** Add a short MP4 showing a user creating a Space, starting a task, and returning to the dashboard to find the new Project and Task. Include captions.

@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-The following versions of Eigent are currently being supported with security updates:
+The following versions of Nova are currently being supported with security updates:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -11,11 +11,11 @@ The following versions of Eigent are currently being supported with security upd
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Eigent, please report it responsibly:
+If you discover a security vulnerability in Nova, please report it responsibly:
 
 ### How to Report
 
-- **Email**: Send details to info@eigent.ai
+- **Email**: Send details to info@nova.ai
 - **GitHub**: Use GitHub's private security advisory feature
 - **Include**: Detailed description, steps to reproduce, and potential impact
 

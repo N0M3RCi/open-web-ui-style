@@ -4,7 +4,7 @@ description: Follow task execution through chat, progress, agents, logs, files, 
 icon: messages
 ---
 
-A Session combines the project conversation with live execution details. It is the main surface for reviewing what Eigent understood, what its agents are doing, and what they produced.
+A Session combines the project conversation with live execution details. It is the main surface for reviewing what Nova understood, what its agents are doing, and what they produced.
 
 ## Session layout
 
@@ -79,7 +79,7 @@ Use Stop when the task is no longer useful or is consuming resources without mak
 
 ## Continue with a follow-up
 
-Enter another request in the composer. Eigent adds the request as a new Run. Use the Run selector to switch the side panel and workspaces between runs.
+Enter another request in the composer. Nova adds the request as a new Run. Use the Run selector to switch the side panel and workspaces between runs.
 
 > **Video placeholder:** Add a 90-second MP4 showing plan review, task execution, a browser or terminal workspace, pause and resume, and a follow-up Run. Include captions and a transcript.
 

@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { execFileSync, execSync, spawn } from 'child_process';
 import { app } from 'electron';
@@ -125,13 +125,13 @@ export async function getBinaryPath(name?: string): Promise<string> {
         return systemPath;
       }
     } catch {
-      // Not found on PATH, fall through to .eigent/bin
+      // Not found on PATH, fall through to .nova/bin
     }
   }
 
-  const binariesDir = path.join(os.homedir(), '.eigent', 'bin');
+  const binariesDir = path.join(os.homedir(), '.nova', 'bin');
 
-  // Ensure .eigent/bin directory exists
+  // Ensure .nova/bin directory exists
   if (!fs.existsSync(binariesDir)) {
     fs.mkdirSync(binariesDir, { recursive: true });
   }
@@ -159,7 +159,7 @@ export function getCachePath(folder: string): string {
     }
   }
 
-  const cacheDir = path.join(os.homedir(), '.eigent', 'cache', folder);
+  const cacheDir = path.join(os.homedir(), '.nova', 'cache', folder);
 
   // Ensure cache directory exists
   if (!fs.existsSync(cacheDir)) {
@@ -588,7 +588,7 @@ function runBackgroundUvSyncForOptionalDeps(userBackendVenv: string): void {
 }
 
 /**
- * Copy prebuilt backend venv to ~/.eigent/venvs/backend-{version} for unified management.
+ * Copy prebuilt backend venv to ~/.nova/venvs/backend-{version} for unified management.
  * The copied venv is the one actually used by the backend (via getVenvPath()).
  * The source venv (prebuilt/extracted) is kept as-is for re-copying on version changes.
  *
@@ -610,13 +610,13 @@ export function ensureBackendVenvAtUserPath(version: string): void {
 
   const sourceVenvPath = prebuiltVenvPath;
 
-  const userVenvsDir = path.join(os.homedir(), '.eigent', 'venvs');
+  const userVenvsDir = path.join(os.homedir(), '.nova', 'venvs');
   const userBackendVenv = path.join(userVenvsDir, `backend-${version}`);
   const pyvenvCfgPath = path.join(userBackendVenv, 'pyvenv.cfg');
   const versionFile = path.join(userVenvsDir, BACKEND_VENV_VERSION_FILE);
 
   // Ensure uv_python symlink exists (needed even if venv already copied)
-  const userUvPython = path.join(os.homedir(), '.eigent', 'uv_python');
+  const userUvPython = path.join(os.homedir(), '.nova', 'uv_python');
   if (!fs.existsSync(userUvPython) && fs.existsSync(prebuiltUvPython)) {
     try {
       fs.mkdirSync(path.dirname(userUvPython), { recursive: true });
@@ -681,7 +681,7 @@ export function ensureBackendVenvAtUserPath(version: string): void {
 }
 
 /**
- * Copy prebuilt terminal venv to ~/.eigent/venvs/terminal_base-{version}.
+ * Copy prebuilt terminal venv to ~/.nova/venvs/terminal_base-{version}.
  * @param version App version (used for version-specific venv directory)
  */
 export function ensureTerminalVenvAtUserPath(version: string): void {
@@ -698,13 +698,13 @@ export function ensureTerminalVenvAtUserPath(version: string): void {
   );
   if (!fs.existsSync(installedMarker)) return;
 
-  const userVenvsDir = path.join(os.homedir(), '.eigent', 'venvs');
+  const userVenvsDir = path.join(os.homedir(), '.nova', 'venvs');
   const userTerminalVenv = path.join(userVenvsDir, `terminal_base-${version}`);
   const userVenvMarker = path.join(userTerminalVenv, '.packages_installed');
   const versionFile = path.join(userVenvsDir, TERMINAL_VENV_VERSION_FILE);
 
   // Ensure uv_python symlink exists (needed even if venv already copied)
-  const userUvPython = path.join(os.homedir(), '.eigent', 'uv_python');
+  const userUvPython = path.join(os.homedir(), '.nova', 'uv_python');
   if (!fs.existsSync(userUvPython) && fs.existsSync(prebuiltUvPython)) {
     try {
       fs.mkdirSync(path.dirname(userUvPython), { recursive: true });
@@ -870,7 +870,7 @@ export function checkVenvExistsForPreCheck(version: string): {
   if (!app.isPackaged) {
     const venvDir = path.join(
       os.homedir(),
-      '.eigent',
+      '.nova',
       'venvs',
       `backend-${version}`
     );
@@ -891,7 +891,7 @@ export function checkVenvExistsForPreCheck(version: string): {
 
   const venvDir = path.join(
     os.homedir(),
-    '.eigent',
+    '.nova',
     'venvs',
     `backend-${version}`
   );
@@ -908,14 +908,14 @@ export function checkVenvExistsForPreCheck(version: string): {
  * @returns Path to backend venv
  */
 export function getVenvPath(version: string): string {
-  // For packaged apps, ensure venv is copied to ~/.eigent/venvs first
+  // For packaged apps, ensure venv is copied to ~/.nova/venvs first
   if (app.isPackaged) {
     ensureBackendVenvAtUserPath(version);
 
     // Check if user venv exists (after ensuring copy)
     const userVenvDir = path.join(
       os.homedir(),
-      '.eigent',
+      '.nova',
       'venvs',
       `backend-${version}`
     );
@@ -933,7 +933,7 @@ export function getVenvPath(version: string): string {
 
   const venvDir = path.join(
     os.homedir(),
-    '.eigent',
+    '.nova',
     'venvs',
     `backend-${version}`
   );
@@ -958,22 +958,22 @@ export function ensureNpmWrappersForBrowserToolkit(
   const pythonPath = getVenvPythonPath(venvPath);
   if (!fs.existsSync(pythonPath)) return null;
 
-  const eigentBinDir = path.join(os.homedir(), '.eigent', 'bin');
-  fs.mkdirSync(eigentBinDir, { recursive: true });
+  const novaBinDir = path.join(os.homedir(), '.nova', 'bin');
+  fs.mkdirSync(novaBinDir, { recursive: true });
 
   // Store wrapper target so wrappers are recreated when venv path changes (e.g. app upgrade)
   const wrapperVersion = `wrapper:${pythonPath}`;
-  const versionFile = path.join(eigentBinDir, '.npm_wrapper_version');
+  const versionFile = path.join(novaBinDir, '.npm_wrapper_version');
   const storedVersion = fs.existsSync(versionFile)
     ? fs.readFileSync(versionFile, 'utf-8').trim()
     : '';
 
   const npmWrapper = path.join(
-    eigentBinDir,
+    novaBinDir,
     process.platform === 'win32' ? 'npm.cmd' : 'npm'
   );
   const npxWrapper = path.join(
-    eigentBinDir,
+    novaBinDir,
     process.platform === 'win32' ? 'npx.cmd' : 'npx'
   );
 
@@ -1017,14 +1017,14 @@ sys.exit(npx(sys.argv[1:]))
         fs.chmodSync(npxWrapper, 0o755);
       }
       fs.writeFileSync(versionFile, wrapperVersion, 'utf-8');
-      log.info(`[VENV] Created npm/npx wrappers at ${eigentBinDir}`);
+      log.info(`[VENV] Created npm/npx wrappers at ${novaBinDir}`);
     } catch (error) {
       log.warn(`[VENV] Failed to create npm wrappers: ${error}`);
       return null;
     }
   }
 
-  return eigentBinDir;
+  return novaBinDir;
 }
 
 /**
@@ -1054,7 +1054,7 @@ export function findNodejsWheelNpmPath(venvPath: string): string | null {
 
 /**
  * Find nodejs_wheel/bin directory for the node executable.
- * Browser toolkit needs node in PATH (npm/npx use our wrappers from ~/.eigent/bin).
+ * Browser toolkit needs node in PATH (npm/npx use our wrappers from ~/.nova/bin).
  */
 export function findNodejsWheelBinPath(venvPath: string): string | null {
   try {
@@ -1085,7 +1085,7 @@ export function findNodejsWheelBinPath(venvPath: string): string | null {
 }
 
 export function getVenvsBaseDir(): string {
-  return path.join(os.homedir(), '.eigent', 'venvs');
+  return path.join(os.homedir(), '.nova', 'venvs');
 }
 
 /**
@@ -1120,7 +1120,7 @@ export function getTerminalVenvPath(version: string): string {
 
   const venvDir = path.join(
     os.homedir(),
-    '.eigent',
+    '.nova',
     'venvs',
     `terminal_base-${version}`
   );

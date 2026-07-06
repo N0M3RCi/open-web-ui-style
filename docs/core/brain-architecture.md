@@ -1,14 +1,14 @@
 ---
 title: Brain Architecture
-description: Understand how Eigent separates clients, Brain, and runtime capabilities across desktop and web deployments.
+description: Understand how Nova separates clients, Brain, and runtime capabilities across desktop and web deployments.
 icon: brain
 ---
 
 ## Overview
 
-Eigent is evolving toward a Brain-centered architecture.
+Nova is evolving toward a Brain-centered architecture.
 
-Instead of treating the desktop app as the system boundary, Eigent treats the Brain as the primary runtime. Clients such as Desktop and Web connect to the same Brain over HTTP and SSE, while runtime capabilities are determined by where the Brain is deployed.
+Instead of treating the desktop app as the system boundary, Nova treats the Brain as the primary runtime. Clients such as Desktop and Web connect to the same Brain over HTTP and SSE, while runtime capabilities are determined by where the Brain is deployed.
 
 This shift makes it easier to:
 
@@ -21,7 +21,7 @@ This shift makes it easier to:
 
 ### Brain
 
-The Brain is the central runtime for Eigent. It is responsible for:
+The Brain is the central runtime for Nova. It is responsible for:
 
 - task and chat orchestration
 - agent and workforce coordination
@@ -33,7 +33,7 @@ In practice, the Brain is the part of the system that reasons, routes work, and 
 
 ### Clients
 
-Eigent supports multiple client shapes around the same Brain:
+Nova supports multiple client shapes around the same Brain:
 
 - Desktop
 - Web
@@ -104,7 +104,7 @@ This makes Web a first-class entry point instead of a limited fallback path.
 
 A common pitfall in multi-client systems is tying capability boundaries to the client type.
 
-Eigent avoids that by separating:
+Nova avoids that by separating:
 
 - **channel**: how a client connects and how responses should be adapted
 - **hands**: what the Brain can actually do in its runtime environment
@@ -143,4 +143,4 @@ It also reduces the amount of client-specific branching required in the product 
 
 The architecture is being rolled out incrementally. Desktop remains supported while Web and standalone Brain flows are being strengthened around the same core abstractions.
 
-That incremental approach helps Eigent evolve toward a more portable and extensible system without requiring a full rewrite.
+That incremental approach helps Nova evolve toward a more portable and extensible system without requiring a full rewrite.

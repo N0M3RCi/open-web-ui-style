@@ -69,7 +69,7 @@ app.whenReady().then(async () => {
   const win = new BrowserWindow({
     width: 1400,
     height: 900,
-    title: 'Eigent Browser - Login',
+    title: 'Nova Browser - Login',
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,

@@ -1,6 +1,6 @@
 ---
 title: Views and search
-description: Search, sort, and change layouts across the Eigent dashboard.
+description: Search, sort, and change layouts across the Nova dashboard.
 icon: table-columns
 ---
 

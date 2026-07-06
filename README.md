@@ -1,15 +1,15 @@
 <div align="center"><a name="readme-top"></a>
 
-[![][image-head]][eigent-site]
+[![][image-head]][nova-site]
 
-[![][image-seperator]][eigent-site]
+[![][image-seperator]][nova-site]
 
-### Eigent: The Open Source Cowork Desktop to Unlock Your Exceptional Productivity
+### Nova: The Open Source Cowork Desktop to Unlock Your Exceptional Productivity
 
 <!-- SHIELD GROUP -->
 
-[![][download-shield]][eigent-download]
-[![][github-star]][eigent-github]
+[![][download-shield]][nova-download]
+[![][github-star]][nova-github]
 [![][social-x-shield]][social-x-link]
 [![][discord-image]][discord-url]<br>
 [![Reddit][reddit-image]][reddit-url]
@@ -23,12 +23,12 @@
 <hr/>
 <div align="center">
 
-**English** · [Português](./README_PT-BR.md) · [简体中文](./README_CN.md) · [日本語](./README_JA.md) · [Official Site][eigent-site] · [Documents][docs-site] · [Feedback][github-issue-link]
+**English** · [Português](./README_PT-BR.md) · [简体中文](./README_CN.md) · [日本語](./README_JA.md) · [Official Site][nova-site] · [Documents][docs-site] · [Feedback][github-issue-link]
 
 </div>
 <br/>
 
-**Eigent** is the open source Cowork desktop application, empowering you to build, manage, and deploy a custom AI workforce that can turn your most complex workflows into automated tasks. As a leading open-source Cowork product, Eigent brings together the best of open-source collaboration and AI-powered automation.
+**Nova** is the open source Cowork desktop application, empowering you to build, manage, and deploy a custom AI workforce that can turn your most complex workflows into automated tasks. As a leading open-source Cowork product, Nova brings together the best of open-source collaboration and AI-powered automation.
 
 Built on [CAMEL-AI][camel-site]'s acclaimed open-source project, our system introduces a **Multi-Agent Workforce** that **boosts productivity** through parallel execution, customization, and privacy protection.
 
@@ -83,11 +83,11 @@ Built on [CAMEL-AI][camel-site]'s acclaimed open-source project, our system intr
 
 ## **🚀 Getting Started with Open Source Cowork**
 
-> **🔓 Build in Public** — Eigent is **100% open source** from day one. Every feature, every commit, every decision is transparent. We believe the best AI tools should be built openly with the community, not behind closed doors.
+> **🔓 Build in Public** — Nova is **100% open source** from day one. Every feature, every commit, every decision is transparent. We believe the best AI tools should be built openly with the community, not behind closed doors.
 
 ### 🏠 Local Deployment (Recommended)
 
-The recommended way to run Eigent — fully standalone with complete control over your data, no cloud account required.
+The recommended way to run Nova — fully standalone with complete control over your data, no cloud account required.
 
 👉 **[Full Local Deployment Guide](./server/README_EN.md)**
 
@@ -109,13 +109,13 @@ For a quick preview using our cloud backend — get started in seconds:
 #### Steps
 
 ```bash
-git clone https://github.com/eigent-ai/eigent.git
-cd eigent
+git clone https://github.com/nova-ai/nova.git
+cd nova
 npm install
 npm run dev
 ```
 
-> Note: This mode connects to Eigent cloud services and requires account registration. For a fully standalone experience, use [Local Deployment](#-local-deployment-recommended) instead.
+> Note: This mode connects to Nova cloud services and requires account registration. For a fully standalone experience, use [Local Deployment](#-local-deployment-recommended) instead.
 
 #### Updating Dependencies
 
@@ -138,11 +138,11 @@ For organizations requiring maximum security, customization, and control:
 - **Scalable Enterprise Deployment**
 - **Negotiated SLAs** & implementation services
 
-📧 For further details, please contact us at [info@eigent.ai](mailto:info@eigent.ai).
+📧 For further details, please contact us at [info@nova.ai](mailto:info@nova.ai).
 
 ### ☁️ Cloud Version
 
-For teams who prefer managed infrastructure, we also offer a cloud platform. The fastest way to experience Eigent's multi-agent AI capabilities without setup complexity. We'll host the models, APIs, and cloud storage, ensuring Eigent runs flawlessly.
+For teams who prefer managed infrastructure, we also offer a cloud platform. The fastest way to experience Nova's multi-agent AI capabilities without setup complexity. We'll host the models, APIs, and cloud storage, ensuring Nova runs flawlessly.
 
 - **Instant Access** - Start building multi-agent workflows in minutes.
 - **Managed Infrastructure** - We handle scaling, updates, and maintenance.
@@ -150,58 +150,58 @@ For teams who prefer managed infrastructure, we also offer a cloud platform. The
 
 <br/>
 
-[![image-public-beta]][eigent-download]
+[![image-public-beta]][nova-download]
 
 <div align="right">
-<a href="https://www.eigent.ai/download">Get started at Eigent.ai →</a>
+<a href="https://www.nova.ai/download">Get started at Nova.ai →</a>
 </div>
 
 ## **✨ Key features - Open Source Cowork**
 
-Unlock the full potential of exceptional productivity with Eigent's open-source Cowork powerful features — built for seamless integration, smarter task execution, and boundless automation.
+Unlock the full potential of exceptional productivity with Nova's open-source Cowork powerful features — built for seamless integration, smarter task execution, and boundless automation.
 
 ### 🏭 Workforce
 
-Employs a team of specialized AI agents that collaborate to solve complex tasks. Eigent's open-source Cowork dynamically breaks down tasks and activates multiple agents to work **in parallel.**
+Employs a team of specialized AI agents that collaborate to solve complex tasks. Nova's open-source Cowork dynamically breaks down tasks and activates multiple agents to work **in parallel.**
 
-Eigent pre-defined the following agent workers:
+Nova pre-defined the following agent workers:
 
 - **Developer Agent:** Writes and executes code, runs terminal commands.
 - **Browser Agent:** Searches the web and extracts content.
 - **Document Agent:** Creates and manages documents.
 - **Multi-Modal Agent:** Processes images and audio.
 
-![Workforce](https://eigent-ai.github.io/.github/assets/gif/feature_dynamic_workforce.gif)
+![Workforce](https://nova-ai.github.io/.github/assets/gif/feature_dynamic_workforce.gif)
 
 <br/>
 
 ### 🧠 Comprehensive Model Support
 
-Deploy the Eigent open-source Cowork desktop locally with your preferred models.
+Deploy the Nova open-source Cowork desktop locally with your preferred models.
 
-![Model](https://eigent-ai.github.io/.github/assets/gif/feature_local_model.gif)
+![Model](https://nova-ai.github.io/.github/assets/gif/feature_local_model.gif)
 
 <br/>
 
 ### 🔌 MCP Tools Integration (MCP)
 
-Eigent comes with massive built-in **Model Context Protocol (MCP)** tools (for web browsing, code execution, Notion, Google suite, Slack etc.), and also lets you **install your own tools**. Equip agents with exactly the right tools for your scenarios – even integrate internal APIs or custom functions – to enhance their capabilities.
+Nova comes with massive built-in **Model Context Protocol (MCP)** tools (for web browsing, code execution, Notion, Google suite, Slack etc.), and also lets you **install your own tools**. Equip agents with exactly the right tools for your scenarios – even integrate internal APIs or custom functions – to enhance their capabilities.
 
-![MCP](https://eigent-ai.github.io/.github/assets/gif/feature_add_mcps.gif)
+![MCP](https://nova-ai.github.io/.github/assets/gif/feature_add_mcps.gif)
 
 <br/>
 
 ### ✋ Human-in-the-Loop
 
-If a task gets stuck or encounters uncertainty, Eigent will automatically request human input.
+If a task gets stuck or encounters uncertainty, Nova will automatically request human input.
 
-![Human-in-the-loop](https://eigent-ai.github.io/.github/assets/gif/feature_human_in_the_loop.gif)
+![Human-in-the-loop](https://nova-ai.github.io/.github/assets/gif/feature_human_in_the_loop.gif)
 
 <br/>
 
 ### 👐 100% Open Source
 
-Eigent is completely open-sourced. You can download, inspect, and modify the code, ensuring transparency and fostering a community-driven ecosystem for multi-agent innovation.
+Nova is completely open-sourced. You can download, inspect, and modify the code, ensuring transparency and fostering a community-driven ecosystem for multi-agent innovation.
 
 ![Opensource][image-opensource]
 
@@ -209,9 +209,9 @@ Eigent is completely open-sourced. You can download, inspect, and modify the cod
 
 ## 🧩 Use Cases - Open Source Cowork
 
-Discover how developers worldwide leverage Eigent's open-source Cowork capabilities to automate complex workflows and boost productivity across diverse industries.
+Discover how developers worldwide leverage Nova's open-source Cowork capabilities to automate complex workflows and boost productivity across diverse industries.
 
-### 1. Palm Springs Tennis Trip Itinerary with Slack Summary [Replay ▶️](https://www.eigent.ai/download?share_token=IjE3NTM0MzUxNTEzMzctNzExMyI.aIeysw.MUeG6ZcBxI1GqvPDvn4dcv-CDWw__1753435151337-7113)
+### 1. Palm Springs Tennis Trip Itinerary with Slack Summary [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM0MzUxNTEzMzctNzExMyI.aIeysw.MUeG6ZcBxI1GqvPDvn4dcv-CDWw__1753435151337-7113)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>We are two tennis fans and want to go see the tennis tournament ... <kbd></summary>
@@ -221,7 +221,7 @@ We are two tennis fans and want to go see the tennis tournament in Palm Springs 
 
 <br>
 
-### 2. Generate Q2 Report from CSV Bank Data [Replay ▶️](https://www.eigent.ai/download?share_token=IjE3NTM1MjY4OTE4MDgtODczOSI.aIjJmQ.WTdoX9mATwrcBr_w53BmGEHPo8U__1753526891808-8739)
+### 2. Generate Q2 Report from CSV Bank Data [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM1MjY4OTE4MDgtODczOSI.aIjJmQ.WTdoX9mATwrcBr_w53BmGEHPo8U__1753526891808-8739)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>Please help me prepare a Q2 financial statement based on my bank ... <kbd></summary>
@@ -231,17 +231,17 @@ Please help me prepare a Q2 financial statement based on my bank transfer record
 
 <br>
 
-### 3. UK Healthcare Market Research Report Automation [Replay ▶️](https://www.eigent.ai/download?share_token=IjE3NTMzOTM1NTg3OTctODcwNyI.aIey-Q.Jh9QXzYrRYarY0kz_qsgoj3ewX0__1753393558797-8707)
+### 3. UK Healthcare Market Research Report Automation [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTMzOTM1NTg3OTctODcwNyI.aIey-Q.Jh9QXzYrRYarY0kz_qsgoj3ewX0__1753393558797-8707)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>Analyze the UK healthcare industry to support the planning ... <kbd></summary>
 <br>
-Analyze the UK healthcare industry to support the planning of my next company. Provide a comprehensive market overview, including current trends, growth projections, and relevant regulations. Identify the top 5–10 major opportunities, gaps, or underserved segments within the market. Present all findings in a well-structured, professional HTML report. Then send a message to slack #eigentr-product-test channel when this task is done to align the report content with my teammates.
+Analyze the UK healthcare industry to support the planning of my next company. Provide a comprehensive market overview, including current trends, growth projections, and relevant regulations. Identify the top 5–10 major opportunities, gaps, or underserved segments within the market. Present all findings in a well-structured, professional HTML report. Then send a message to slack #novar-product-test channel when this task is done to align the report content with my teammates.
 </details>
 
 <br>
 
-### 4. German Electric Skateboard Market Feasibility [Replay ▶️](https://www.eigent.ai/download?share_token=IjE3NTM2NTI4MjY3ODctNjk2Ig.aIjGiA.t-qIXxk_BZ4ENqa-yVIm0wMVyXU__1753652826787-696)
+### 4. German Electric Skateboard Market Feasibility [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM2NTI4MjY3ODctNjk2Ig.aIjGiA.t-qIXxk_BZ4ENqa-yVIm0wMVyXU__1753652826787-696)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>We are a company that produces high-end electric skateboards ... <kbd></summary>
@@ -256,7 +256,7 @@ We are a company that produces high-end electric skateboards, and we are conside
 
 <br>
 
-### 5. SEO Audit for Workforce Multiagent Launch [Replay ▶️](https://www.eigent.ai/download?share_token=IjE3NTM2OTk5NzExNDQtNTY5NiI.aIex0w.jc_NIPmfIf9e3zGt-oG9fbMi3K4__1753699971144-5696)
+### 5. SEO Audit for Workforce Multiagent Launch [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM2OTk5NzExNDQtNTY5NiI.aIex0w.jc_NIPmfIf9e3zGt-oG9fbMi3K4__1753699971144-5696)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>To support the launch of our new Workforce Multiagent product ... <kbd></summary>
@@ -266,7 +266,7 @@ To support the launch of our new Workforce Multiagent product, please run a thor
 
 <br>
 
-### 6. Identify Duplicate Files in Downloads [Replay ▶️](https://www.eigent.ai/download?share_token=IjE3NTM3NjAzODgxNzEtMjQ4Ig.aIhKLQ.epOG--0Nj0o4Bqjtdqm9OZdaqRQ__1753760388171-248)
+### 6. Identify Duplicate Files in Downloads [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTM3NjAzODgxNzEtMjQ4Ig.aIhKLQ.epOG--0Nj0o4Bqjtdqm9OZdaqRQ__1753760388171-248)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>I have a folder named mydocs inside my Documents directory ... <kbd></summary>
@@ -276,7 +276,7 @@ I have a folder named mydocs inside my Documents directory. Please scan it and i
 
 <br>
 
-### 7. Add Signature to PDF [Replay ▶️](https://www.eigent.ai/download?share_token=IjE3NTQwOTU0ODM0NTItNTY2MSI.aJCHrA.Mg5yPOFqj86H_GQvvRNditzepXc__1754095483452-5661)
+### 7. Add Signature to PDF [Replay ▶️](https://www.nova.ai/download?share_token=IjE3NTQwOTU0ODM0NTItNTY2MSI.aJCHrA.Mg5yPOFqj86H_GQvvRNditzepXc__1754095483452-5661)
 
 <details>
 <summary><strong>Prompt:</strong> <kbd>Please add this signature image to the Signature Areas in the PDF ... <kbd></summary>
@@ -288,7 +288,7 @@ Please add this signature image to the Signature Areas in the PDF. You could ins
 
 ## 🛠️ Tech Stack
 
-Eigent open-source Cowork desktop is built on modern, reliable technologies that ensure scalability, performance, and extensibility.
+Nova open-source Cowork desktop is built on modern, reliable technologies that ensure scalability, performance, and extensibility.
 
 ### Backend
 
@@ -311,7 +311,7 @@ Eigent open-source Cowork desktop is built on modern, reliable technologies that
 
 > [!IMPORTANT]
 >
-> **Star Eigent**, You will receive all release notifications from GitHub without any delay ~ ⭐️
+> **Star Nova**, You will receive all release notifications from GitHub without any delay ~ ⭐️
 
 ![][image-star-us]
 
@@ -331,12 +331,12 @@ Our open-source Cowork continues to evolve with input from the community. Here's
 
 ## [🤝 Contributing][contribution-link]
 
-We believe in building trust and embracing all forms of open-source collaborations. Your creative contributions help drive the innovation of `Eigent`. Explore our GitHub issues and projects to dive in and show us what you’ve got 🤝❤️ [Contribution Guideline][contribution-link]
+We believe in building trust and embracing all forms of open-source collaborations. Your creative contributions help drive the innovation of `Nova`. Explore our GitHub issues and projects to dive in and show us what you’ve got 🤝❤️ [Contribution Guideline][contribution-link]
 
 ## Contributors
 
-<a href="https://github.com/eigent-ai/eigent/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=eigent-ai/eigent" />
+<a href="https://github.com/nova-ai/nova/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=nova-ai/nova" />
 </a>
 
 Made with [contrib.rocks](https://contrib.rocks).
@@ -345,7 +345,7 @@ Made with [contrib.rocks](https://contrib.rocks).
 
 ## [❤️ Sponsor][sponsor-link]
 
-Eigent is built on top of [CAMEL-AI.org][camel-ai-org-github]'s research and infrastructures. [Sponsoring CAMEL-AI.org][sponsor-link] will make `Eigent` better.
+Nova is built on top of [CAMEL-AI.org][camel-ai-org-github]'s research and infrastructures. [Sponsoring CAMEL-AI.org][sponsor-link] will make `Nova` better.
 
 ## **📄 Open Source License**
 
@@ -353,7 +353,7 @@ This repository is licensed under the [Apache License 2.0](LICENSE).
 
 ## 🌐 Community & Contact
 
-For more information please contact info@eigent.ai
+For more information please contact info@nova.ai
 
 - **GitHub Issues:** Report bugs, request features, and track development. [Submit an issue][github-issue-link]
 
@@ -371,7 +371,7 @@ For more information please contact info@eigent.ai
 
 <!-- Social -->
 
-<!-- camel & eigent -->
+<!-- camel & nova -->
 
 <!-- marketing -->
 
@@ -381,28 +381,28 @@ For more information please contact info@eigent.ai
 [camel-ai-org-github]: https://github.com/camel-ai
 [camel-github]: https://github.com/camel-ai/camel
 [camel-site]: https://www.camel-ai.org
-[contribution-link]: https://github.com/eigent-ai/eigent/blob/main/CONTRIBUTING.md
+[contribution-link]: https://github.com/nova-ai/nova/blob/main/CONTRIBUTING.md
 [discord-image]: https://img.shields.io/discord/1082486657678311454?logo=discord&labelColor=%20%235462eb&logoColor=%20%23f5f5f5&color=%20%235462eb
 [discord-url]: https://discord.com/invite/CNcNpquyDc
-[docs-site]: https://docs.eigent.ai
-[download-shield]: https://img.shields.io/badge/Download%20Eigent-363AF5?style=plastic
-[eigent-download]: https://www.eigent.ai/download
-[eigent-github]: https://github.com/eigent-ai/eigent
-[eigent-site]: https://www.eigent.ai
-[github-issue-link]: https://github.com/eigent-ai/eigent/issues
-[github-star]: https://img.shields.io/github/stars/eigent-ai?color=F5F4F0&labelColor=gray&style=plastic&logo=github
-[image-head]: https://eigent-ai.github.io/.github/assets/head.png
+[docs-site]: https://docs.nova.ai
+[download-shield]: https://img.shields.io/badge/Download%20Nova-363AF5?style=plastic
+[nova-download]: https://www.nova.ai/download
+[nova-github]: https://github.com/nova-ai/nova
+[nova-site]: https://www.nova.ai
+[github-issue-link]: https://github.com/nova-ai/nova/issues
+[github-star]: https://img.shields.io/github/stars/nova-ai?color=F5F4F0&labelColor=gray&style=plastic&logo=github
+[image-head]: https://nova-ai.github.io/.github/assets/head.png
 [image-join-us]: https://camel-ai.github.io/camel_asset/graphics/join_us.png
-[image-opensource]: https://eigent-ai.github.io/.github/assets/opensource.png
-[image-public-beta]: https://eigent-ai.github.io/.github/assets/banner.png
-[image-seperator]: https://eigent-ai.github.io/.github/assets/seperator.png
-[image-star-us]: https://eigent-ai.github.io/.github/assets/star-us.gif
-[join-us]: https://eigent-ai.notion.site/eigent-ai-careers
+[image-opensource]: https://nova-ai.github.io/.github/assets/opensource.png
+[image-public-beta]: https://nova-ai.github.io/.github/assets/banner.png
+[image-seperator]: https://nova-ai.github.io/.github/assets/seperator.png
+[image-star-us]: https://nova-ai.github.io/.github/assets/star-us.gif
+[join-us]: https://nova-ai.notion.site/nova-ai-careers
 [join-us-image]: https://img.shields.io/badge/Join%20Us-yellow?style=plastic
 [reddit-image]: https://img.shields.io/reddit/subreddit-subscribers/CamelAI?style=plastic&logo=reddit&label=r%2FCAMEL&labelColor=white
 [reddit-url]: https://www.reddit.com/r/CamelAI/
-[social-x-link]: https://x.com/Eigent_AI
-[social-x-shield]: https://img.shields.io/badge/-%40Eigent_AI-white?labelColor=gray&logo=x&logoColor=white&style=plastic
+[social-x-link]: https://x.com/Nova_AI
+[social-x-shield]: https://img.shields.io/badge/-%40Nova_AI-white?labelColor=gray&logo=x&logoColor=white&style=plastic
 [sponsor-link]: https://github.com/sponsors/camel-ai
 [sponsor-shield]: https://img.shields.io/badge/-Sponsor%20CAMEL--AI-1d1d1d?logo=github&logoColor=white&style=plastic
 [wechat-image]: https://img.shields.io/badge/WeChat-CamelAIOrg-brightgreen?logo=wechat&logoColor=white

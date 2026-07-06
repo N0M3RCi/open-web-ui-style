@@ -1,6 +1,6 @@
 ---
 title: Tools
-description: Extend Eigent with MCP servers and tools
+description: Extend Nova with MCP servers and tools
 icon: plug
 ---
 

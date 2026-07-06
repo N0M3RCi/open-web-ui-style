@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "productName": "Eigent",
-  "appId": "com.eigent.app",
+  "productName": "M3RCI - UniMind",
+  "appId": "com.merci-unimind.app",
   "asar": true,
   "directories": {
     "output": "release"
@@ -52,15 +52,15 @@
   ],
   "protocols": [
     {
-      "name": "Eigent OAuth",
-      "schemes": ["eigent"]
+      "name": "M3RCI - UniMind OAuth",
+      "schemes": ["merci-unimind"]
     }
   ],
   "publish": [
     {
       "provider": "github",
-      "owner": "eigent-ai",
-      "repo": "eigent",
+      "owner": "merci-unimind",
+      "repo": "merci-unimind",
       "releaseType": "release"
     }
   ],
@@ -98,8 +98,8 @@
     "extendInfo": {
       "CFBundleURLTypes": [
         {
-          "CFBundleURLName": "com.eigent.app",
-          "CFBundleURLSchemes": ["eigent"]
+          "CFBundleURLName": "com.merci-unimind.app",
+          "CFBundleURLSchemes": ["merci-unimind"]
         }
       ]
     }

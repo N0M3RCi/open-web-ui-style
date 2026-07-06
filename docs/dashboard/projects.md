@@ -47,7 +47,7 @@ Choose a name that describes the ongoing goal rather than only the first task. F
 4. Review the generated plan when Workforce planning is enabled.
 5. Start the task.
 
-Eigent adds the request as another run in the same project. See [Project runs](/core/project-runs).
+Nova adds the request as another run in the same project. See [Project runs](/core/project-runs).
 
 ## End a project
 
@@ -57,7 +57,7 @@ Ending, or achieving, a project marks the work as complete.
 2. Select the end-project action.
 3. Confirm the action.
 
-If a run is active, Eigent stops it before marking the project achieved. The project remains available in history.
+If a run is active, Nova stops it before marking the project achieved. The project remains available in history.
 
 ## Delete a project
 

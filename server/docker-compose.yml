@@ -2,10 +2,10 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15
-    container_name: eigent_postgres
+    container_name: nova_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: eigent
+      POSTGRES_DB: nova
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
       POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'
@@ -15,23 +15,23 @@ services:
       - postgres_data:/var/lib/postgresql/data
       #- ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
     networks:
-      - eigent_network
+      - nova_network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres -d eigent']
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d nova']
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: eigent-redis
+    container_name: nova-redis
     restart: unless-stopped
     ports:
       - '6379:6379'
     volumes:
-      - eigent_redis_data:/data
+      - nova_redis_data:/data
     networks:
-      - eigent_network
+      - nova_network
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
@@ -44,15 +44,15 @@ services:
       context: ..
       dockerfile: server/Dockerfile
       args:
-        database_url: postgresql://postgres:123456@postgres:5432/eigent
-    container_name: eigent_api
+        database_url: postgresql://postgres:123456@postgres:5432/nova
+    container_name: nova_api
     restart: unless-stopped
     ports:
       - '3001:5678'
     env_file:
       - .env
     environment:
-      - database_url=postgresql://postgres:123456@postgres:5432/eigent
+      - database_url=postgresql://postgres:123456@postgres:5432/nova
       - redis_url=redis://redis:6379/0
       - celery_broker_url=redis://redis:6379/0
       - celery_result_url=redis://redis:6379/0
@@ -68,7 +68,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - eigent_network
+      - nova_network
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5678/health']
       interval: 30s
@@ -82,14 +82,14 @@ services:
       context: ..
       dockerfile: server/Dockerfile
       args:
-        database_url: postgresql://postgres:123456@postgres:5432/eigent
-    container_name: eigent_celery_worker
+        database_url: postgresql://postgres:123456@postgres:5432/nova
+    container_name: nova_celery_worker
     restart: unless-stopped
     command: /app/celery/worker/start
     env_file:
       - .env
     environment:
-      - database_url=postgresql://postgres:123456@postgres:5432/eigent
+      - database_url=postgresql://postgres:123456@postgres:5432/nova
       - redis_url=redis://redis:6379/0
       - celery_broker_url=redis://redis:6379/0
       - celery_result_url=redis://redis:6379/0
@@ -102,7 +102,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - eigent_network
+      - nova_network
     healthcheck:
       test:
         [
@@ -120,14 +120,14 @@ services:
       context: ..
       dockerfile: server/Dockerfile
       args:
-        database_url: postgresql://postgres:123456@postgres:5432/eigent
-    container_name: eigent_celery_beat
+        database_url: postgresql://postgres:123456@postgres:5432/nova
+    container_name: nova_celery_beat
     restart: unless-stopped
     command: /app/celery/beat/start
     env_file:
       - .env
     environment:
-      - database_url=postgresql://postgres:123456@postgres:5432/eigent
+      - database_url=postgresql://postgres:123456@postgres:5432/nova
       - redis_url=redis://redis:6379/0
       - celery_broker_url=redis://redis:6379/0
       - celery_result_url=redis://redis:6379/0
@@ -140,13 +140,13 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - eigent_network
+      - nova_network
 
 volumes:
   postgres_data:
     driver: local
-  eigent_redis_data:
+  nova_redis_data:
 
 networks:
-  eigent_network:
+  nova_network:
     driver: bridge

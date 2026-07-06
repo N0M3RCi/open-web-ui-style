@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import asyncio
 import logging
@@ -46,10 +46,10 @@ from app.utils.file_utils import get_working_directory
 logger = logging.getLogger("single_agent_service")
 
 # Char budget for the durable memory bundle (~32k chars at 4 chars/token).
-# Override via EIGENT_MEMORY_TOKEN_BUDGET if you need to tune in the field.
+# Override via NOVA_MEMORY_TOKEN_BUDGET if you need to tune in the field.
 try:
     _MEMORY_TOKEN_BUDGET = int(
-        os.environ.get("EIGENT_MEMORY_TOKEN_BUDGET", "8000")
+        os.environ.get("NOVA_MEMORY_TOKEN_BUDGET", "8000")
     )
 except ValueError:
     _MEMORY_TOKEN_BUDGET = 8000

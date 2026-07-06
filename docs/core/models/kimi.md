@@ -1,6 +1,6 @@
 ---
 title: Kimi
-description: This guide walks you through setting up your Kimi (Moonshot AI) API key within Eigent to enable the Kimi model for your AI workforce.
+description: This guide walks you through setting up your Kimi (Moonshot AI) API key within Nova to enable the Kimi model for your AI workforce.
 ---
 
 ### Prerequisites
@@ -13,7 +13,7 @@ description: This guide walks you through setting up your Kimi (Moonshot AI) API
 
 #### 1. Access Application Settings
 
-- Launch Eigent and navigate to the **Home Page**.
+- Launch Nova and navigate to the **Home Page**.
 - Click on the **Agent** tab, then click on the **Models** button.
 
 ![Kimi 1 Pn](/images/model_setting.png)
@@ -40,6 +40,6 @@ Click on the Moonshot card and fill in the following fields:
 
 - Once saved, the **"Set as Default"** button on the Moonshot card will be
   selected/active.
-- **You are ready to go.** Your Eigent agents can now utilize the Kimi model.
+- **You are ready to go.** Your Nova agents can now utilize the Kimi model.
 
 ---

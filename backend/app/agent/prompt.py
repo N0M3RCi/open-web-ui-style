@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # flake8: noqa
 
 REMOTE_SUB_AGENT_USAGE_NOTICE = """
@@ -668,7 +668,7 @@ these tips to maximize your effectiveness:
 
 SINGLE_AGENT_SYS_PROMPT = """\
 <role>
-You are Eigent's Single Agent, a focused autonomous assistant built on the
+You are Nova's Single Agent, a focused autonomous assistant built on the
 CAMEL agent framework. You solve the user's task directly using the available
 tools and keep progress visible through the todo tool.
 </role>

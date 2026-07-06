@@ -1,14 +1,14 @@
 ---
 title: Browser overview
-description: Give Eigent agents controlled access to browser sessions and authenticated websites.
+description: Give Nova agents controlled access to browser sessions and authenticated websites.
 icon: compass
 ---
 
-Eigent can launch or connect to Chrome DevTools Protocol browsers for research and browser automation. Browser agents can navigate pages, interact with controls, capture screenshots, and maintain session state.
+Nova can launch or connect to Chrome DevTools Protocol browsers for research and browser automation. Browser agents can navigate pages, interact with controls, capture screenshots, and maintain session state.
 
 ## Open Browser settings
 
-1. Open the Eigent dashboard.
+1. Open the Nova dashboard.
 2. Select **Browser**.
 3. Choose **Connections**, **Plugins**, or **Cookies**.
 
@@ -27,7 +27,7 @@ See [Browser connections](/browser/connections).
 
 ## Browser Cookies
 
-Cookies let agents use authenticated sessions. Open a dedicated login browser, sign in to required services, then let Eigent import the resulting cookie domains.
+Cookies let agents use authenticated sessions. Open a dedicated login browser, sign in to required services, then let Nova import the resulting cookie domains.
 
 See [Browser cookies](/browser/cookies).
 

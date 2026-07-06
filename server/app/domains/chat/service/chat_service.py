@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,9 +10,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
-"""ChatService: task ownership, file validation, history grouping. No billing in eigent."""
+"""ChatService: task ownership, file validation, history grouping. No billing in nova."""
 
 from collections import defaultdict
 from datetime import datetime
@@ -84,7 +84,7 @@ class ChatService:
     async def reconcile_if_needed(
         history: ChatHistory, status_changed_to_done: bool, trace_id: str | None = None
     ) -> None:
-        """No-op: eigent does not have billing/credits."""
+        """No-op: nova does not have billing/credits."""
         return None
 
     @staticmethod

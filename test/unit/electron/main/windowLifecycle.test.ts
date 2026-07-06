@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 /**
  * Tests for window event setup and lifecycle management in createWindow function
@@ -382,13 +382,13 @@ describe('createWindow - Window Event Setup and Lifecycle', () => {
       mockLog.info(
         'Window content loaded, starting dependency check immediately...'
       );
-      mockLog.info('.eigent directory structure ensured');
+      mockLog.info('.nova directory structure ensured');
 
       expect(mockLog.info).toHaveBeenCalledWith(
         'Window content loaded, starting dependency check immediately...'
       );
       expect(mockLog.info).toHaveBeenCalledWith(
-        '.eigent directory structure ensured'
+        '.nova directory structure ensured'
       );
     });
   });

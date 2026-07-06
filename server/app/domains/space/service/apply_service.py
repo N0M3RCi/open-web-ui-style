@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 from __future__ import annotations
 
@@ -70,7 +70,7 @@ def _thread_space_lock(space_id: str) -> threading.Lock:
 
 
 def _advisory_lock_key(space_id: str) -> int:
-    digest = hashlib.sha256(f"eigent-space:{space_id}".encode("utf-8")).digest()
+    digest = hashlib.sha256(f"nova-space:{space_id}".encode("utf-8")).digest()
     return int.from_bytes(digest[:8], "big", signed=True)
 
 

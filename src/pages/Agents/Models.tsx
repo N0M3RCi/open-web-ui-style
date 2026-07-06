@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import {
   fetchPost,
@@ -69,7 +69,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import eigentImage from '@/assets/model/eigent.svg';
+import novaImage from '@/assets/model/nova.svg';
 import {
   getModelImage,
   needsInvertModelImage,
@@ -519,7 +519,7 @@ export default function SettingModels() {
   const getDefaultModelDisplayText = (): string => {
     if (cloudPrefer) {
       const modelName = getCloudModelDisplayName(cloud_model_type);
-      return `${t('setting.eigent-cloud')} / ${modelName}`;
+      return `${t('setting.nova-cloud')} / ${modelName}`;
     }
 
     if (modelType === 'codex_subscription') {
@@ -686,7 +686,7 @@ export default function SettingModels() {
         console.log('success');
         toast(t('setting.validate-success'), {
           description: t(
-            'setting.the-model-has-been-verified-to-support-function-calling-which-is-required-to-use-eigent'
+            'setting.the-model-has-been-verified-to-support-function-calling-which-is-required-to-use-nova'
           ),
           closeButton: true,
         });
@@ -886,7 +886,7 @@ export default function SettingModels() {
             console.log('success');
             toast(t('setting.validate-success'), {
               description: t(
-                'setting.the-model-has-been-verified-to-support-function-calling-which-is-required-to-use-eigent'
+                'setting.the-model-has-been-verified-to-support-function-calling-which-is-required-to-use-nova'
               ),
               closeButton: true,
             });
@@ -1365,7 +1365,7 @@ export default function SettingModels() {
         case 'oauth_callback_port_in_use':
           return t('setting.codex-port-in-use', {
             defaultValue:
-              'The Codex sign-in port (1455) is in use. Close other Codex/ChatGPT CLI sessions or another Eigent window, then try again.',
+              'The Codex sign-in port (1455) is in use. Close other Codex/ChatGPT CLI sessions or another Nova window, then try again.',
           });
         case 'oauth_callback_unavailable':
           return t('setting.codex-callback-unavailable', {
@@ -1493,7 +1493,7 @@ export default function SettingModels() {
           <div className="mx-6 mb-4 border-ds-border-neutral-default-default pb-4 pt-2 flex flex-col justify-start self-stretch border-x-0 border-t-0 border-b-[0.5px] border-solid">
             <div className="gap-2 inline-flex items-center justify-start self-stretch">
               <div className="text-body-base my-2 font-bold text-ds-text-neutral-default-default flex-1 justify-center">
-                {t('setting.eigent-cloud')}
+                {t('setting.nova-cloud')}
               </div>
               <div className="gap-2 flex items-center">
                 {cloudPrefer ? (
@@ -2410,9 +2410,9 @@ export default function SettingModels() {
               {import.meta.env.VITE_USE_LOCAL_PROXY !== 'true' && (
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger className="gap-2">
-                    <img src={eigentImage} alt="Cloud" className="h-5 w-5" />
+                    <img src={novaImage} alt="Cloud" className="h-5 w-5" />
                     <span className="text-body-sm">
-                      {t('setting.eigent-cloud')}
+                      {t('setting.nova-cloud')}
                     </span>
                   </DropdownMenuSubTrigger>
                   <DropdownMenuSubContent className="max-h-[300px] w-[200px] overflow-y-auto">
@@ -2582,15 +2582,15 @@ export default function SettingModels() {
             {/* Sidebar */}
             <div className="-ml-2 mr-4 rounded-2xl bg-ds-bg-neutral-default-default h-full w-[240px]">
               <div className="gap-4 flex flex-col">
-                {/* Eigent Cloud Section */}
+                {/* Nova Cloud Section */}
                 <div className="gap-1 flex flex-col">
                   <div className="px-3 py-2 text-body-sm font-bold text-ds-text-neutral-default-default">
-                    {t('setting.eigent-cloud')}
+                    {t('setting.nova-cloud')}
                   </div>
                   {import.meta.env.VITE_USE_LOCAL_PROXY !== 'true' &&
                     renderSidebarItem(
                       'cloud',
-                      t('setting.eigent-cloud'),
+                      t('setting.nova-cloud'),
                       'cloud',
                       selectedTab === 'cloud',
                       false,

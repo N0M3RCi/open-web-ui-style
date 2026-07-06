@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { proxyFetchGet, proxyFetchPut } from '@/api/http';
 import { Button } from '@/components/ui/button';
@@ -113,15 +113,15 @@ export default function SettingPrivacy() {
           )}
         </div>
 
-        {/* Help Improve Eigent Section */}
+        {/* Help Improve Nova Section */}
         <div className="rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4">
           <div className="gap-md flex items-center justify-between">
             <div className="gap-2 flex flex-col">
               <div className="text-body-base font-bold text-ds-text-neutral-default-default">
-                {t('setting.help-improve-eigent')}
+                {t('setting.help-improve-nova')}
               </div>
               <div className="text-body-sm font-normal text-ds-text-neutral-default-default">
-                {t('setting.help-improve-eigent-description')}
+                {t('setting.help-improve-nova-description')}
               </div>
             </div>
             <div className="flex items-center justify-center">

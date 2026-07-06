@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 from __future__ import annotations
 
@@ -28,10 +28,10 @@ EVALUATE_SCRIPT = ADAPTER_DIR / "evaluate.py"
 BENCHMARK_DIR = ADAPTER_DIR.parent  # backend/benchmark/
 
 
-class EigentBenchAdapter:
-    """Converts eigent benchmark dataset JSONs into Harbor task directories."""
+class NovaBenchAdapter:
+    """Converts nova benchmark dataset JSONs into Harbor task directories."""
 
-    NAME = "eigent-bench"
+    NAME = "nova-bench"
 
     def __init__(
         self,
@@ -48,7 +48,7 @@ class EigentBenchAdapter:
         self.grader_weight = grader_weight
         self.configs = self._load_configs()
         logger.info(
-            "EigentBenchAdapter initialized: %d tasks, weights=(%s/%s)",
+            "NovaBenchAdapter initialized: %d tasks, weights=(%s/%s)",
             len(self.configs),
             self.checker_weight,
             self.grader_weight,
@@ -75,7 +75,7 @@ class EigentBenchAdapter:
 
         config = self.configs[index]
         if local_task_id is None:
-            local_task_id = f"eigent-bench-{index:04d}"
+            local_task_id = f"nova-bench-{index:04d}"
 
         self._prepare_task(config, local_task_id, index)
 
@@ -188,7 +188,7 @@ class EigentBenchAdapter:
 
         Patches applied:
         - Removes browser log checks (milestone #1) and adjusts total count,
-          since browser logs are eigent-specific and not available for other agents.
+          since browser logs are nova-specific and not available for other agents.
         - ANSWER_CSV (grader 2): replaces path to resolve relative to copied script.
         """
         content = src.read_text()
@@ -257,7 +257,7 @@ class EigentBenchAdapter:
         content = task_toml.read_text()
         difficulty = metadata.get("difficulty", "medium")
         tags_list = metadata.get("tags", [])
-        tags_str = ", ".join(f'"{t}"' for t in ["eigent-bench"] + tags_list)
+        tags_str = ", ".join(f'"{t}"' for t in ["nova-bench"] + tags_list)
         content = content.replace("{difficulty}", difficulty)
         content = content.replace("{tags}", tags_str)
         task_toml.write_text(content)

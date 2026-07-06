@@ -1,12 +1,12 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "Eigent Documentation",
+  "name": "Nova Documentation",
   "theme": "aspen",
   "defaultPage": "/get_started/welcome",
   "logo": {
     "light": "/images/logo-light.png",
     "dark": "/images/logo-dark.png",
-    "href": "https://www.eigent.ai"
+    "href": "https://www.nova.ai"
   },
   "favicon": "images/favicon.png",
   "colors": {
@@ -25,13 +25,13 @@
       {
         "icon": "github",
         "label": "GitHub",
-        "href": "https://github.com/eigent-ai/eigent"
+        "href": "https://github.com/nova-ai/nova"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Download",
-      "href": "https://www.eigent.ai/download"
+      "href": "https://www.nova.ai/download"
     }
   },
   "navigation": {
@@ -91,7 +91,7 @@
             "icon": "brain",
             "pages": [
               "/models/overview",
-              "/models/eigent-cloud",
+              "/models/nova-cloud",
               "/core/models/byok",
               "/core/models/local-model",
               "/models/provider-reference",
@@ -163,13 +163,13 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Download Eigent",
-          "href": "https://www.eigent.ai/download",
+          "anchor": "Download Nova",
+          "href": "https://www.nova.ai/download",
           "icon": "download"
         },
         {
           "anchor": "GitHub",
-          "href": "https://github.com/eigent-ai/eigent",
+          "href": "https://github.com/nova-ai/nova",
           "icon": "github"
         }
       ]
@@ -177,9 +177,9 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/eigent-ai/eigent",
-      "twitter": "https://x.com/Eigent-AI",
-      "linkedin": "https://www.linkedin.com/company/eigent-ai/"
+      "github": "https://github.com/nova-ai/nova",
+      "twitter": "https://x.com/Nova-AI",
+      "linkedin": "https://www.linkedin.com/company/nova-ai/"
     }
   }
 }

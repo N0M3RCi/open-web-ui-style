@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import re
 from pathlib import Path
@@ -19,17 +19,17 @@ from app.component.environment import env
 
 
 def get_workspace_root() -> Path:
-    return Path(env("EIGENT_WORKSPACE", "~/.eigent/workspace")).expanduser()
+    return Path(env("NOVA_WORKSPACE", "~/.nova/workspace")).expanduser()
 
 
-def get_eigent_root() -> Path:
-    eigent = Path.home() / "eigent"
-    if eigent.exists():
-        return eigent
-    dot_eigent = Path.home() / ".eigent"
-    if dot_eigent.exists():
-        return dot_eigent
-    return eigent
+def get_nova_root() -> Path:
+    nova = Path.home() / "nova"
+    if nova.exists():
+        return nova
+    dot_nova = Path.home() / ".nova"
+    if dot_nova.exists():
+        return dot_nova
+    return nova
 
 
 def sanitize_email(email: str) -> str:
@@ -53,7 +53,7 @@ def project_root(
     email: str, project_id: str, user_id: str | int | None = None
 ) -> Path:
     return (
-        get_eigent_root()
+        get_nova_root()
         / runtime_owner_key(email, user_id)
         / f"project_{project_id}"
     )
@@ -72,7 +72,7 @@ def legacy_task_root(
     email: str, task_id: str, user_id: str | int | None = None
 ) -> Path:
     return (
-        get_eigent_root()
+        get_nova_root()
         / runtime_owner_key(email, user_id)
         / f"task_{task_id}"
     )
@@ -86,7 +86,7 @@ def camel_log_root(
 ) -> Path:
     return (
         Path.home()
-        / ".eigent"
+        / ".nova"
         / runtime_owner_key(email, user_id)
         / f"project_{project_id}"
         / f"task_{task_id}"
@@ -99,7 +99,7 @@ def legacy_camel_log_root(
 ) -> Path:
     return (
         Path.home()
-        / ".eigent"
+        / ".nova"
         / runtime_owner_key(email, user_id)
         / f"task_{task_id}"
         / "camel_logs"
@@ -114,7 +114,7 @@ def runtime_task_root(
 ) -> Path:
     return (
         Path.home()
-        / ".eigent"
+        / ".nova"
         / runtime_owner_key(email, user_id)
         / "runtime"
         / f"project_{project_id}"
@@ -131,7 +131,7 @@ def run_output_root(
 ) -> Path:
     return (
         Path.home()
-        / ".eigent"
+        / ".nova"
         / runtime_owner_key(email, user_id)
         / "spaces"
         / space_id
@@ -150,7 +150,7 @@ def project_workdir_root(
 ) -> Path:
     return (
         Path.home()
-        / ".eigent"
+        / ".nova"
         / runtime_owner_key(email, user_id)
         / "spaces"
         / space_id
@@ -163,7 +163,7 @@ def project_workdir_root(
 def workspace_state_root(email: str, user_id: str | int | None = None) -> Path:
     return (
         Path.home()
-        / ".eigent"
+        / ".nova"
         / "workspaces"
         / runtime_owner_key(email, user_id)
     )

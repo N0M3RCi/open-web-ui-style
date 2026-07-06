@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 from urllib.parse import quote_plus, urlparse, parse_qs
 
@@ -65,10 +65,10 @@ class TestGoogleSearchUrlEncoding:
 
     def test_unicode_characters_encoded(self):
         """Non-ASCII characters must be properly encoded."""
-        url = self._build_url("eigent AI asistan")
+        url = self._build_url("nova AI asistan")
         parsed = urlparse(url)
         params = parse_qs(parsed.query)
-        assert params["q"] == ["eigent AI asistan"]
+        assert params["q"] == ["nova AI asistan"]
 
     def test_plus_signs_in_query(self):
         """Plus signs should be encoded (not treated as spaces)."""

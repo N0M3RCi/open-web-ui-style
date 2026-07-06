@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { BrowserWindow, shell, type IpcMain } from 'electron';
 import log from 'electron-log';
@@ -170,7 +170,7 @@ async function handleLocalOAuthCallback(
       res,
       400,
       'Authentication failed',
-      'Return to Eigent and try signing in again.'
+      'Return to M3RCI - UniMind and try signing in again.'
     );
     stopCallbackServerWhenIdle();
     return;
@@ -247,7 +247,7 @@ async function ensureLocalOAuthCallbackServer(): Promise<void> {
           res,
           500,
           'Authentication failed',
-          'Eigent could not complete the OAuth callback.'
+          'M3RCI - UniMind could not complete the OAuth callback.'
         );
       });
     });

@@ -1,41 +1,41 @@
 ---
 title: Spaces
-description: Organize projects and local folders into persistent Eigent work areas.
+description: Organize projects and local folders into persistent Nova work areas.
 icon: folder-tree
 ---
 
-A Space is the top-level boundary for work in Eigent. It groups projects, tasks, triggers, and files so that related work stays together.
+A Space is the top-level boundary for work in Nova. It groups projects, tasks, triggers, and files so that related work stays together.
 
 ## Choose a Space type
 
 ### Blank Space
 
-A blank Space starts with an Eigent-managed scratch workspace. Use it for research, writing, planning, or tasks that should not modify an existing local folder.
+A blank Space starts with an Nova-managed scratch workspace. Use it for research, writing, planning, or tasks that should not modify an existing local folder.
 
 ### Local-folder Space
 
-A local-folder Space binds Eigent to a folder on your computer. Use it when agents need to inspect or modify an existing codebase, document set, or project directory.
+A local-folder Space binds Nova to a folder on your computer. Use it when agents need to inspect or modify an existing codebase, document set, or project directory.
 
 ### Legacy Space
 
-A legacy Space contains work created before the current Space system. Eigent keeps these projects available so that older task history remains accessible.
+A legacy Space contains work created before the current Space system. Nova keeps these projects available so that older task history remains accessible.
 
 ## Create a blank Space
 
 1. In the Home dashboard, select **Spaces**.
 2. Open the create menu.
 3. Select **Start from scratch**.
-4. Eigent creates a Space and opens its Workspace.
+4. Nova creates a Space and opens its Workspace.
 5. Optional: Rename the Space from the Space switcher.
 
-Blank Spaces use artifact-only storage. Agents create outputs in Eigent-managed project storage rather than writing directly to a user-selected folder.
+Blank Spaces use artifact-only storage. Agents create outputs in Nova-managed project storage rather than writing directly to a user-selected folder.
 
 ## Create a Space from a local folder
 
 1. In the Home dashboard, select **Spaces**.
 2. Open the create menu.
 3. Select **Use local folder**.
-4. In the folder picker, select the directory that Eigent can access.
+4. In the folder picker, select the directory that Nova can access.
 5. Confirm the selection.
 
 The Space name initially follows the selected folder name. The **Context** tab shows the folder binding.
@@ -47,7 +47,7 @@ The Space name initially follows the selected folder name. The **Context** tab s
 1. In the project sidebar, select the current Space name.
 2. Select another Space.
 
-Eigent loads that Space's projects and restores its most recently visited project when possible.
+Nova loads that Space's projects and restores its most recently visited project when possible.
 
 ## Rename a Space
 
@@ -88,15 +88,15 @@ Use board view to group Spaces by default, running, and awaiting-review state.
 
 ### Context is unavailable
 
-The active Space might not have a workspace binding. Create a Space from a local folder or wait for Eigent to finish preparing the scratch workspace.
+The active Space might not have a workspace binding. Create a Space from a local folder or wait for Nova to finish preparing the scratch workspace.
 
 ### A local folder does not appear
 
-Confirm that the folder still exists and that Eigent has operating-system permission to access it.
+Confirm that the folder still exists and that Nova has operating-system permission to access it.
 
 ### A blank Space disappeared
 
-Eigent can hide unused placeholder Spaces. Start a project or give the Space a meaningful name to keep it in the dashboard.
+Nova can hide unused placeholder Spaces. Start a project or give the Space a meaningful name to keep it in the dashboard.
 
 ## Related guides
 

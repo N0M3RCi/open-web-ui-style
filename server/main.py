@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import os
 import pathlib
@@ -55,7 +55,7 @@ api.include_router(router, prefix=f"{prefix}/v1")
 
 # Server version — read once at import time so it reflects the running code
 try:
-    SERVER_VERSION = pkg_version("Eigent")
+    SERVER_VERSION = pkg_version("Nova")
 except Exception:
     SERVER_VERSION = "unknown"
 
@@ -78,7 +78,7 @@ def _read_server_code_hash() -> str:
     try:
         env_file = pathlib.Path(__file__).parent / ".image_env"
         for line in env_file.read_text().splitlines():
-            if line.startswith("EIGENT_SERVER_GIT_COMMIT="):
+            if line.startswith("NOVA_SERVER_GIT_COMMIT="):
                 v = line.split("=", 1)[1].strip()
                 if v:
                     return v
@@ -94,7 +94,7 @@ SERVER_CODE_HASH = _read_server_code_hash()
 async def health_check():
     return {
         "status": "ok",
-        "service": "eigent-server",
+        "service": "nova-server",
         "version": SERVER_VERSION,
         "server_hash": SERVER_CODE_HASH,
     }

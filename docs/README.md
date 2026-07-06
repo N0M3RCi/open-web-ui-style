@@ -1,6 +1,6 @@
-# Eigent Docs
+# Nova Docs
 
-This directory contains the Mintlify documentation for [Eigent](https://www.eigent.ai). The docs are hosted via Mintlify and configured through `docs.json`.
+This directory contains the Mintlify documentation for [Nova](https://www.nova.ai). The docs are hosted via Mintlify and configured through `docs.json`.
 
 ## Prerequisites
 

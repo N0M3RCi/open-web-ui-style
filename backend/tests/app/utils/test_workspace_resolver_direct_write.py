@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 """WorkspaceResolver direct-write default regression tests.
 
@@ -70,7 +70,7 @@ def test_freeze_defaults_to_direct_write_when_task_lock_has_no_workdir_mode(
 ):
     """The key regression: no explicit workdir_mode + folder binding must
     resolve working_directory to the selected folder, NOT to a Project
-    workdir copy under ~/.eigent/.../workdir."""
+    workdir copy under ~/.nova/.../workdir."""
 
     resolver, source_root = bound_resolver
     task_lock = SimpleNamespace()  # NB: no .workdir_mode attribute at all
@@ -124,4 +124,4 @@ def test_freeze_honors_explicit_copy_workdir_mode_from_task_lock(
     # The copy target must be the project workdir, not the selected folder.
     copy_src, copy_dst = copy_baseline.call_args.args
     assert copy_src == source_root
-    assert ".eigent" in str(copy_dst) or "/projects/" in str(copy_dst)
+    assert ".nova" in str(copy_dst) or "/projects/" in str(copy_dst)

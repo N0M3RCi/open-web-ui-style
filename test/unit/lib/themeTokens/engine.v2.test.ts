@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { describe, expect, it } from 'vitest';
 
@@ -118,7 +118,7 @@ const FIXED_SHADE_SCALES = (baseColorTokens as BaseColorTokensShape)
 describe('themeTokens v2 engine', () => {
   it('is deterministic for a fixed contract and catalog', () => {
     const contract = createDefaultThemeContractV2('light', {
-      themeId: 'eigent',
+      themeId: 'nova',
       contrast: 52,
     });
     const first = buildThemeV2(contract, DEFAULT_THEME_CATALOG);
@@ -180,7 +180,7 @@ describe('themeTokens v2 engine', () => {
 
   it('enforces required WCAG pairs and emits APCA diagnostics', () => {
     const theme = buildThemeV2(
-      createDefaultThemeContractV2('dark', { themeId: 'eigent', contrast: 80 }),
+      createDefaultThemeContractV2('dark', { themeId: 'nova', contrast: 80 }),
       DEFAULT_THEME_CATALOG
     );
     expect(theme.diagnostics.contrast.length).toBeGreaterThan(0);
@@ -201,7 +201,7 @@ describe('themeTokens v2 engine', () => {
     const root = document.createElement('div');
     const light = applyThemeContractV2(
       createDefaultThemeContractV2('light', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 40,
       }),
       root
@@ -212,7 +212,7 @@ describe('themeTokens v2 engine', () => {
     expect(firstBg).toBe(light.cssVariables['--ds-bg-neutral-subtle-default']);
 
     const dark = applyThemeContractV2(
-      createDefaultThemeContractV2('dark', { themeId: 'eigent', contrast: 70 }),
+      createDefaultThemeContractV2('dark', { themeId: 'nova', contrast: 70 }),
       root
     );
     const secondBg = root.style.getPropertyValue(
@@ -225,13 +225,13 @@ describe('themeTokens v2 engine', () => {
   it('keeps neutral surface polarity aligned with mode', () => {
     const light = buildThemeV2(
       createDefaultThemeContractV2('light', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 50,
       }),
       DEFAULT_THEME_CATALOG
     );
     const dark = buildThemeV2(
-      createDefaultThemeContractV2('dark', { themeId: 'eigent', contrast: 50 }),
+      createDefaultThemeContractV2('dark', { themeId: 'nova', contrast: 50 }),
       DEFAULT_THEME_CATALOG
     );
 
@@ -250,23 +250,23 @@ describe('themeTokens v2 engine', () => {
 
   it('uses legacy-style monotonic contrast response for neutral tokens', () => {
     const lightLow = buildThemeV2(
-      createDefaultThemeContractV2('light', { themeId: 'eigent', contrast: 0 }),
+      createDefaultThemeContractV2('light', { themeId: 'nova', contrast: 0 }),
       DEFAULT_THEME_CATALOG
     );
     const lightHigh = buildThemeV2(
       createDefaultThemeContractV2('light', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 100,
       }),
       DEFAULT_THEME_CATALOG
     );
     const darkLow = buildThemeV2(
-      createDefaultThemeContractV2('dark', { themeId: 'eigent', contrast: 0 }),
+      createDefaultThemeContractV2('dark', { themeId: 'nova', contrast: 0 }),
       DEFAULT_THEME_CATALOG
     );
     const darkHigh = buildThemeV2(
       createDefaultThemeContractV2('dark', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 100,
       }),
       DEFAULT_THEME_CATALOG
@@ -306,7 +306,7 @@ describe('themeTokens v2 engine', () => {
   it('keeps brand inverse text white for black brand fills', () => {
     const theme = buildThemeV2(
       createDefaultThemeContractV2('light', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 50,
       }),
       DEFAULT_THEME_CATALOG
@@ -318,7 +318,7 @@ describe('themeTokens v2 engine', () => {
   it('keeps success inverse text as light as brand inverse on filled success (light)', () => {
     const theme = buildThemeV2(
       createDefaultThemeContractV2('light', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 50,
       }),
       DEFAULT_THEME_CATALOG
@@ -334,14 +334,14 @@ describe('themeTokens v2 engine', () => {
   it('maps system status background emphases to fixed shade steps (light vs dark)', () => {
     const lightTheme = buildThemeV2(
       createDefaultThemeContractV2('light', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 50,
       }),
       DEFAULT_THEME_CATALOG
     );
     const darkTheme = buildThemeV2(
       createDefaultThemeContractV2('dark', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 50,
       }),
       DEFAULT_THEME_CATALOG
@@ -380,7 +380,7 @@ describe('themeTokens v2 engine', () => {
   it('uses 600-shade transparent status fills with the new alpha schedule', () => {
     const theme = buildThemeV2(
       createDefaultThemeContractV2('light', {
-        themeId: 'eigent',
+        themeId: 'nova',
         contrast: 50,
       }),
       DEFAULT_THEME_CATALOG

@@ -1,0 +1,42 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="24" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="1024" height="1024" rx="210" fill="#0D0D0D"/>
+
+  <!-- Neural network / abstract mind motif -->
+  <!-- Top-right node -->
+  <circle cx="660" cy="280" r="28" fill="#7B60FF" opacity="0.9"/>
+  <!-- Top-left node -->
+  <circle cx="380" cy="200" r="22" fill="#6C5CE7" opacity="0.85"/>
+  <!-- Center-left node -->
+  <circle cx="280" cy="420" r="32" fill="#7B60FF" opacity="0.95"/>
+  <!-- Center node -->
+  <circle cx="500" cy="480" r="40" fill="#8B7AFF"/>
+  <!-- Bottom-center node -->
+  <circle cx="420" cy="680" r="26" fill="#6C5CE7" opacity="0.8"/>
+  <!-- Right node -->
+  <circle cx="700" cy="520" r="24" fill="#7B60FF" opacity="0.85"/>
+
+  <!-- Connection lines -->
+  <line x1="380" y1="200" x2="280" y2="420" stroke="#7B60FF" stroke-width="3" opacity="0.4"/>
+  <line x1="380" y1="200" x2="500" y2="480" stroke="#7B60FF" stroke-width="3" opacity="0.35"/>
+  <line x1="280" y1="420" x2="500" y2="480" stroke="#7B60FF" stroke-width="4" opacity="0.5"/>
+  <line x1="500" y1="480" x2="420" y2="680" stroke="#7B60FF" stroke-width="3" opacity="0.4"/>
+  <line x1="500" y1="480" x2="660" y2="280" stroke="#7B60FF" stroke-width="3" opacity="0.35"/>
+  <line x1="500" y1="480" x2="700" y2="520" stroke="#7B60FF" stroke-width="3" opacity="0.4"/>
+  <line x1="660" y1="280" x2="700" y2="520" stroke="#7B60FF" stroke-width="2" opacity="0.25"/>
+
+  <!-- Large stylized "M" monogram behind the network -->
+  <text x="512" y="640" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="320" fill="white" text-anchor="middle" opacity="0.97" filter="url(#shadow)">M</text>
+
+  <!-- "M3RCI" text at top -->
+  <text x="512" y="790" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="72" fill="white" text-anchor="middle" letter-spacing="18">M3RCI</text>
+
+  <!-- "UniMind" subtext -->
+  <text x="512" y="845" font-family="Arial, Helvetica, sans-serif" font-weight="400" font-size="38" fill="#A29BFE" text-anchor="middle" letter-spacing="22">UniMind</text>
+</svg>

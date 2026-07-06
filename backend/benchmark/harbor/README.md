@@ -1,6 +1,6 @@
-# Eigent Benchmark — Harbor Adapter
+# Nova Benchmark — Harbor Adapter
 
-Converts eigent benchmark tasks into [Harbor](https://harborframework.com/) task format for standardized agent evaluation.
+Converts nova benchmark tasks into [Harbor](https://harborframework.com/) task format for standardized agent evaluation.
 
 ## Prerequisites
 
@@ -22,13 +22,13 @@ python run_adapter.py
 
 # 2. Verify with oracle (should score 1.0)
 harbor run \
-    -p datasets/eigent-bench \
+    -p datasets/nova-bench \
     -a oracle \
     --env docker
 
 # 3. Run with an agent
 harbor run \
-    -p datasets/eigent-bench \
+    -p datasets/nova-bench \
     -a claude-code \
     -m anthropic/claude-sonnet-4-20250514 \
     --env docker
@@ -58,10 +58,10 @@ Harbor builds a Docker image from each task's `environment/Dockerfile` automatic
 ```bash
 # Run only task 0 (hello world)
 harbor run \
-    -p datasets/eigent-bench \
+    -p datasets/nova-bench \
     -a claude-code \
     -m anthropic/claude-haiku-4-5-20251001 \
-    -t "eigent-bench-0000" \
+    -t "nova-bench-0000" \
     --env docker
 ```
 
@@ -69,7 +69,7 @@ harbor run \
 
 ```bash
 harbor run \
-    -p datasets/eigent-bench \
+    -p datasets/nova-bench \
     -a claude-code \
     -m anthropic/claude-sonnet-4-20250514 \
     --env docker
@@ -79,7 +79,7 @@ harbor run \
 
 ```bash
 # Claude Haiku
-harbor run -p datasets/eigent-bench -a claude-code \
+harbor run -p datasets/nova-bench -a claude-code \
     -m anthropic/claude-haiku-4-5-20251001 --env docker
 
 ```
@@ -88,7 +88,7 @@ harbor run -p datasets/eigent-bench -a claude-code \
 
 ```bash
 harbor run \
-    -p datasets/eigent-bench \
+    -p datasets/nova-bench \
     -a claude-code \
     -m anthropic/claude-sonnet-4-20250514 \
     --env docker \
@@ -104,7 +104,7 @@ Harbor caches Docker images. To force a rebuild (e.g., after changing the Docker
 docker builder prune -f
 
 # Then rerun — Harbor will rebuild the image
-harbor run -p datasets/eigent-bench -a oracle --env docker
+harbor run -p datasets/nova-bench -a oracle --env docker
 ```
 
 ## Reward Computation
@@ -125,7 +125,7 @@ Results are written to `jobs/<timestamp>/result.json`. Each trial directory cont
 jobs/<timestamp>/
 ├── result.json                    # Overall results
 ├── job.log                        # Build + run logs
-└── eigent-bench-NNNN__<id>/
+└── nova-bench-NNNN__<id>/
     ├── agent/                     # Agent logs and trajectory
     │   ├── claude-code.txt        # Raw agent output
     │   └── trajectory.json        # ATIF trajectory
@@ -137,11 +137,11 @@ jobs/<timestamp>/
 ## Generated Task Structure
 
 ```
-eigent-bench-NNNN/
+nova-bench-NNNN/
 ├── task.toml           # Harbor metadata
 ├── instruction.md      # Task question
 ├── environment/
-│   ├── Dockerfile      # Eigent stack + evaluation deps
+│   ├── Dockerfile      # Nova stack + evaluation deps
 │   └── workspace/
 │       └── .env.development
 ├── tests/

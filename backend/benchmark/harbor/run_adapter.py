@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ import argparse
 import logging
 from pathlib import Path
 
-from adapter import EigentBenchAdapter
+from adapter import NovaBenchAdapter
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -28,19 +28,19 @@ HARBOR_DATASETS_DIR = Path(__file__).resolve().parent / "datasets"
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Convert eigent benchmark tasks into Harbor task directories."
+        description="Convert nova benchmark tasks into Harbor task directories."
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
-        help=f"Output directory (default: {HARBOR_DATASETS_DIR / 'eigent-bench'})",
+        help=f"Output directory (default: {HARBOR_DATASETS_DIR / 'nova-bench'})",
     )
     parser.add_argument(
         "--benchmark-dir",
         type=Path,
         default=None,
-        help="Path to eigent benchmark/ directory (default: auto-detect)",
+        help="Path to nova benchmark/ directory (default: auto-detect)",
     )
     parser.add_argument(
         "--limit",
@@ -62,9 +62,9 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    output_dir = args.output_dir or (HARBOR_DATASETS_DIR / "eigent-bench")
+    output_dir = args.output_dir or (HARBOR_DATASETS_DIR / "nova-bench")
 
-    adapter = EigentBenchAdapter(
+    adapter = NovaBenchAdapter(
         task_dir=output_dir,
         benchmark_dir=args.benchmark_dir,
         checker_weight=args.checker_weight,

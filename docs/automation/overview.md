@@ -1,12 +1,12 @@
 ---
 title: Automation overview
-description: Run Eigent tasks on schedules, webhooks, app events, or remote-control commands.
+description: Run Nova tasks on schedules, webhooks, app events, or remote-control commands.
 icon: bolt
 ---
 
 Automation turns a project prompt into reusable work that can run without manually opening the task composer.
 
-Eigent supports scheduled triggers, webhooks, selected application events, and remote-control commands.
+Nova supports scheduled triggers, webhooks, selected application events, and remote-control commands.
 
 ## Open Automations
 

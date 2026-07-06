@@ -1,6 +1,6 @@
 ---
 title: Projects overview
-description: Understand how Spaces, Projects, Sessions, and Runs organize work in Eigent.
+description: Understand how Spaces, Projects, Sessions, and Runs organize work in Nova.
 icon: folder-kanban
 ---
 
@@ -8,7 +8,7 @@ Projects are persistent workstreams inside a Space. A project keeps related conv
 
 ## Product hierarchy
 
-Eigent organizes work into four levels:
+Nova organizes work into four levels:
 
 | Level   | Purpose                                           |
 | ------- | ------------------------------------------------- |
@@ -45,11 +45,11 @@ The sidebar can be resized or folded into an icon rail.
 5. Attach required files.
 6. Send the task.
 
-Eigent creates the Project and opens its live Session.
+Nova creates the Project and opens its live Session.
 
 ## Continue a project
 
-Submit a follow-up request in the same conversation. Eigent adds a new Run while preserving earlier prompts, progress, and outputs.
+Submit a follow-up request in the same conversation. Nova adds a new Run while preserving earlier prompts, progress, and outputs.
 
 Use this approach when the new request contributes to the same goal. Create another Project when the work needs a separate history, file context, or lifecycle.
 
@@ -61,7 +61,7 @@ An active project can accept new runs, execute triggers, and appear in the proje
 
 ### Achieved
 
-An achieved project is complete. If a run is still active when you end the project, Eigent stops that run before saving the achieved state.
+An achieved project is complete. If a run is still active when you end the project, Nova stops that run before saving the achieved state.
 
 ### Archived or deleted
 

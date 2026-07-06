@@ -1,18 +1,18 @@
 ---
 title: Privacy
-description: Understand Eigent's privacy controls and data-handling boundaries.
+description: Understand Nova's privacy controls and data-handling boundaries.
 icon: fingerprint
 ---
 
-Eigent can process prompts, files, credentials, browser sessions, and external service data. Where that data goes depends on the selected model, deployment mode, Space type, and connectors.
+Nova can process prompts, files, credentials, browser sessions, and external service data. Where that data goes depends on the selected model, deployment mode, Space type, and connectors.
 
 This page provides a practical privacy checklist. Review the current privacy policy and source code for deployment-specific guarantees.
 
 ## Understand model data flow
 
-### Eigent Cloud
+### Nova Cloud
 
-Prompts and relevant context are sent through Eigent's managed model service.
+Prompts and relevant context are sent through Nova's managed model service.
 
 ### Bring Your Own Key
 
@@ -29,7 +29,7 @@ A local model does not make the entire workflow local if the task also uses clou
 ## Understand file storage
 
 - Local-folder Spaces can let agents read and modify the selected directory.
-- Blank Spaces store generated artifacts in Eigent-managed project storage.
+- Blank Spaces store generated artifacts in Nova-managed project storage.
 - Uploaded files become task context.
 - Generated outputs can remain in project or workspace folders.
 
@@ -68,7 +68,7 @@ Before sharing:
 
 ## Delete data
 
-Eigent provides deletion or removal actions for:
+Nova provides deletion or removal actions for:
 
 - Tasks
 - Projects
@@ -78,7 +78,7 @@ Eigent provides deletion or removal actions for:
 - Browser cookies
 - Remote-control sessions
 
-Deletion in Eigent does not automatically revoke data or credentials stored by an external provider.
+Deletion in Nova does not automatically revoke data or credentials stored by an external provider.
 
 **Screenshot placeholder:** Add a privacy-oriented composite screenshot showing provider removal, connector removal, cookie deletion, and project deletion confirmations. Do not include real data.
 

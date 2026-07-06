@@ -1,6 +1,6 @@
 ---
 title: SambaNova
-description: This guide walks you through setting up your SambaNova API key within Eigent to enable the SambaNova model for your AI workforce.
+description: This guide walks you through setting up your SambaNova API key within Nova to enable the SambaNova model for your AI workforce.
 ---
 
 ### Prerequisites
@@ -13,7 +13,7 @@ description: This guide walks you through setting up your SambaNova API key with
 
 #### 1. Access Application Settings
 
-- Launch Eigent and navigate to the **Home Page**.
+- Launch Nova and navigate to the **Home Page**.
 - Click on the **Agent** tab，then click on the **Models** button.
 
 ![SambaNova 1 Pn](/images/model_setting.png)
@@ -40,7 +40,7 @@ Click on the SambaNova card and fill in the following fields:
 
 - Once saved, the **"Set as Default"** button on the SambaNova card will be
   selected/active.
-- **You are ready to go.** Your Eigent agents can now utilize the SambaNova
+- **You are ready to go.** Your Nova agents can now utilize the SambaNova
   model.
 
 ---

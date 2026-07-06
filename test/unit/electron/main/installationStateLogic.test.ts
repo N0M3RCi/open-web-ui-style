@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 /**
  * Focused tests for the complex installation state detection logic in createWindow
@@ -255,7 +255,7 @@ describe('createWindow - Installation State Detection Logic', () => {
 
   describe('Platform-Specific Binary Detection', () => {
     it('should check for .exe extension on Windows', async () => {
-      mockEnv.scenarios.missingEigentDirectories();
+      mockEnv.scenarios.missingNovaDirectories();
       mockEnv.mockState.system.platform = 'win32';
 
       // Test that binary detection considers .exe files on Windows

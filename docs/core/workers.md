@@ -4,25 +4,25 @@ description: Understand how to create and equip a custom worker.
 icon: bot
 ---
 
-Eigent is designed to be extensible. Beyond the pre-configured agents, you can significantly expand your workforce's capabilities by connecting to external tools via custom MCP Servers and creating specialized workers to use them.
+Nova is designed to be extensible. Beyond the pre-configured agents, you can significantly expand your workforce's capabilities by connecting to external tools via custom MCP Servers and creating specialized workers to use them.
 
 This guide will walk you through how to integrate a new tool and build a custom worker step-by-step.
 
 ## Configuring a Custom MCP Server
 
-The Model Context Protocol (MCP) is the framework that allows Eigent to connect to external tools and services like GitHub, Notion, or any other API. By adding a custom MCP server, you are essentially teaching your workforce a new skill.
+The Model Context Protocol (MCP) is the framework that allows Nova to connect to external tools and services like GitHub, Notion, or any other API. By adding a custom MCP server, you are essentially teaching your workforce a new skill.
 
 - Step 1: Click the **Settings** gear icon → Select the **MCP and Tools** tab.
 - Step 2: Click the **+ Add MCP Server** button to open the configuration dialog.
 - Step 3: Provide the Server Configuration
-  - **Paste the JSON configuration** for the server. This JSON file acts as a manifest, telling Eigent what the tool is, what functions it has, and how to call them. You can typically find this configuration file in the documentation of the third-party tool you wish to integrate.
+  - **Paste the JSON configuration** for the server. This JSON file acts as a manifest, telling Nova what the tool is, what functions it has, and how to call them. You can typically find this configuration file in the documentation of the third-party tool you wish to integrate.
   - **Add required credentials**. Many tools require authentication. For example, to connect to GitHub, you will need to generate a Personal Access Token from your GitHub account settings and paste it into the appropriate field.
 
 <aside>
 
 📌 **Note on Security**
 
-Always treat your API keys and access tokens like passwords. Eigent stores them securely, but you should ensure they are generated with the minimum required permissions for the tasks you want to perform.
+Always treat your API keys and access tokens like passwords. Nova stores them securely, but you should ensure they are generated with the minimum required permissions for the tasks you want to perform.
 
 </aside>
 

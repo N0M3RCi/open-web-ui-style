@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import log from 'electron-log';
 import crypto from 'node:crypto';
@@ -21,7 +21,7 @@ import { loadCodexCredential, saveCodexCredential } from './credentialStore';
 import { expiresAtFromTokenPayload } from './oauthToken';
 import type { CodexCredential, CodexResolverRuntime } from './types';
 
-const RESOLVER_SECRET_HEADER = 'x-eigent-resolver-secret';
+const RESOLVER_SECRET_HEADER = 'x-nova-resolver-secret';
 const EXPIRES_SOON_MS = 60_000;
 
 let runtime: CodexResolverRuntime | null = null;

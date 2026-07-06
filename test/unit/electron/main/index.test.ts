@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -670,7 +670,7 @@ describe('Electron Main Index Functions', () => {
       Object.defineProperty(process, 'platform', { value: 'darwin' });
 
       const mockConfig = {
-        title: 'Eigent',
+        title: 'Nova',
         width: 1366,
         height: 860,
         minWidth: 1100,
@@ -695,7 +695,7 @@ describe('Electron Main Index Functions', () => {
       Object.defineProperty(process, 'platform', { value: 'win32' });
 
       const mockConfig = {
-        title: 'Eigent',
+        title: 'Nova',
         width: 1366,
         height: 860,
         minWidth: 1100,
@@ -1341,7 +1341,7 @@ describe('Electron Main Index Functions', () => {
 
     it('should block path traversal to /etc/passwd', () => {
       const traversalPath = path.resolve(
-        path.normalize('/home/user/.eigent/data/../../../etc/passwd')
+        path.normalize('/home/user/.nova/data/../../../etc/passwd')
       );
       expect(isPathAllowed(traversalPath, ALLOWED_BASES)).toBe(false);
     });

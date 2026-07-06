@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { exec, spawn } from 'child_process';
 import { BrowserWindow, app } from 'electron';
@@ -40,7 +40,7 @@ import {
 
 const execAsync = promisify(exec);
 
-const DEFAULT_SERVER_URL = 'https://dev.eigent.ai';
+const DEFAULT_SERVER_URL = 'https://dev.nova.ai';
 
 function readEnvValue(filePath: string, key: string): string | undefined {
   try {
@@ -234,7 +234,7 @@ export async function startBackend(
   }
 
   const uvEnv = getUvEnv(currentVersion);
-  const globalEnvPath = path.join(os.homedir(), '.eigent', '.env');
+  const globalEnvPath = path.join(os.homedir(), '.nova', '.env');
 
   // Load proxy configuration from global .env file
   const proxyUrl = readGlobalEnvKey('HTTP_PROXY');
@@ -315,7 +315,7 @@ export async function startBackend(
     `Backend SERVER_URL resolved to: ${serverUrl} (source: ${resolvedSource})`
   );
 
-  // Ensure prebuilt terminal venv is copied to ~/.eigent/venvs for terminal toolkit
+  // Ensure prebuilt terminal venv is copied to ~/.nova/venvs for terminal toolkit
   ensureTerminalVenvAtUserPath(currentVersion);
 
   // Add nodejs-wheel paths for browser toolkit (needs npm, npx, and node)
@@ -337,7 +337,7 @@ export async function startBackend(
     ...uvEnv,
     ...proxyEnv,
     SERVER_URL: serverUrl,
-    EIGENT_RUNTIME: 'electron',
+    NOVA_RUNTIME: 'electron',
     PYTHONIOENCODING: 'utf-8',
     PYTHONUNBUFFERED: '1',
     npm_config_cache: npmCacheDir,

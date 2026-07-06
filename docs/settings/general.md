@@ -8,7 +8,7 @@ General settings control the signed-in account, interface language, network prox
 
 ## Open General settings
 
-1. Open the Eigent dashboard.
+1. Open the Nova dashboard.
 2. Select **Settings**.
 3. Select **General**.
 
@@ -18,7 +18,7 @@ General settings control the signed-in account, interface language, network prox
 
 The Profile section shows the current account.
 
-- Select **Manage** to open Eigent account management.
+- Select **Manage** to open Nova account management.
 - Select **Log out** to clear active task state, reset local installation state, and return to login.
 
 Save or finish important work before logging out.
@@ -81,7 +81,7 @@ Include a supported scheme and valid host. Credentials, when required, must use 
 
 ### Network changes do not apply
 
-Restart Eigent after saving or removing the proxy.
+Restart Nova after saving or removing the proxy.
 
 ### Language changes only part of the interface
 

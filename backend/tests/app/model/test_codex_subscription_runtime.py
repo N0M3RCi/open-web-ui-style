@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import pytest
 
@@ -70,7 +70,7 @@ def test_codex_subscription_runtime_resolves_local_token(
 
     def fake_post(url, headers, json, timeout):
         assert url == "http://127.0.0.1:12345/codex/token"
-        assert headers == {"x-eigent-resolver-secret": "resolver-secret"}
+        assert headers == {"x-nova-resolver-secret": "resolver-secret"}
         assert json == {"email": chat.email, "force_refresh": False}
         assert timeout == 5.0
         return Response()
@@ -95,7 +95,7 @@ def test_codex_subscription_runtime_resolves_local_token(
     assert updated_extra["stream"] is True
     assert updated_extra["store"] is False
     assert updated_extra["default_headers"] == {
-        "User-Agent": "codex_cli_rs/0.0.0 (Eigent)",
+        "User-Agent": "codex_cli_rs/0.0.0 (Nova)",
         "originator": "codex_cli_rs",
         "x-provider-feature": "codex",
     }
@@ -200,7 +200,7 @@ def test_codex_subscription_runtime_defaults_to_chatgpt_backend_and_account_head
     assert updated_extra["stream"] is True
     assert updated_extra["store"] is False
     assert updated_extra["default_headers"] == {
-        "User-Agent": "codex_cli_rs/0.0.0 (Eigent)",
+        "User-Agent": "codex_cli_rs/0.0.0 (Nova)",
         "originator": "codex_cli_rs",
         "ChatGPT-Account-ID": "acct_123",
     }

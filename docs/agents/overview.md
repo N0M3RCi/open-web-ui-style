@@ -1,16 +1,16 @@
 ---
 title: Agents overview
-description: Configure the models, Skills, sub-agents, tools, and workers that execute Eigent tasks.
+description: Configure the models, Skills, sub-agents, tools, and workers that execute Nova tasks.
 icon: bot
 ---
 
-Agents perform the work requested in an Eigent Project. Their behavior depends on the selected model, assigned tools, Skills, project context, and execution mode.
+Agents perform the work requested in an Nova Project. Their behavior depends on the selected model, assigned tools, Skills, project context, and execution mode.
 
 Use the Agents dashboard to configure reusable capabilities before starting a task.
 
 ## Open the Agents dashboard
 
-1. Open the Eigent dashboard.
+1. Open the Nova dashboard.
 2. Select **Agents**.
 3. Choose **Models**, **Skills**, **Sub-agents**, or **Memory**.
 
@@ -20,9 +20,9 @@ Use the Agents dashboard to configure reusable capabilities before starting a ta
 
 Models provide reasoning and generation capabilities.
 
-Eigent supports:
+Nova supports:
 
-- Eigent Cloud models
+- Nova Cloud models
 - Cloud providers using your own API keys
 - OpenAI-compatible endpoints
 - Local inference runtimes
@@ -31,7 +31,7 @@ Configure at least one valid model before starting a task. See [Models overview]
 
 ## Add Agent Skills
 
-Skills are reusable packages that provide instructions, scripts, templates, and domain knowledge. Eigent loads relevant Skills when a task matches their description.
+Skills are reusable packages that provide instructions, scripts, templates, and domain knowledge. Nova loads relevant Skills when a task matches their description.
 
 Use Skills for repeatable workflows such as:
 
@@ -52,13 +52,13 @@ Workers are specialized roles used by Workforce mode. A worker combines:
 - Model access
 - Instructions and Skills
 
-Eigent includes built-in Developer, Browser, Document, and Multimodal workers. Add custom workers when a task needs a recurring role or connector.
+Nova includes built-in Developer, Browser, Document, and Multimodal workers. Add custom workers when a task needs a recurring role or connector.
 
 ## Connect remote sub-agents
 
-Remote sub-agents let Eigent delegate work to an externally hosted agent. The current interface supports a Gemini remote sub-agent configuration.
+Remote sub-agents let Nova delegate work to an externally hosted agent. The current interface supports a Gemini remote sub-agent configuration.
 
-Use a remote sub-agent when the external system has capabilities or context that should remain outside the local Eigent runtime.
+Use a remote sub-agent when the external system has capabilities or context that should remain outside the local Nova runtime.
 
 ## Agent Memory status
 

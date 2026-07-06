@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/authStore';
@@ -22,7 +22,7 @@ import WindowControls from '@/components/WindowControls';
 import { useTranslation } from 'react-i18next';
 
 import background from '@/assets/custom/background.png';
-import eigentLogo from '@/assets/logo/eigent_icon.png';
+import merciLogo from '@/assets/logo/merci_icon.png';
 
 export default function Login() {
   const {
@@ -149,11 +149,11 @@ export default function Login() {
         >
           <div className="relative flex w-80 flex-1 flex-col items-center justify-center pt-8">
             <img
-              src={eigentLogo}
+              src={merciLogo}
               className="absolute left-1/2 top-10 h-16 w-16 -translate-x-1/2"
             />
             <div className="mb-8 text-heading-lg font-bold text-ds-text-neutral-default-default">
-              Eigent
+              M3RCI - UniMind
             </div>
             {generalError && (
               <p className="mb-4 mt-1 text-label-md text-ds-text-status-error-strong-default">
@@ -168,7 +168,7 @@ export default function Login() {
               disabled={isLoading}
             >
               <span className="flex-1">
-                {isLoading ? t('layout.logging-in') : 'Start Eigent'}
+                {isLoading ? t('layout.logging-in') : 'Start M3RCI - UniMind'}
               </span>
             </Button>
           </div>

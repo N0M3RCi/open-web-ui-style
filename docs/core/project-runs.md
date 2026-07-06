@@ -4,7 +4,7 @@ description: Continue a project with follow-up requests and switch between each 
 icon: rotate
 ---
 
-Use follow-up requests to continue working in the same Project without losing earlier history. Eigent saves the original task and each follow-up as a separate **Run**.
+Use follow-up requests to continue working in the same Project without losing earlier history. Nova saves the original task and each follow-up as a separate **Run**.
 
 The Run selector appears in the Session side panel after a Project contains at least two Runs.
 
@@ -32,7 +32,7 @@ Each Run can have its own:
 4. Send the request.
 5. In Workforce mode, review and start the new plan.
 
-Eigent adds the request to the same conversation and updates the Run selector.
+Nova adds the request to the same conversation and updates the Run selector.
 
 Use a follow-up when the new request depends on previous work. Create another Project when the goal, file boundary, or audience is unrelated.
 
@@ -80,13 +80,13 @@ The Run selector and conversation remain synchronized:
 
 - Selecting a Run scrolls the conversation to it.
 - Manually scrolling to another Run updates the Run label.
-- After a dropdown selection, Eigent keeps the selected Run while smooth scrolling reaches the requested position.
+- After a dropdown selection, Nova keeps the selected Run while smooth scrolling reaches the requested position.
 
 > **Video placeholder:** Add a 45-60 second MP4 showing Run selection, automatic chat scrolling, manual scrolling, and the side panel changing between two Runs. Include captions.
 
 ## Example workflow
 
-Suppose Run 1 asks Eigent to research a market and create a report.
+Suppose Run 1 asks Nova to research a market and create a report.
 
 1. Add competitor pricing as Run 2.
 2. Turn the updated findings into a presentation as Run 3.

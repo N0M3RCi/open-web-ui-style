@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import json
 
@@ -49,7 +49,7 @@ def write_skill(
 
 def test_skills_scan_seeds_and_marks_example_skills(tmp_path, monkeypatch):
     example_root = tmp_path / "bundled" / "example-skills"
-    skills_root = tmp_path / "home" / ".eigent" / "skills"
+    skills_root = tmp_path / "home" / ".nova" / "skills"
     write_skill(example_root, "pdf", "pdf")
     write_skill(skills_root, "custom", "Custom")
 
@@ -66,7 +66,7 @@ def test_skills_scan_seeds_and_marks_example_skills(tmp_path, monkeypatch):
 
 def test_skills_scan_updates_existing_example_skills(tmp_path, monkeypatch):
     example_root = tmp_path / "bundled" / "example-skills"
-    skills_root = tmp_path / "home" / ".eigent" / "skills"
+    skills_root = tmp_path / "home" / ".nova" / "skills"
     write_skill(example_root, "pdf", "pdf", body="New bundled content")
     existing_dir = write_skill(
         skills_root, "pdf", "pdf", body="Old bundled content"
@@ -97,9 +97,9 @@ def test_skill_config_init_registers_bundled_example_skills(
     )
     write_skill(example_root, "docx", "docx")
 
-    eigent_root = tmp_path / "home" / ".eigent"
+    nova_root = tmp_path / "home" / ".nova"
     monkeypatch.setenv(skill_service.EXAMPLE_SKILLS_ENV, str(example_root))
-    monkeypatch.setattr(skill_config_service, "EIGENT_ROOT", eigent_root)
+    monkeypatch.setattr(skill_config_service, "NOVA_ROOT", nova_root)
 
     config = skill_config_service.skill_config_init("new_user")
 
@@ -111,7 +111,7 @@ def test_skill_config_init_registers_bundled_example_skills(
     assert config["skills"]["docx"]["isExample"] is True
 
     persisted = json.loads(
-        (eigent_root / "user_new_user" / "skills-config.json").read_text(
+        (nova_root / "user_new_user" / "skills-config.json").read_text(
             encoding="utf-8"
         )
     )
@@ -119,8 +119,8 @@ def test_skill_config_init_registers_bundled_example_skills(
 
 
 def test_skill_config_load_migrates_legacy_email_config(tmp_path, monkeypatch):
-    eigent_root = tmp_path / "home" / ".eigent"
-    legacy_dir = eigent_root / "alice"
+    nova_root = tmp_path / "home" / ".nova"
+    legacy_dir = nova_root / "alice"
     legacy_dir.mkdir(parents=True)
     (legacy_dir / "skills-config.json").write_text(
         json.dumps(
@@ -136,7 +136,7 @@ def test_skill_config_load_migrates_legacy_email_config(tmp_path, monkeypatch):
         ),
         encoding="utf-8",
     )
-    monkeypatch.setattr(skill_config_service, "EIGENT_ROOT", eigent_root)
+    monkeypatch.setattr(skill_config_service, "NOVA_ROOT", nova_root)
 
     config = skill_config_service.skill_config_load(
         "user_42", legacy_user_id="alice@example.com"
@@ -144,15 +144,15 @@ def test_skill_config_load_migrates_legacy_email_config(tmp_path, monkeypatch):
 
     assert config["skills"]["pdf"]["enabled"] is False
     assert not (legacy_dir / "skills-config.json").exists()
-    assert (eigent_root / "user_42" / "skills-config.json").exists()
+    assert (nova_root / "user_42" / "skills-config.json").exists()
 
 
 def test_skill_config_migration_merges_without_overwriting_new_config(
     tmp_path, monkeypatch
 ):
-    eigent_root = tmp_path / "home" / ".eigent"
-    legacy_dir = eigent_root / "alice"
-    user_dir = eigent_root / "user_42"
+    nova_root = tmp_path / "home" / ".nova"
+    legacy_dir = nova_root / "alice"
+    user_dir = nova_root / "user_42"
     legacy_dir.mkdir(parents=True)
     user_dir.mkdir(parents=True)
     (legacy_dir / "skills-config.json").write_text(
@@ -178,7 +178,7 @@ def test_skill_config_migration_merges_without_overwriting_new_config(
         ),
         encoding="utf-8",
     )
-    monkeypatch.setattr(skill_config_service, "EIGENT_ROOT", eigent_root)
+    monkeypatch.setattr(skill_config_service, "NOVA_ROOT", nova_root)
 
     config = skill_config_service.skill_config_load(42, legacy_user_id="alice")
 
@@ -193,8 +193,8 @@ def test_agent_skill_toolkit_reads_canonical_user_config_path(
     monkeypatch.setattr(agent_skill_toolkit.Path, "home", lambda: tmp_path)
 
     assert agent_skill_toolkit._get_user_config_path("42") == (
-        tmp_path / ".eigent" / "user_42" / "skills-config.json"
+        tmp_path / ".nova" / "user_42" / "skills-config.json"
     )
     assert agent_skill_toolkit._get_user_config_path("user_42") == (
-        tmp_path / ".eigent" / "user_42" / "skills-config.json"
+        tmp_path / ".nova" / "user_42" / "skills-config.json"
     )

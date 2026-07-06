@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Eigent.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import asyncio
 import atexit
@@ -48,7 +48,7 @@ from app.utils.event_loop_utils import set_main_event_loop
 
 os.environ["PYTHONIOENCODING"] = "utf-8"
 _fallback_camel_log_dir = (
-    pathlib.Path.home() / ".eigent" / "fallback" / "camel_logs"
+    pathlib.Path.home() / ".nova" / "fallback" / "camel_logs"
 )
 _fallback_camel_log_dir.mkdir(parents=True, exist_ok=True)
 os.environ.setdefault("CAMEL_LOG_DIR", str(_fallback_camel_log_dir))
@@ -56,7 +56,7 @@ os.environ.setdefault("CAMEL_LOG_DIR", str(_fallback_camel_log_dir))
 app_logger = logging.getLogger("main")
 
 # Log application startup
-app_logger.info("Starting Eigent Multi-Agent System API")
+app_logger.info("Starting Nova Multi-Agent System API")
 app_logger.info(f"Python encoding: {os.environ.get('PYTHONIOENCODING')}")
 app_logger.info(f"Environment: {os.environ.get('ENVIRONMENT', 'development')}")
 
@@ -224,9 +224,9 @@ def run_standalone():
     """Run Brain in standalone mode (no Electron dependency)."""
     import uvicorn
 
-    port = int(env("EIGENT_BRAIN_PORT", "5001"))
-    host = env("EIGENT_BRAIN_HOST", "0.0.0.0")  # nosec B104 - bind all for Docker/dev
-    reload = os.environ.get("EIGENT_DEBUG", "").lower() in ("1", "true", "yes")
+    port = int(env("NOVA_BRAIN_PORT", "5001"))
+    host = env("NOVA_BRAIN_HOST", "0.0.0.0")  # nosec B104 - bind all for Docker/dev
+    reload = os.environ.get("NOVA_DEBUG", "").lower() in ("1", "true", "yes")
 
     app_logger.info(
         f"Starting Brain in standalone mode: {host}:{port} (reload={reload})"

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo "========================================="
-echo "Running Eigent Benchmark Evaluation"
+echo "Running Nova Benchmark Evaluation"
 echo "========================================="
 
 WORKING_DIR="${WORKING_DIR:-/workspace}"

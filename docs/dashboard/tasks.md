@@ -1,10 +1,10 @@
 ---
 title: Tasks
-description: Review and manage individual tasks across all Eigent projects.
+description: Review and manage individual tasks across all Nova projects.
 icon: list-check
 ---
 
-The Tasks dashboard provides a cross-project view of every request submitted to Eigent. Use it to find work by prompt, status, or date when you do not need to browse the project hierarchy first.
+The Tasks dashboard provides a cross-project view of every request submitted to Nova. Use it to find work by prompt, status, or date when you do not need to browse the project hierarchy first.
 
 ## Find a task
 
@@ -22,10 +22,10 @@ Task search matches the request text. The project and Space labels identify wher
 Tasks can move through the following states:
 
 - **Pending:** The request exists but execution has not started.
-- **Planning:** Eigent is preparing or splitting the task.
+- **Planning:** Nova is preparing or splitting the task.
 - **Running:** One or more agents are working.
 - **Paused:** Execution is temporarily stopped.
-- **Awaiting review:** Eigent needs user input, confirmation, or plan approval.
+- **Awaiting review:** Nova needs user input, confirmation, or plan approval.
 - **Completed:** The task reached a successful final state.
 - **Failed:** Execution ended with an error.
 
@@ -37,7 +37,7 @@ Status names can vary slightly between the dashboard and live session, but they 
 2. Open its task actions.
 3. Select **Pause**.
 
-Eigent records elapsed time and sends a pause request to the active task.
+Nova records elapsed time and sends a pause request to the active task.
 
 ## Resume a paused task
 
