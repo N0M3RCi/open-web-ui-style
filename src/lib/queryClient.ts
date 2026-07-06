@@ -12,6 +12,7 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
 
 export const queryClient = new QueryClient({
@@ -23,6 +24,16 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
+});
+
+/**
+ * localStorage persister for React Query cache.
+ * Allows the query cache to survive page reloads, reducing initial API calls.
+ */
+export const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+  key: 'MERCI_QUERY_CACHE',
+  throttleTime: 1000,
 });
 
 // Query keys for consistent cache management
@@ -37,5 +48,9 @@ export const queryKeys = {
     configs: (triggerType: string) =>
       [...queryKeys.triggers.all, 'configs', triggerType] as const,
     allConfigs: () => [...queryKeys.triggers.all, 'configs'] as const,
+  },
+  models: {
+    platforms: ['models', 'platforms'] as const,
+    list: (platform: string) => ['models', 'list', platform] as const,
   },
 };

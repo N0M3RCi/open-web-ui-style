@@ -50,6 +50,9 @@ export default defineConfig(({ command, mode }) => {
       exclude: ['@stackframe/react'],
       force: true,
     },
+    build: {
+      assetsInlineLimit: 2048,
+    },
     plugins: [
       react(),
       electron({

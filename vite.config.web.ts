@@ -18,6 +18,7 @@ import react from '@vitejs/plugin-react';
 import http from 'node:http';
 import https from 'node:https';
 import path from 'node:path';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig, loadEnv } from 'vite';
 
 const proxyHttpsAgent = new https.Agent({
@@ -35,11 +36,24 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: [{ find: '@', replacement: path.join(__dirname, 'src') }],
     },
-    plugins: [react()],
+    plugins: [
+      react(),
+      ...(process.env.ANALYZE === 'true'
+        ? [
+            visualizer({
+              filename: 'dist-web/stats.html',
+              open: true,
+              gzipSize: true,
+              brotliSize: true,
+            }),
+          ]
+        : []),
+    ],
     build: {
       outDir: 'dist-web',
       emptyOutDir: true,
       sourcemap: true,
+      assetsInlineLimit: 2048,
     },
     server: {
       port: 5173,
