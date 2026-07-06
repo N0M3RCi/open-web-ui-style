@@ -192,7 +192,7 @@ export default function WorkforceMenu({
         taskAssigning.map((item) => {
           if (item.type === 'browser_agent') {
             item.activeWebviewIds?.map((webview, index) => {
-              // console.log("@@@@@@", webview);
+              // debug("@@@@@@", webview);
               if (webview.id === id) {
                 webviews.push({ ...webview, agent_id: item.agent_id, index });
               }
@@ -348,7 +348,7 @@ export default function WorkforceMenu({
   };
 
   return (
-    <div className="h-12 pt-2 relative z-50 flex items-center justify-center">
+    <div className="relative z-50 flex h-12 items-center justify-center pt-2">
       <div className="w-full">
         <div className="relative flex h-full w-full flex-row items-center justify-center">
           {/* activeAgent */}
@@ -359,7 +359,7 @@ export default function WorkforceMenu({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -30 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className={`gap-2 pl-2 flex w-fit flex-row`}
+                className={`flex w-fit flex-row gap-2 pl-2`}
               >
                 <MenuToggleGroup
                   type="single"
@@ -367,7 +367,7 @@ export default function WorkforceMenu({
                   orientation="horizontal"
                   value={getCurrentTask()?.activeWorkspace as string}
                   onValueChange={onValueChange}
-                  className="gap-2 pb-2 flex w-full items-center"
+                  className="flex w-full items-center gap-2 pb-2"
                 >
                   <AnimatePresence mode="popLayout">
                     {agentList.map((agent) => (
@@ -413,7 +413,7 @@ export default function WorkforceMenu({
           </AnimatePresence>
           {/* Viewport Navigation Buttons */}
           {(moveLeft || moveRight) && (
-            <div className="right-2 pb-2 absolute flex items-center">
+            <div className="absolute right-2 flex items-center pb-2">
               <Button
                 variant="ghost"
                 size="sm"

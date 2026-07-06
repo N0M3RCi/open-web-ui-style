@@ -12,12 +12,13 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import { debug } from '@/lib/debug';
 import { lstat } from 'node:fs/promises';
 import { cwd } from 'node:process';
 
 lstat(cwd())
   .then((stats) => {
-    console.log('[fs.lstat]', stats);
+    debug('[fs.lstat]', stats);
   })
   .catch((err) => {
     console.error(err);

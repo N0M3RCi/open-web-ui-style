@@ -23,6 +23,7 @@ import {
 import { CircleAlert, Settings2 } from 'lucide-react';
 
 import ellipseIcon from '@/assets/mcp/Ellipse-25.svg';
+import { MCPEnvDialog } from '@/components/MCP/MCPEnvDialog';
 import {
   Select,
   SelectContent,
@@ -35,9 +36,9 @@ import {
   type IntegrationItem,
 } from '@/hooks/useIntegrationManagement';
 import { getProxyBaseURL } from '@/lib';
+import { debug } from '@/lib/debug';
 import { OAuth } from '@/lib/oauth';
 import { cn } from '@/lib/utils';
-import { MCPEnvDialog } from '@/components/MCP/MCPEnvDialog';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -112,7 +113,7 @@ export default function IntegrationList({
   // Install handler - different logic for select vs manage mode
   const handleInstall = useCallback(
     async (item: IntegrationItem) => {
-      console.log(item);
+      debug(item);
       const searchKey = isSelectMode ? 'EXA Search' : 'Search';
 
       if (item.key === searchKey || item.key === 'Lark' || item.key === 'RAG') {
@@ -167,7 +168,7 @@ export default function IntegrationList({
 
   // onConnect handler - different logic for select vs manage mode
   const onConnect = async (mcp: any) => {
-    console.log('[IntegrationList onConnect] Starting for', mcp.key);
+    debug('[IntegrationList onConnect] Starting for', mcp.key);
 
     // Refresh configs first to get latest state
     await fetchInstalled();
@@ -181,7 +182,7 @@ export default function IntegrationList({
 
     // After saving env vars, handle Google Calendar authorization flow
     if (mcp.key === 'Google Calendar') {
-      console.log(
+      debug(
         '[IntegrationList onConnect] Google Calendar detected, starting auth flow'
       );
 
@@ -195,54 +196,51 @@ export default function IntegrationList({
         }
       } catch (_) {}
 
-      // Select mode: poll OAuth status
+      // Select mode: poll OAuth status with exponential backoff
       if (isSelectMode) {
-        console.log(
-          '[IntegrationList onConnect] Starting OAuth status polling'
-        );
+        const poll = async (): Promise<void> => {
+          const start = Date.now();
+          const pollTimeoutMs = 2 * 60 * 1000; // 2 minutes max
+          let delay = 1000;
 
-        const start = Date.now();
-        const timeoutMs = 5 * 60 * 1000; // 5 minutes
-        while (Date.now() - start < timeoutMs) {
-          try {
-            const statusRes: any = await fetchGet(
-              '/oauth/status/google_calendar'
-            );
-            console.log(
-              '[IntegrationList onConnect] OAuth status:',
-              statusRes?.status
-            );
-
-            if (statusRes?.status === 'success') {
-              console.log(
-                '[IntegrationList onConnect] Success! Closing dialog'
-              );
-              await fetchInstalled();
-              onClose();
+          const pollOnce = async (): Promise<void> => {
+            if (Date.now() - start >= pollTimeoutMs) {
               return;
             }
-            if (
-              statusRes?.status === 'failed' ||
-              statusRes?.status === 'cancelled'
-            ) {
-              console.log(
-                '[IntegrationList onConnect] Failed/cancelled, keeping dialog open'
+            try {
+              const statusRes: any = await fetchGet(
+                '/oauth/status/google_calendar'
               );
-              return;
+
+              if (statusRes?.status === 'success') {
+                await fetchInstalled();
+                onClose();
+                return;
+              }
+              if (
+                statusRes?.status === 'failed' ||
+                statusRes?.status === 'cancelled'
+              ) {
+                return;
+              }
+            } catch (_err) {
+              // Network error — retry with backoff
             }
-          } catch (err) {
-            console.log('[IntegrationList onConnect] Polling error:', err);
-          }
-          await new Promise((r) => setTimeout(r, 1500));
-        }
-        console.log('[IntegrationList onConnect] Polling timeout');
+            delay = Math.min(delay * 2, 5000); // cap at 5s
+            setTimeout(() => void pollOnce(), delay);
+          };
+
+          pollOnce();
+        };
+
+        poll();
         return;
       }
     }
 
     // Select mode: add to tools and close
     if (isSelectMode && addOption) {
-      console.log(
+      debug(
         '[IntegrationList onConnect] Non-Google Calendar, closing immediately'
       );
       await fetchInstalled();
@@ -364,7 +362,7 @@ export default function IntegrationList({
               }
             >
               {isSelectMode ? (
-                <div className="gap-2 min-w-0 min-h-0 flex flex-1 items-center">
+                <div className="flex min-h-0 min-w-0 flex-1 items-center gap-2">
                   {selectWithCheckbox && (
                     <Checkbox
                       disabled={checkboxDisabled}
@@ -380,8 +378,8 @@ export default function IntegrationList({
                   <span className={titleClassName}>{item.name}</span>
                 </div>
               ) : (
-                <div className="gap-xs flex w-full flex-row items-center justify-between">
-                  <div className="gap-xs flex flex-row items-center">
+                <div className="flex w-full flex-row items-center justify-between gap-xs">
+                  <div className="flex flex-row items-center gap-xs">
                     {showStatusDot && (
                       <img
                         src={ellipseIcon}
@@ -406,7 +404,7 @@ export default function IntegrationList({
                       </Tooltip>
                     </div>
                   </div>
-                  <div className="gap-md flex flex-row items-center">
+                  <div className="flex flex-row items-center gap-md">
                     {showConfigButton && (
                       <Button
                         type="button"
@@ -474,8 +472,8 @@ export default function IntegrationList({
             </div>
 
             {!isSelectMode && showSelect && (
-              <div className="mt-6 gap-md border-ds-border-neutral-default-default pt-6 flex w-full flex-row items-center border-x-0 border-b-0 border-solid">
-                <div className="gap-md flex w-full flex-row items-center justify-between">
+              <div className="mt-6 flex w-full flex-row items-center gap-md border-x-0 border-b-0 border-solid border-ds-border-neutral-default-default pt-6">
+                <div className="flex w-full flex-row items-center justify-between gap-md">
                   <div className="text-body-md text-ds-text-neutral-default-default">
                     {' '}
                     Default {item.name}

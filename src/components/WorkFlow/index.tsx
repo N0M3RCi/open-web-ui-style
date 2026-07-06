@@ -188,7 +188,7 @@ export default function Workflow({
   );
 
   useEffect(() => {
-    // console.log("workerList	", workerList);
+    // debug("workerList	", workerList);
     setNodes((prev: CustomNode[]) => {
       if (!taskAssigning) return prev;
       // Agents not yet in taskAssigning (from defaults or workerList)

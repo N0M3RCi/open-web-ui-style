@@ -12,6 +12,7 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import { debug } from '@/lib/debug';
 import { TriggerType } from '@/types';
 import { create } from 'zustand';
 
@@ -211,7 +212,7 @@ export const useTriggerTaskStore = create<TriggerTaskStore>((set, get) => ({
       });
       return { executionMappings: newMappings };
     });
-    console.log(
+    debug(
       '[TriggerTaskStore] Registered execution mapping:',
       chatTaskId,
       '->',

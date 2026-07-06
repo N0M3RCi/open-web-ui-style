@@ -32,6 +32,7 @@ import {
   computeProjectFreshnessAnchor,
   loadProjectFromHistory,
 } from '@/lib';
+import { debug } from '@/lib/debug';
 import { fetchHistoryTasks } from '@/service/historyApi';
 import { useGlobalStore } from '@/store/globalStore';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
@@ -95,12 +96,12 @@ export function SearchHistoryDialog() {
 
   const handleDelete = (taskId: string) => {
     // TODO: Implement delete functionality similar to HistorySidebar
-    console.log('Delete task:', taskId);
+    debug('Delete task:', taskId);
   };
 
   const handleShare = (taskId: string) => {
     // TODO: Implement share functionality similar to HistorySidebar
-    console.log('Share task:', taskId);
+    debug('Share task:', taskId);
   };
 
   useEffect(() => {

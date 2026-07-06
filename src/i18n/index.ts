@@ -12,6 +12,7 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import { debug } from '@/lib/debug';
 import { getAuthStore } from '@/store/authStore';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
@@ -58,7 +59,7 @@ i18n.use(initReactI18next).init({
 });
 
 export const switchLanguage = (lang: LocaleEnum) => {
-  console.log('switchLanguage', lang);
+  debug('switchLanguage', lang);
   i18n.changeLanguage(lang);
   getAuthStore().setLanguage(lang);
 };

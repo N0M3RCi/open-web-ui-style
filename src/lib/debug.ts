@@ -12,11 +12,17 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
-import { debug } from '@/lib/debug';
-import { useTranslation } from 'react-i18next';
-
-export default function NotFound() {
-  const { t } = useTranslation();
-  debug(window.location.href);
-  return <div>{t('layout.not-found')}</div>;
+/**
+ * Debug logger — wraps console.log behind a dev-only guard.
+ * In production builds (import.meta.env.PROD === true), calls are dead-code
+ * eliminated by the minifier, leaving zero runtime overhead.
+ *
+ * Usage:
+ *   import { debug } from '@/lib/debug';
+ *   debug('some message', someVariable);
+ */
+export function debug(...args: unknown[]): void {
+  if (import.meta.env.DEV) {
+    console.log(...args);
+  }
 }

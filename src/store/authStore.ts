@@ -13,6 +13,7 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { getAuthEnvironmentKey } from '@/lib/authEnvironment';
+import { debug } from '@/lib/debug';
 import { clearAllCachedProjects } from '@/lib/projectCache';
 import {
   DEFAULT_COLOR_THEME_ID,
@@ -32,12 +33,7 @@ const LEGACY_DEFAULT_CLOUD_MODEL_ID = 'gpt-5.5';
 
 /** Main workspace panel background (Workforce + Session tabs only). */
 export type WorkspaceMainBackground =
-  | 'empty'
-  | 'dots'
-  | 'blocks'
-  | 'ruled'
-  | 'dotted'
-  | 'dashed';
+  'empty' | 'dots' | 'blocks' | 'ruled' | 'dotted' | 'dashed';
 export type CloudModelType = string;
 export type CodexSubscriptionModelType = string;
 
@@ -311,7 +307,7 @@ const authStore = create<AuthState>()(
       setLanguage: (language) => set({ language }),
 
       setInitState: (initState) => {
-        console.log('set({ initState })', initState);
+        debug('set({ initState })', initState);
         set({ initState });
       },
 
@@ -354,18 +350,18 @@ const authStore = create<AuthState>()(
           const currentEmail = email as string;
           const originalList = state.workerListData[currentEmail] ?? [];
 
-          console.log('tool!!!', tool);
+          debug('tool!!!', tool);
 
           const updatedList = originalList
             .map((worker) => {
               const filteredTools =
                 worker.tools?.filter((t) => t !== tool) ?? [];
-              console.log('filteredTools', filteredTools);
+              debug('filteredTools', filteredTools);
               return { ...worker, tools: filteredTools };
             })
             .filter((worker) => worker.tools.length > 0);
 
-          console.log('updatedList', updatedList);
+          debug('updatedList', updatedList);
 
           return {
             ...state,

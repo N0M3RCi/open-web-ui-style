@@ -24,6 +24,7 @@ import {
   computeProjectFreshnessAnchor,
   loadProjectFromHistory,
 } from '@/lib';
+import { debug } from '@/lib/debug';
 import { share } from '@/lib/share';
 import { fetchGroupedHistoryTasks } from '@/service/historyApi';
 import { getAuthStore, useAuthStore } from '@/store/authStore';
@@ -226,7 +227,7 @@ export default function HistorySidebar() {
   };
 
   const handleDelete = (id: string) => {
-    console.log('Delete task:', id);
+    debug('Delete task:', id);
     setCurrentProjectId(id);
     setDeleteModalOpen(true);
   };
@@ -247,7 +248,7 @@ export default function HistorySidebar() {
   ) => {
     try {
       const res = await proxyFetchDelete(`/api/v1/chat/history/${historyId}`);
-      console.log(res);
+      debug(res);
       // also delete local files for this task if available (via Electron IPC)
       const { email } = getAuthStore();
       const history = project.tasks.find(
@@ -281,23 +282,20 @@ export default function HistorySidebar() {
       );
 
       if (targetProject && targetProject.tasks) {
-        console.log(
+        debug(
           `Found project ${projectId} with ${targetProject.tasks.length} tasks to delete`
         );
 
         // Delete each task one by one
         for (const history of targetProject.tasks) {
-          console.log(
+          debug(
             `Deleting task: ${history.task_id} (history ID: ${history.id})`
           );
           try {
             const deleteRes = await proxyFetchDelete(
               `/api/v1/chat/history/${history.id}`
             );
-            console.log(
-              `Successfully deleted task ${history.task_id}:`,
-              deleteRes
-            );
+            debug(`Successfully deleted task ${history.task_id}:`, deleteRes);
 
             // Also delete local files for this task if available (via Electron IPC)
             const { email } = getAuthStore();
@@ -309,7 +307,7 @@ export default function HistorySidebar() {
                   history.task_id,
                   history.project_id ?? undefined
                 );
-                console.log(
+                debug(
                   `Successfully cleaned up local files for task ${history.task_id}`
                 );
               } catch (error) {
@@ -325,7 +323,7 @@ export default function HistorySidebar() {
         }
 
         projectStore.removeProject(projectId);
-        console.log(`Completed deletion of project ${projectId}`);
+        debug(`Completed deletion of project ${projectId}`);
       } else {
         console.warn(`Project ${projectId} not found or has no tasks`);
       }

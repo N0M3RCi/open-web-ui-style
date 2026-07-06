@@ -28,6 +28,20 @@ const NotFound = lazy(() => import('@/pages/NotFound'));
 const RemoteControl = lazy(() => import('@/pages/RemoteControl'));
 const AdminUsers = lazy(() => import('@/pages/AdminUsers'));
 
+/**
+ * Redirect /setting or /setting/:tab to /history?tab=settings
+ * while preserving the sub-tab as a query param so the Settings
+ * component can activate the correct tab.
+ */
+const SettingsRedirect = () => {
+  const location = useLocation();
+  const subtab =
+    location.pathname.replace('/setting/', '').replace(/\/$/, '') || 'general';
+  const base = '/history?tab=settings';
+  const to = subtab !== 'general' ? `${base}&subtab=${subtab}` : base;
+  return <Navigate to={to} replace />;
+};
+
 const IS_LOCAL_MODE = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
 const ENABLE_DESKTOP_REMOTE_CONTROL_FALLBACK = isDesktop();
 
@@ -166,14 +180,8 @@ const AppRoutes = () => (
         <Route path="/" element={<Workspace />} />
         <Route path="/history" element={<History />} />
         <Route path="/admin/users" element={<AdminUsers />} />
-        <Route
-          path="/setting"
-          element={<Navigate to="/history?tab=settings" replace />}
-        />
-        <Route
-          path="/setting/*"
-          element={<Navigate to="/history?tab=settings" replace />}
-        />
+        <Route path="/setting" element={<SettingsRedirect />} />
+        <Route path="/setting/*" element={<SettingsRedirect />} />
       </Route>
     </Route>
     <Route path="*" element={<NotFound />} />

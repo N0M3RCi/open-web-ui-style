@@ -46,6 +46,7 @@ import {
 } from '@/components/ui/select';
 import { createHost } from '@/host/createHost';
 import { SITE_URL } from '@/lib';
+import { debug } from '@/lib/debug';
 import { INIT_PROVODERS } from '@/lib/llm';
 import { getProviderValid, toProviderValidStatus } from '@/lib/providerStatus';
 import { useAuthStore } from '@/store/authStore';
@@ -673,7 +674,7 @@ export default function SettingModels() {
       });
     }
 
-    console.log(form[idx]);
+    debug(form[idx]);
     try {
       const res = await fetchPost('/model/validate', {
         model_platform: item.id,
@@ -683,7 +684,7 @@ export default function SettingModels() {
         extra_params: external,
       });
       if (res.is_tool_calls && res.is_valid) {
-        console.log('success');
+        debug('success');
         toast(t('setting.validate-success'), {
           description: t(
             'setting.the-model-has-been-verified-to-support-function-calling-which-is-required-to-use-nova'
@@ -691,7 +692,7 @@ export default function SettingModels() {
           closeButton: true,
         });
       } else {
-        console.log('failed', res.message);
+        debug('failed', res.message);
         // Surface error inline on API Key input
         setErrors((prev) => {
           const next = [...prev];
@@ -703,9 +704,9 @@ export default function SettingModels() {
         setLoading(null);
         return;
       }
-      console.log(res);
+      debug(res);
     } catch (e) {
-      console.log(e);
+      debug(e);
       // Network/exception case: show inline error
       setErrors((prev) => {
         const next = [...prev];
@@ -883,7 +884,7 @@ export default function SettingModels() {
             url: currentEndpoint,
           });
           if (res.is_tool_calls && res.is_valid) {
-            console.log('success');
+            debug('success');
             toast(t('setting.validate-success'), {
               description: t(
                 'setting.the-model-has-been-verified-to-support-function-calling-which-is-required-to-use-nova'
@@ -891,7 +892,7 @@ export default function SettingModels() {
               closeButton: true,
             });
           } else {
-            console.log('failed', res.message);
+            debug('failed', res.message);
             const toastId = toast(t('setting.validate-failed'), {
               description: getValidateMessage(res),
               action: {
@@ -905,9 +906,9 @@ export default function SettingModels() {
             showConfigCardRing('error');
             return;
           }
-          console.log(res);
+          debug(res);
         } catch (e) {
-          console.log(e);
+          debug(e);
           const toastId = toast(t('setting.validate-failed'), {
             description: getValidateMessage(e),
             action: {
@@ -1152,7 +1153,7 @@ export default function SettingModels() {
   const checkHasSearchKey = async () => {
     const configsRes = await proxyFetchGet('/api/v1/configs');
     const configs = Array.isArray(configsRes) ? configsRes : [];
-    console.log(configsRes, configs);
+    debug(configsRes, configs);
     const _hasApiKey = configs.find(
       (item) => item.config_name === 'GOOGLE_API_KEY'
     );
@@ -1167,7 +1168,7 @@ export default function SettingModels() {
   const [upgradingTrial, setUpgradingTrial] = useState(false);
   const fetchSubscription = async () => {
     const res = await proxyFetchGet('/api/v1/subscription');
-    console.log(res);
+    debug(res);
     if (res) {
       setSubscription(res);
     }
@@ -1180,7 +1181,7 @@ export default function SettingModels() {
     try {
       setLoadingCredits(true);
       const res = await proxyFetchGet(`/api/v1/user/current_credits`);
-      console.log(res?.credits);
+      debug(res?.credits);
       setCredits(res?.credits);
       setCreditsError(false);
     } catch (error) {

@@ -14,6 +14,7 @@
 
 import { proxyFetchGet } from '@/api/http';
 import { generateUniqueId } from '@/lib';
+import { debug } from '@/lib/debug';
 import {
   deleteCachedProject,
   getCachedProject,
@@ -116,10 +117,7 @@ export enum ProjectType {
 
 export type ProjectMode = 'single-agent' | 'workforce';
 export type ProjectWorkdirMode =
-  | 'worktree'
-  | 'copy'
-  | 'direct-write'
-  | 'artifact-only';
+  'worktree' | 'copy' | 'direct-write' | 'artifact-only';
 
 interface TaskQueue {
   task_id: string;
@@ -600,7 +598,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
       },
     };
 
-    console.log('[store] Creating a new project');
+    debug('[store] Creating a new project');
     // Evict stale runtime state of the outgoing active project before we
     // overwrite activeProjectId — `setActiveProject` is bypassed here so
     // we must invoke the eviction contract ourselves.
@@ -1140,7 +1138,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
     // If projectId is provided, reset that project
     if (projectId) {
       if (projects[projectId]) {
-        console.log(`[ProjectStore] Overwriting existing project ${projectId}`);
+        debug(`[ProjectStore] Overwriting existing project ${projectId}`);
         removeProject(projectId);
       }
       // Create project with the specific naming
@@ -1162,7 +1160,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
       );
     }
 
-    console.log(
+    debug(
       `[ProjectStore] Created replay project ${replayProjectId} for ${taskIds.length} tasks`
     );
 
@@ -1173,14 +1171,14 @@ const projectStore = create<ProjectStore>()((set, get) => ({
       let cancelled = false;
       for (let index = 0; index < taskIds.length; index++) {
         if (get().activeProjectId !== replayProjectId) {
-          console.log(
+          debug(
             `[ProjectStore] Cancelled replay: active project changed from ${replayProjectId}`
           );
           cancelled = true;
           break;
         }
         const taskId = taskIds[index];
-        console.log(
+        debug(
           `[ProjectStore] Creating replay for task ${index + 1}/${taskIds.length}: ${taskId}`
         );
 
@@ -1194,7 +1192,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
           if (chatStore) {
             try {
               await chatStore.getState().replay(taskId, question, 0.2);
-              console.log(`[ProjectStore] Started replay for task ${taskId}`);
+              debug(`[ProjectStore] Started replay for task ${taskId}`);
             } catch (error) {
               console.error(
                 `[ProjectStore] Failed to replay task ${taskId}:`,
@@ -1205,7 +1203,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
         }
       }
       if (!cancelled) {
-        console.log(
+        debug(
           `[ProjectStore] Completed replay setup for ${taskIds.length} tasks`
         );
       }
@@ -1243,7 +1241,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
             : question.slice(0, 50) || 'Project';
 
     if (projects[projectId]) {
-      console.log(
+      debug(
         `[ProjectStore] Overwriting existing project ${projectId} for load`
       );
       removeProject(projectId);
@@ -1277,7 +1275,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
     get()._evictStaleOnTransition(loadProjectId);
     set({ activeProjectId: loadProjectId });
     get().setHistoryLoadingProject(loadProjectId, true);
-    console.log(
+    debug(
       `[ProjectStore] Loading project ${loadProjectId} with ${taskIds.length} tasks (final state, no replay)`
     );
 
@@ -1340,7 +1338,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
                   getSessionNavLeadPresentation(activeTask)
                 );
               }
-              console.log(
+              debug(
                 `[ProjectStore] Hydrated ${loadProjectId} from cache (${rehydratedStores.size} tasks)`
               );
 
@@ -1386,14 +1384,14 @@ const projectStore = create<ProjectStore>()((set, get) => ({
       const loadedChatStoresByTaskId = new Map<string, VanillaChatStore>();
       for (let index = 0; index < taskIds.length; index++) {
         if (get().activeProjectId !== loadProjectId) {
-          console.log(
+          debug(
             `[ProjectStore] Cancelled loading: active project changed from ${loadProjectId}`
           );
           cancelled = true;
           break;
         }
         const taskId = taskIds[index];
-        console.log(
+        debug(
           `[ProjectStore] Loading task ${index + 1}/${taskIds.length}: ${taskId}`
         );
         const chatId = createChatStore(loadProjectId, `Task ${taskId}`);
@@ -1406,7 +1404,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
                 .getState()
                 .replay(taskId, taskQuestionsById?.[taskId] || question, 0);
               loadedChatStoresByTaskId.set(taskId, chatStore);
-              console.log(`[ProjectStore] Loaded task ${taskId}`);
+              debug(`[ProjectStore] Loaded task ${taskId}`);
             } catch (error) {
               console.error(
                 `[ProjectStore] Failed to load task ${taskId}:`,
@@ -1471,9 +1469,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
             getSessionNavLeadPresentation(activeTask)
           );
         }
-        console.log(
-          `[ProjectStore] Completed loading project ${loadProjectId}`
-        );
+        debug(`[ProjectStore] Completed loading project ${loadProjectId}`);
 
         // Persist the freshly-reconstructed state so the next session can
         // skip the SSE replay entirely. Best-effort — IDB failures (quota,
@@ -1691,7 +1687,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
       },
     }));
 
-    console.log(
+    debug(
       `[addQueuedMessage] Message added successfully: task_id=${actual_task_id}, queue length now: ${get().projects[projectId].queuedMessages.length}`
     );
 
@@ -1830,7 +1826,7 @@ const projectStore = create<ProjectStore>()((set, get) => ({
       },
     }));
 
-    console.log(
+    debug(
       `[ProjectStore] Marked message as processing: ${taskId} in project ${projectId}`
     );
   },

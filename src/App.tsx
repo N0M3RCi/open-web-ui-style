@@ -13,6 +13,7 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { useHost } from '@/host';
+import { debug } from '@/lib/debug';
 import { queryClient } from '@/lib/queryClient';
 import AppRoutes from '@/routers/index';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -56,14 +57,12 @@ function App() {
       previousVersion: string;
       reason: string;
     }) => {
-      console.log('receive version update notification:', data);
+      debug('receive version update notification:', data);
 
       if (data.type === 'version-update') {
         // handle version update logic
-        console.log(
-          `version from ${data.previousVersion} to ${data.currentVersion}`
-        );
-        console.log(`update reason: ${data.reason}`);
+        debug(`version from ${data.previousVersion} to ${data.currentVersion}`);
+        debug(`update reason: ${data.reason}`);
         setInitState('carousel');
       }
     };

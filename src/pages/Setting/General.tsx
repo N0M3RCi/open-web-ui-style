@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/select';
 import useChatStoreAdapter from '@/hooks/useChatStoreAdapter';
 import { useHost } from '@/host';
+import { debug } from '@/lib/debug';
 
 export default function SettingGeneral() {
   const { t } = useTranslation();
@@ -117,7 +118,7 @@ export default function SettingGeneral() {
             setProxyUrl(result.value);
           }
         } catch (_error) {
-          console.log('No proxy configured');
+          debug('No proxy configured');
         }
       }
     };

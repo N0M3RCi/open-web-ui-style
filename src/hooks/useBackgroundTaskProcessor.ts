@@ -13,6 +13,7 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { generateUniqueId } from '@/lib';
+import { debug } from '@/lib/debug';
 import { proxyUpdateTriggerExecution } from '@/service/triggerApi';
 import {
   closeSSEConnectionsForTasks,
@@ -76,7 +77,7 @@ export function useBackgroundTaskProcessor() {
           activeTasksRef.current.values()
         ).some((t) => t.projectId === project.id);
         if (hasActiveBackgroundTask) {
-          console.log(
+          debug(
             '[BackgroundTaskProcessor] Skipping project',
             project.id,
             '- already has an active background task'
@@ -106,7 +107,7 @@ export function useBackgroundTaskProcessor() {
         });
 
         if (hasRunningChatTask) {
-          console.log(
+          debug(
             '[BackgroundTaskProcessor] Skipping project',
             project.id,
             '- has a running/paused chat task',
@@ -134,14 +135,14 @@ export function useBackgroundTaskProcessor() {
             activeTask?.hasWaitComfirm;
 
           if (isActiveTaskDone) {
-            console.log(
+            debug(
               '[BackgroundTaskProcessor] Closing stale SSE for project',
               project.id,
               '- active task done, trigger waiting in queue'
             );
             closeSSEConnectionsForTasks(allTaskIds);
           } else {
-            console.log(
+            debug(
               '[BackgroundTaskProcessor] Skipping project',
               project.id,
               '- SSE active, task still in progress'
@@ -197,7 +198,7 @@ export function useBackgroundTaskProcessor() {
 
       projectStore.markQueuedMessageAsProcessing(projectId, task_id);
 
-      console.log(
+      debug(
         '[BackgroundTaskProcessor] Marked message as processing:',
         task_id,
         'executionId:',
@@ -247,7 +248,7 @@ export function useBackgroundTaskProcessor() {
             projectId
           )
           .then(() => {
-            console.log(
+            debug(
               '[BackgroundTaskProcessor] Background task completed:',
               executionId
             );
@@ -282,14 +283,14 @@ export function useBackgroundTaskProcessor() {
             activeTasksRef.current.delete(executionId);
           });
 
-        console.log(
+        debug(
           '[BackgroundTaskProcessor] Started background task:',
           executionId,
           'for project',
           projectId
         );
 
-        console.log(
+        debug(
           '[BackgroundTaskProcessor] Current active tasks:',
           Array.from(activeTasksRef.current.keys())
         );

@@ -28,6 +28,7 @@ import { showCreditsToast } from '@/components/Toast/creditsToast';
 import { showStorageToast } from '@/components/Toast/storageToast';
 import type { AppHost } from '@/host/types';
 import { generateUniqueId, uploadLog } from '@/lib';
+import { debug } from '@/lib/debug';
 import {
   normalizeRemoteSubAgentProvider,
   REMOTE_SUB_AGENT_PROVIDER_ID,
@@ -55,43 +56,7 @@ import { usePageTabStore } from './pageTabStore';
 import { useProjectStore } from './projectStore';
 import { legacySpaceIdForUser, useSpaceStore } from './spaceStore';
 
-const API_CODE_TRIAL_LIMIT = '22';
-const PROJECT_CONTEXT_MAX_CHARS = 24_000;
-const PROJECT_CONTEXT_MAX_RUNS = 8;
-
-type ConfirmedUserPromptSources = {
-  lastMessageContent?: unknown;
-  messageContent?: unknown;
-  question?: unknown;
-  isFollowUpConfirm: boolean;
-};
-
-const nonEmptyString = (value: unknown): string | undefined =>
-  typeof value === 'string' && value.length > 0 ? value : undefined;
-
-export function resolveConfirmedUserMessageContent({
-  lastMessageContent,
-  messageContent,
-  question,
-  isFollowUpConfirm,
-}: ConfirmedUserPromptSources): string {
-  const optimisticMessage = nonEmptyString(lastMessageContent);
-  if (optimisticMessage) return optimisticMessage;
-
-  const capturedStartMessage = nonEmptyString(messageContent);
-  const eventQuestion = nonEmptyString(question);
-
-  if (isFollowUpConfirm) {
-    return eventQuestion || capturedStartMessage || '';
-  }
-
-  return capturedStartMessage || eventQuestion || '';
-}
-
-const hasApiCode = (value: unknown, code: string) =>
-  typeof value === 'object' &&
-  value !== null &&
-  String((value as { code?: unknown }).code) === code;
+import { API_CODE_TRIAL_LIMIT, hasApiCode } from './chatStoreTypes';
 
 let _host: AppHost | null = null;
 
@@ -601,7 +566,7 @@ async function uploadTaskFiles(
         '/api/v1/chat/files/upload',
         formData
       );
-      console.log('File uploaded successfully:', {
+      debug('File uploaded successfully:', {
         fileName: file.uploadName,
         source: file.source,
         uploadTargetId,
@@ -1047,7 +1012,7 @@ const updateTriggerExecutionStatus = async (
   tokens: number,
   errorMessage?: string
 ) => {
-  console.log('[updateTriggerExecutionStatus] Called with:', {
+  debug('[updateTriggerExecutionStatus] Called with:', {
     projectId,
     currentTaskId,
     status,
@@ -1059,7 +1024,7 @@ const updateTriggerExecutionStatus = async (
 
   if (!executionId) {
     // No executionId means this is not a trigger-initiated task, skip silently
-    console.log(
+    debug(
       '[updateTriggerExecutionStatus] No executionId found for task:',
       currentTaskId,
       '- skipping (not a trigger-initiated task)'
@@ -1069,7 +1034,7 @@ const updateTriggerExecutionStatus = async (
 
   // Check if this execution has already been reported
   if (reportedExecutionIds.has(executionId)) {
-    console.log(
+    debug(
       '[updateTriggerExecutionStatus] Execution already reported:',
       executionId
     );
@@ -1092,7 +1057,7 @@ const updateTriggerExecutionStatus = async (
       { projectId: projectId || undefined }
     );
 
-    console.log(
+    debug(
       '[updateTriggerExecutionStatus] Execution status updated:',
       executionId,
       '->',
@@ -1135,7 +1100,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
     },
     create(id?: string, type?: any) {
       const taskId = id ? id : generateUniqueId();
-      console.log('Create Task', taskId);
+      debug('Create Task', taskId);
       set((state) => ({
         activeTaskId: taskId,
         tasks: {
@@ -1251,7 +1216,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
       // Abort the SSE connection for this task
       try {
         if (activeSSEControllers[taskId]) {
-          console.log(`Stopping SSE connection for task ${taskId}`);
+          debug(`Stopping SSE connection for task ${taskId}`);
           activeSSEControllers[taskId].abort();
           delete activeSSEControllers[taskId];
         }
@@ -1355,7 +1320,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
        * Replay creates its own chatStore for each task with replayProject
        */
       if (project_id && type !== 'replay') {
-        console.log('Creating a new Chat Instance for current project on end');
+        debug('Creating a new Chat Instance for current project on end');
         const newChatResult = projectStore.appendInitChatStore(
           project_id,
           startOptions.preserveTaskId ? taskId : undefined
@@ -1421,7 +1386,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
       // Render the new turn before waiting for Brain. This keeps the project
       // page responsive and locks the composer through the task's pending state.
       if (!type || type === 'normal') {
-        console.log('[startTask] Checking if backend is ready...');
+        debug('[startTask] Checking if backend is ready...');
         const isBackendReady = await waitForBackendReady(60000, 500);
 
         if (!isBackendReady) {
@@ -1437,7 +1402,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           targetState.setStatus(newTaskId, ChatTaskStatus.FINISHED);
           return;
         }
-        console.log('[startTask] Backend is ready, proceeding with task...');
+        debug('[startTask] Backend is ready, proceeding with task...');
       }
 
       const {
@@ -1513,7 +1478,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           prefer: true,
         });
         const providerList = res.items || [];
-        console.log('providerList', providerList);
+        debug('providerList', providerList);
         const provider = providerList[0];
 
         if (!provider) {
@@ -1637,7 +1602,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
               GOOGLE_API_KEY: googleApiKey,
               SEARCH_ENGINE_ID: searchEngineId,
             };
-            console.log('Loaded custom search configuration');
+            debug('Loaded custom search configuration');
           }
         } catch (error) {
           console.error('Failed to load search configuration:', error);
@@ -1682,7 +1647,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           envPath =
             (await getHostIpcRenderer()?.invoke?.('get-env-path', email)) ?? '';
         } catch (error) {
-          console.log('get-env-path error', error);
+          debug('get-env-path error', error);
         }
       }
 
@@ -1920,7 +1885,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
             agentMessages.step === AgentStep.WAIT_CONFIRM;
 
           if (!currentTask) {
-            console.log(
+            debug(
               `Task ${lockedTaskId} not found, ignoring SSE message for step: ${agentMessages.step}`
             );
             return;
@@ -1934,13 +1899,13 @@ const chatStore = (initial?: Partial<ChatStore>) =>
             // Ignore messages for finished tasks except:
             // 1. Task switching events (create new chatStore)
             // 2. Simple answer events (direct response without new chatStore)
-            console.log(
+            debug(
               `Ignoring SSE message for finished task ${lockedTaskId}, step: ${agentMessages.step}`
             );
             return;
           }
 
-          console.log('agentMessages', agentMessages);
+          debug('agentMessages', agentMessages);
           const agentNameMap = {
             developer_agent: 'Developer Agent',
             browser_agent: 'Browser Agent',
@@ -2049,7 +2014,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
                   content: userMessageContent,
                   attaches: attachesForNewMessage,
                 });
-                console.log('[NEW CHATSTORE] Created for ', project_id);
+                debug('[NEW CHATSTORE] Created for ', project_id);
 
                 //Create a new history point
                 if (!type) {
@@ -2125,7 +2090,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
               confirmedAt: performance.now(),
               firstTokenLogged: false,
             };
-            console.log(
+            debug(
               `[TTFT] Task ${ttftTaskId} confirmed at ${new Date().toISOString()}, starting TTFT measurement`
             );
             return;
@@ -2179,7 +2144,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
               ttftTracking[currentId].firstTokenLogged = true;
               const ttft =
                 performance.now() - ttftTracking[currentId].confirmedAt;
-              console.log(
+              debug(
                 `[TTFT] Time to First Token: ${ttft.toFixed(2)}ms - first streaming token for task ${currentId}`
               );
             }
@@ -2647,7 +2612,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
               }
             }
             if (targetTaskIndex !== -1) {
-              console.log('targetTaskIndex', targetTaskIndex, state);
+              debug('targetTaskIndex', targetTaskIndex, state);
               taskRunning[targetTaskIndex].status =
                 state === 'DONE' ? TaskStatus.COMPLETED : TaskStatus.FAILED;
             }
@@ -2668,9 +2633,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
               failure_count: _failure_count,
             } = agentMessages.data;
             //new chatStore logic is handled along side "confirmed" event
-            console.log(
-              `Received new task: ${task_id} with content: ${content}`
-            );
+            debug(`Received new task: ${task_id} with content: ${content}`);
             return;
           }
 
@@ -3015,7 +2978,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
               agentMessages.data.toolkit_name === 'Browser Toolkit' &&
               agentMessages.data.method_name === 'visit page'
             ) {
-              console.log('match success');
+              debug('match success');
               addWebViewUrl(
                 currentTaskId,
                 normalizeToolkitMessage(agentMessages.data.message) as string,
@@ -3228,7 +3191,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           }
           // Write File
           if (agentMessages.step === AgentStep.WRITE_FILE) {
-            console.log('write_to_file', agentMessages.data);
+            debug('write_to_file', agentMessages.data);
             setNuwFileNum(currentTaskId, tasks[currentTaskId].nuwFileNum + 1);
             const { activeWorkspaceTab, markTabAsUnviewed } =
               usePageTabStore.getState();
@@ -3256,7 +3219,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           }
 
           if (agentMessages.step === AgentStep.BUDGET_NOT_ENOUGH) {
-            console.log('error', agentMessages.data);
+            debug('error', agentMessages.data);
             showCreditsToast();
             setStatus(currentTaskId, ChatTaskStatus.PAUSE);
             uploadLog(currentTaskId, type);
@@ -3368,7 +3331,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
                 try {
                   await fetchDelete(`/chat/${project_id}`);
                 } catch (error) {
-                  console.log('Task may not exist on backend:', error);
+                  debug('Task may not exist on backend:', error);
                 }
               }
             } catch (error) {
@@ -3411,9 +3374,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
             try {
               const taskData = agentMessages.data;
               if (taskData && taskData.project_id && taskData.content) {
-                console.log(
-                  `Task added to project queue: ${taskData.project_id}`
-                );
+                debug(`Task added to project queue: ${taskData.project_id}`);
               }
             } catch (error) {
               const taskIdToRemove = agentMessages.data.task_id as string;
@@ -3432,9 +3393,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
                       project_id,
                       messageToRemove.task_id
                     );
-                    console.log(
-                      `Task removed from project queue: ${taskIdToRemove}`
-                    );
+                    debug(`Task removed from project queue: ${taskIdToRemove}`);
                   }
                 }
               }
@@ -3466,7 +3425,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
                         project_id,
                         messageToRemove.task_id
                       );
-                      console.log(
+                      debug(
                         `Task removed from project queue: ${taskIdToRemove}`
                       );
                     }
@@ -3514,7 +3473,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
             setUpdateCount();
 
             // compute task time
-            console.log(
+            debug(
               'tasks[taskId].snapshotsTemp',
               tasks[currentTaskId].snapshotsTemp
             );
@@ -3559,7 +3518,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
                       currentTaskId,
                       taskOutputFiles
                     );
-                    console.log('Task upload files collected:', {
+                    debug('Task upload files collected:', {
                       generatedFileCount: generatedFiles.length,
                       taskOutputFileCount: taskOutputFiles.length,
                       uploadCandidateCount: filesToUpload.length,
@@ -3701,13 +3660,13 @@ const chatStore = (initial?: Partial<ChatStore>) =>
               finalOutputFileList
             );
 
-            console.log('endMessage', endMessage);
+            debug('endMessage', endMessage);
             updateMessage(currentTaskId, endMessageId, {
               ...endUiMessage,
               fileList: mergedFileList,
             });
 
-            console.log(tasks[currentTaskId], 'end');
+            debug(tasks[currentTaskId], 'end');
 
             // Update trigger execution status to Completed
             updateTriggerExecutionStatus(
@@ -3816,7 +3775,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           addMessages(currentTaskId, newMessage);
         },
         async onopen(respond) {
-          console.log('open', respond);
+          debug('open', respond);
           const { setAttaches, activeTaskId } = get();
           setAttaches(activeTaskId as string, []);
           return;
@@ -3831,7 +3790,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           const lockedId = getCurrentTaskId();
           const task = currentStore.tasks[lockedId];
           if (task?.status === ChatTaskStatus.FINISHED) {
-            console.log(
+            debug(
               `[fetchEventSource] Task ${lockedId} already finished, stopping retry to avoid duplicate execution`
             );
             try {
@@ -3882,7 +3841,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           try {
             if (activeSSEControllers[newTaskId]) {
               delete activeSSEControllers[newTaskId];
-              console.log(
+              debug(
                 `Cleaned up SSE controller for task ${newTaskId} after error`
               );
             }
@@ -3897,7 +3856,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
 
         // Server closes connection
         onclose() {
-          console.log('SSE connection closed');
+          debug('SSE connection closed');
           if (type) {
             const currentStore = getCurrentChatStore();
             const currentTaskId = getCurrentTaskId();
@@ -3919,7 +3878,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
           try {
             if (activeSSEControllers[newTaskId]) {
               delete activeSSEControllers[newTaskId];
-              console.log(
+              debug(
                 `Cleaned up SSE controller for task ${newTaskId} after connection close`
               );
             }
@@ -4342,9 +4301,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
         taskAssigning[taskAssigningIndex].tasks[taskIndex].terminal?.push(
           terminal
         );
-        console.log(
-          taskAssigning[taskAssigningIndex].tasks[taskIndex].terminal
-        );
+        debug(taskAssigning[taskAssigningIndex].tasks[taskIndex].terminal);
         setTaskAssigning(taskId, taskAssigning);
       }
     },
@@ -4403,7 +4360,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
       });
     },
     setActiveAgent(taskId: string, agent_id: string) {
-      console.log('setActiveAgent', taskId, agent_id);
+      debug('setActiveAgent', taskId, agent_id);
 
       set((state) => {
         if (!state.tasks[taskId]) return state;
@@ -4752,7 +4709,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
     },
     clearTasks: () => {
       const { create } = get();
-      console.log('clearTasks');
+      debug('clearTasks');
 
       // Clean up all pending auto-confirm timers when clearing tasks
       try {
@@ -4793,7 +4750,7 @@ const chatStore = (initial?: Partial<ChatStore>) =>
       if (restartPromise) {
         restartPromise
           .then((res: unknown) => {
-            console.log('restart-backend', res);
+            debug('restart-backend', res);
           })
           .catch((error: unknown) => {
             console.error('Error in clearTasks cleanup:', error);
@@ -4953,10 +4910,7 @@ export function hasActiveSSEConnection(taskIds: string[]): boolean {
 export function closeSSEConnectionsForTasks(taskIds: string[]): void {
   for (const taskId of taskIds) {
     if (activeSSEControllers[taskId]) {
-      console.log(
-        '[closeSSEConnectionsForTasks] Closing SSE for task:',
-        taskId
-      );
+      debug('[closeSSEConnectionsForTasks] Closing SSE for task:', taskId);
       try {
         activeSSEControllers[taskId].abort();
       } catch (_e) {
