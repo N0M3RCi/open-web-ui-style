@@ -38,7 +38,7 @@ export default function Skills() {
 
   // On first mount, sync skills from local SKILL.md files
   useEffect(() => {
-    // No-op on web; in Electron this will scan ~/.nova/skills
+    // No-op on web; in Electron this will scan ~/.merci/skills
     syncFromDisk();
   }, [syncFromDisk]);
 

@@ -143,9 +143,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     (
       window as Window & {
-        __novaThemeV2?: typeof api;
+        __merciThemeV2?: typeof api;
       }
-    ).__novaThemeV2 = api;
+    ).__merciThemeV2 = api;
   }, [mergedCatalog]);
 
   return <>{children}</>;

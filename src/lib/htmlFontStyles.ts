@@ -16,11 +16,11 @@
  * Scoped font style for HTML fragments rendered in the main document (e.g. CSV in FolderComponent).
  * Uses a wrapper class so styles do not leak to the rest of the app (sidebar, file list, etc.).
  */
-const SCOPED_FONT_STYLE = `<style data-nova-fonts>
-  .nova-file-content *, .nova-file-content *::before, .nova-file-content *::after {
+const SCOPED_FONT_STYLE = `<style data-merci-fonts>
+  .merci-file-content *, .merci-file-content *::before, .merci-file-content *::after {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   }
-  .nova-file-content code, .nova-file-content pre, .nova-file-content kbd, .nova-file-content samp {
+  .merci-file-content code, .merci-file-content pre, .merci-file-content kbd, .merci-file-content samp {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace !important;
   }
 </style>`;
@@ -29,7 +29,7 @@ const SCOPED_FONT_STYLE = `<style data-nova-fonts>
  * Unscoped font style for full HTML documents rendered in an iframe (e.g. HtmlRenderer).
  * Safe there because the iframe has its own document.
  */
-export const FONT_STYLE_TAG = `<style data-nova-fonts>
+export const FONT_STYLE_TAG = `<style data-merci-fonts>
   *, *::before, *::after {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
   }
@@ -54,7 +54,7 @@ export function injectFontStyles(html: string): string {
   }
   // Fragment (e.g. CSV table): scope to wrapper so styles don't affect sidebar/app
   return (
-    SCOPED_FONT_STYLE + '<div class="nova-file-content">' + html + '</div>'
+    SCOPED_FONT_STYLE + '<div class="merci-file-content">' + html + '</div>'
   );
 }
 
@@ -175,20 +175,20 @@ export function deferInlineScriptsUntilLoad(html: string): string {
       );
       const deferredRunner = [
         '(function(){',
-        'var __novaRun=function(){',
-        "var __novaScript=document.createElement('script');",
-        'var __novaCurrentScript=document.currentScript;',
-        'if(__novaCurrentScript&&__novaCurrentScript.nonce){__novaScript.nonce=__novaCurrentScript.nonce;}',
-        `__novaScript.text=${serializedContent};`,
+        'var __merciRun=function(){',
+        "var __merciScript=document.createElement('script');",
+        'var __merciCurrentScript=document.currentScript;',
+        'if(__merciCurrentScript&&__merciCurrentScript.nonce){__merciScript.nonce=__merciCurrentScript.nonce;}',
+        `__merciScript.text=${serializedContent};`,
         'try{',
-        '(document.head||document.body||document.documentElement).appendChild(__novaScript);',
-        '}catch(__novaErr){',
-        "console.error('[HtmlRenderer] Deferred inline script execution failed:',__novaErr);",
+        '(document.head||document.body||document.documentElement).appendChild(__merciScript);',
+        '}catch(__merciErr){',
+        "console.error('[HtmlRenderer] Deferred inline script execution failed:',__merciErr);",
         '}finally{',
-        'if(__novaScript.parentNode){__novaScript.remove();}',
+        'if(__merciScript.parentNode){__merciScript.remove();}',
         '}',
         '};',
-        "if(document.readyState==='complete'){__novaRun();}else{window.addEventListener('load',__novaRun,{once:true});}",
+        "if(document.readyState==='complete'){__merciRun();}else{window.addEventListener('load',__merciRun,{once:true});}",
         '})();',
       ].join('');
       result += `${openTag}${deferredRunner}</script>`;

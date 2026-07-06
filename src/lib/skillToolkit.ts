@@ -20,7 +20,7 @@ import { getConnectionConfig } from '@/store/connectionStore';
  *
  * Skills are stored as SKILL.md files with YAML frontmatter (name, description)
  * and a markdown body. Discovery order: repo > user > system (CAMEL);
- * in Nova we use user scope at ~/.nova/.camel/skills (one folder per skill).
+ * in M3RCI - UniMind we use user scope at ~/.merci/.camel/skills (one folder per skill).
  */
 
 export interface SkillMeta {

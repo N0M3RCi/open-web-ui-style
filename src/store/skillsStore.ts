@@ -70,7 +70,7 @@ export interface Skill {
   description: string;
   filePath: string;
   fileContent: string;
-  // Optional: folder name under ~/.nova/skills
+  // Optional: folder name under ~/.merci/skills
   skillDirName?: string;
   addedAt: number;
   scope: SkillScope;
@@ -289,7 +289,7 @@ export const useSkillsStore = create<SkillsState>()(
         return get().skills.filter((skill) => skill.isExample === isExample);
       },
 
-      // Load skills from ~/.nova/skills via Brain REST API
+      // Load skills from ~/.merci/skills via Brain REST API
       syncFromDisk: async () => {
         if (!hasSkillsFsApi()) return;
         try {
