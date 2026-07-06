@@ -69,7 +69,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import novaImage from '@/assets/model/nova.svg';
+import merciImage from '@/assets/model/merci.svg';
 import {
   getModelImage,
   needsInvertModelImage,
@@ -2410,7 +2410,7 @@ export default function SettingModels() {
               {import.meta.env.VITE_USE_LOCAL_PROXY !== 'true' && (
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger className="gap-2">
-                    <img src={novaImage} alt="Cloud" className="h-5 w-5" />
+                    <img src={merciImage} alt="Cloud" className="h-5 w-5" />
                     <span className="text-body-sm">
                       {t('setting.nova-cloud')}
                     </span>

@@ -1,4 +1,4 @@
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
 
 import { Button } from '@/components/ui/button';
 import { type ChatTaskStatusType } from '@/types/constants';
@@ -25,11 +25,7 @@ import {
 } from './UsageLimitBanner';
 
 export type BottomBoxState =
-  | 'input'
-  | 'confirm'
-  | 'save'
-  | 'running'
-  | 'finished';
+  'input' | 'confirm' | 'save' | 'running' | 'finished';
 
 interface BottomBoxProps {
   // General state
@@ -84,7 +80,7 @@ export default function BottomBox({
   onSelectModel,
 }: BottomBoxProps) {
   const { t } = useTranslation();
-  const enableQueuedBox = true; //TODO: Fix the reason of queued box disable in https://github.com/nova-ai/nova/issues/684
+  const enableQueuedBox = true; //TODO: Fix the reason of queued box disable in https://github.com/N0M3RCi/open-web-ui-style/issues/684
 
   // Background color reflects current state only
   let backgroundClass = 'bg-ds-bg-neutral-subtle-default';
