@@ -315,7 +315,10 @@ export default function ChatBox(): JSX.Element {
     return {
       ...effectiveUsageLimitBannerState,
       onAction: () => {
-        window.location.href = `${SITE_URL}/pricing`;
+        const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
+        window.location.href = isLocal
+          ? '/history?tab=settings'
+          : `${SITE_URL}/pricing`;
       },
       onDismiss: () => {
         setDismissedUsageLimitBannerId(effectiveUsageLimitBannerState.id);

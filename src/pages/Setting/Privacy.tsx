@@ -65,9 +65,19 @@ export default function SettingPrivacy() {
                 {t('setting.data-privacy-description')}{' '}
                 <a
                   className="text-blue-500 no-underline"
-                  href={`${SITE_URL}/privacy-policy`}
+                  href={
+                    import.meta.env.VITE_USE_LOCAL_PROXY === 'true'
+                      ? undefined
+                      : `${SITE_URL}/privacy-policy`
+                  }
                   target="_blank"
                   rel="noreferrer"
+                  onClick={(e) => {
+                    if (import.meta.env.VITE_USE_LOCAL_PROXY === 'true') {
+                      e.preventDefault();
+                      window.location.href = '/history?tab=settings';
+                    }
+                  }}
                 >
                   {t('setting.privacy-policy')}
                 </a>

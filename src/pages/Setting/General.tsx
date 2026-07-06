@@ -215,7 +215,10 @@ export default function SettingGeneral() {
           <div className="flex items-center gap-sm">
             <Button
               onClick={() => {
-                window.location.href = `${SITE_URL}/dashboard?email=${authStore.email}`;
+                const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
+                window.location.href = isLocal
+                  ? '/history?tab=settings'
+                  : `${SITE_URL}/dashboard?email=${authStore.email}`;
               }}
               variant="primary"
               textWeight="semibold"

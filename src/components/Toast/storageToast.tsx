@@ -26,7 +26,12 @@ export function showStorageToast() {
       Please{' '}
       <a
         className="cursor-pointer underline"
-        onClick={() => (window.location.href = `${SITE_URL}/pricing`)}
+        onClick={() => {
+          const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
+          window.location.href = isLocal
+            ? '/history?tab=settings'
+            : `${SITE_URL}/pricing`;
+        }}
       >
         {i18n.t('chat.upgrade')}
       </a>{' '}

@@ -21,11 +21,11 @@ import VerticalNavigation, {
 import useAppVersion from '@/hooks/use-app-version';
 import { useHost } from '@/host';
 import { SITE_URL } from '@/lib';
+import AdminUsers from '@/pages/AdminUsers';
 import Appearance from '@/pages/Setting/Appearance';
 import General from '@/pages/Setting/General';
 import Models from '@/pages/Setting/Models';
 import Privacy from '@/pages/Setting/Privacy';
-import AdminUsers from '@/pages/AdminUsers';
 import { useAuthStore } from '@/store/authStore';
 import {
   Brain,
@@ -162,7 +162,12 @@ export default function Setting() {
         />
         <button
           type="button"
-          onClick={() => window.open(SITE_URL, '_blank', 'noopener,noreferrer')}
+          onClick={() => {
+            const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
+            if (!isLocal) {
+              window.open(SITE_URL, '_blank', 'noopener,noreferrer');
+            }
+          }}
           className="no-drag mt-4 flex cursor-pointer items-center bg-transparent transition-opacity duration-200 hover:opacity-60"
         >
           <img

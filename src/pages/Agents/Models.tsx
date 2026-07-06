@@ -1553,7 +1553,11 @@ export default function SettingModels() {
               </span>
               <span
                 onClick={() => {
-                  window.location.href = `${SITE_URL}/pricing`;
+                  const isLocal =
+                    import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
+                  window.location.href = isLocal
+                    ? '/history?tab=settings'
+                    : `${SITE_URL}/pricing`;
                 }}
                 className="cursor-pointer text-body-sm text-ds-text-neutral-muted-default underline"
               >
@@ -1601,7 +1605,10 @@ export default function SettingModels() {
             </div>
             <Button
               onClick={() => {
-                window.location.href = `${SITE_URL}/dashboard`;
+                const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
+                window.location.href = isLocal
+                  ? '/history?tab=settings'
+                  : `${SITE_URL}/dashboard`;
               }}
               variant="primary"
               tone="neutral"
