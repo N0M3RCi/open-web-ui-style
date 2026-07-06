@@ -26,7 +26,7 @@
  * (and lazily replaced on the next successful replay).
  */
 
-const DB_NAME = 'nova';
+const DB_NAME = 'merci';
 const STORE_NAME = 'projectCache';
 const DB_VERSION = 1;
 

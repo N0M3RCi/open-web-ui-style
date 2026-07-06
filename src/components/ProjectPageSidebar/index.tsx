@@ -115,7 +115,7 @@ export default function ProjectPageSidebar({
     try {
       return new Set(
         JSON.parse(
-          localStorage.getItem('nova-pinned-projects') ?? '[]'
+          localStorage.getItem('merci-pinned-projects') ?? '[]'
         ) as string[]
       );
     } catch {
@@ -415,7 +415,7 @@ export default function ProjectPageSidebar({
       }
       try {
         localStorage.setItem(
-          'nova-pinned-projects',
+          'merci-pinned-projects',
           JSON.stringify([...next])
         );
       } catch {

@@ -38,7 +38,7 @@ export interface ConnectionConfig {
   authToken?: string;
 }
 
-const SESSION_STORAGE_KEY = 'nova_session_id';
+const SESSION_STORAGE_KEY = 'merci_session_id';
 
 function isWebRuntime(): boolean {
   const host = createHost();

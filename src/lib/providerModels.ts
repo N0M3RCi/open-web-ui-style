@@ -124,7 +124,7 @@ export async function fetchProviderModels(
 }
 
 /** localStorage cache helpers — keyed per provider id to keep entries small. */
-const CACHE_KEY_PREFIX = 'nova-provider-models-v1:';
+const CACHE_KEY_PREFIX = 'merci-provider-models-v1:';
 
 export function loadCachedModels(
   providerId: string

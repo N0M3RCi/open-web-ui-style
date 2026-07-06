@@ -106,7 +106,7 @@ export type HomeViewMode = 'grid' | 'list' | 'board';
 export type HomeSortBy = 'created' | 'updated' | 'name';
 export type HomeSortDirection = 'asc' | 'desc';
 
-const HOME_VIEW_MODE_STORAGE_KEY = 'nova-home-hub-view-mode';
+const HOME_VIEW_MODE_STORAGE_KEY = 'merci-home-hub-view-mode';
 
 export function readStoredHomeViewMode(): HomeViewMode {
   if (typeof window === 'undefined') return 'grid';

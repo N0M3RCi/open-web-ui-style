@@ -75,7 +75,7 @@ const SIDEBAR_MIN_PX = 230;
 const SIDEBAR_MAX_PX = 320;
 /** Default expanded sidebar width when nothing is stored (px). */
 const DEFAULT_SIDEBAR_WIDTH_PX = 230;
-const SIDEBAR_WIDTH_STORAGE_KEY = 'nova-home-sidebar-width-px';
+const SIDEBAR_WIDTH_STORAGE_KEY = 'merci-home-sidebar-width-px';
 
 function clampPct(n: number): number {
   return Math.min(100, Math.max(1, n));
