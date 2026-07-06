@@ -7,22 +7,9 @@
     "CHANGELOG.md",
     "LICENSE"
   ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "require": {
-        "default": "./dist/index.js"
-      },
-      "default": "./dist/esm/index.js"
-    },
-    "./dist/*": {
-      "types": "./dist/*.d.ts",
-      "require": {
-        "default": "./dist/*.js"
-      },
-      "default": "./dist/esm/*.js"
-    }
-  },
+  "main": "./dist/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
   "peerDependencies": {
     "@types/react": ">=18.2 || >=19.0.0-rc.0",
     "@types/react-dom": ">=18.2 || >=19.0.0-rc.0",
