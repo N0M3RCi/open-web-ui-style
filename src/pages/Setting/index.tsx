@@ -23,16 +23,17 @@ import { useHost } from '@/host';
 import { SITE_URL } from '@/lib';
 import Appearance from '@/pages/Setting/Appearance';
 import General from '@/pages/Setting/General';
+import Models from '@/pages/Setting/Models';
 import Privacy from '@/pages/Setting/Privacy';
 import { useAuthStore } from '@/store/authStore';
 import {
+  Brain,
   Download,
   Fingerprint,
   Palette,
   Settings,
   Shield,
   TagIcon,
-  Users,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -95,6 +96,12 @@ export default function Setting() {
       name: t('setting.appearance-tab'),
       icon: Palette,
       path: '/setting/appearance',
+    },
+    {
+      id: 'models',
+      name: 'Models',
+      icon: Brain,
+      path: '/setting/models',
     },
     {
       id: 'privacy',
@@ -215,6 +222,7 @@ export default function Setting() {
         <div className="flex flex-col gap-4">
           {activeTab === 'general' && <General />}
           {activeTab === 'appearance' && <Appearance />}
+          {activeTab === 'models' && <Models />}
           {activeTab === 'privacy' && <Privacy />}
         </div>
       </div>
