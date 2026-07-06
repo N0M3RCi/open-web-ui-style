@@ -40,9 +40,12 @@ DEFAULT_ALLOW_HEADERS = [
     "Accept",
     "Authorization",
     "Content-Type",
+    "X-Channel",
     "X-Remote-Control-Token",
+    "X-Session-ID",
     "X-Trace-Id",
     "X-Requested-With",
+    "X-User-ID",
 ]
 
 

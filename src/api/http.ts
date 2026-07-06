@@ -359,20 +359,20 @@ export async function getProxyBaseURL() {
 
   if (isDev) {
     // Use empty base so request goes to same origin; Vite proxy forwards /api to VITE_PROXY_URL
-    // This avoids CORS when running dev:web (browser at 5173, server at 3001)
+    // This avoids CROSS when running dev:web (browser at 5173, server at 3001)
     return '';
-  } else {
-    const useLocalProxy = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
-    const proxyUrl = import.meta.env.VITE_PROXY_URL;
-    const baseUrl =
-      !useLocalProxy && proxyUrl
-        ? proxyUrl
-        : import.meta.env.VITE_BASE_URL || proxyUrl;
-    if (!baseUrl) {
-      throw new Error('VITE_BASE_URL or VITE_PROXY_URL not configured');
-    }
-    return String(baseUrl).replace(/\/$/, '');
   }
+
+  // Production: when a separate proxy URL is explicitly configured, use it as the base.
+  const proxyUrl = import.meta.env.VITE_PROXY_URL;
+  if (proxyUrl) {
+    return String(proxyUrl).replace(/\/$/, '');
+  }
+
+  // Otherwise return empty so the request goes to the same origin.
+  // All API call URLs (e.g. /api/v1/user/auto-login) already include the full path.
+  // Prepending VITE_BASE_URL here would double the prefix.
+  return '';
 }
 
 async function proxyFetchRequest(

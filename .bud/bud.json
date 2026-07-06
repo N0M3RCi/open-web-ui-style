@@ -1,8 +1,7 @@
 {
   "startupCommands": [
-    "cd /home/user/computer/open-web-ui-style/backend && uv run python main.py",
-    "cd /home/user/computer/open-web-ui-style/server && uv run uvicorn main:api --host 0.0.0.0 --port 3001",
+    "cd /home/user/computer/open-web-ui-style/server && service postgresql start && redis-server --daemonize yes && CORS_ALLOW_ORIGINS=* uv run uvicorn main:api --host 0.0.0.0 --port 3001",
     "cd /home/user/computer/open-web-ui-style && npx vite --config vite.config.web.ts --host 0.0.0.0",
-    "ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no -R 80:localhost:5173 serveo.net"
+    "ssh -o ServerAliveInterval=60 -o StrictHostKeyChecking=no -R 80:localhost:3001 serveo.net"
   ]
 }

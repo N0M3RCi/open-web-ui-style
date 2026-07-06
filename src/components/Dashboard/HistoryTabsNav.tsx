@@ -14,8 +14,6 @@
 
 import { Blocks } from '@/components/ui/animate-ui/icons/blocks';
 import { Bot } from '@/components/ui/animate-ui/icons/bot';
-import { Compass } from '@/components/ui/animate-ui/icons/compass';
-import { Hammer } from '@/components/ui/animate-ui/icons/hammer';
 import { AnimateIcon } from '@/components/ui/animate-ui/icons/icon';
 import { Radio } from '@/components/ui/animate-ui/icons/radio';
 import { Settings } from '@/components/ui/animate-ui/icons/settings';
@@ -38,8 +36,6 @@ export const HISTORY_TAB_IDS = [
   'home',
   'agents',
   'channels',
-  'connectors',
-  'browser',
   'settings',
 ] as const;
 
@@ -59,8 +55,6 @@ const HISTORY_TABS: TabConfig[] = [
   { id: 'home', icon: <Blocks />, iconAnimateOnHover: 'default' },
   { id: 'agents', icon: <Bot />, iconAnimateOnHover: 'default' },
   { id: 'channels', icon: <Radio />, iconAnimateOnHover: 'default' },
-  { id: 'connectors', icon: <Hammer />, iconAnimateOnHover: 'default' },
-  { id: 'browser', icon: <Compass />, iconAnimateOnHover: 'default' },
   { id: 'settings', icon: <Settings />, iconAnimateOnHover: 'default' },
 ];
 

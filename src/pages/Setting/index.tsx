@@ -30,7 +30,9 @@ import {
   Fingerprint,
   Palette,
   Settings,
+  Shield,
   TagIcon,
+  Users,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -100,6 +102,12 @@ export default function Setting() {
       icon: Fingerprint,
       path: '/setting/privacy',
     },
+    {
+      id: 'admin',
+      name: 'Admin',
+      icon: Shield,
+      path: '/admin/users',
+    },
   ];
   // Initialize tab from URL once, then manage locally without routing
   const getCurrentTab = () => {
@@ -112,6 +120,10 @@ export default function Setting() {
 
   // Switch tabs locally (no navigation)
   const handleTabChange = (tabId: string) => {
+    if (tabId === 'admin') {
+      navigate('/admin/users');
+      return;
+    }
     setActiveTab(tabId);
   };
 
