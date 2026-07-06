@@ -22,6 +22,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { debug } from '@/lib/debug';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
@@ -59,7 +60,7 @@ export const Default: Story = {
             showConfirmButton
             onCancel={() => setOpen(false)}
             onConfirm={() => {
-              console.log('Confirmed!');
+              debug('Confirmed!');
               setOpen(false);
             }}
           />
@@ -140,7 +141,7 @@ export const WithForm: Story = {
             subtitle="Enter your details to create a new account"
           />
           <DialogContentSection>
-            <div className="gap-4 flex flex-col">
+            <div className="flex flex-col gap-4">
               <Input
                 title="Full Name"
                 placeholder="Enter your full name"
@@ -167,7 +168,7 @@ export const WithForm: Story = {
             confirmButtonText="Create Account"
             onCancel={() => setOpen(false)}
             onConfirm={() => {
-              console.log('Account created!');
+              debug('Account created!');
               setOpen(false);
             }}
           />
@@ -220,7 +221,7 @@ export const WithBackButton: Story = {
             title="Step 2 of 3"
             subtitle="Configure your preferences"
             showBackButton
-            onBackClick={() => console.log('Back clicked')}
+            onBackClick={() => debug('Back clicked')}
           />
           <DialogContentSection>
             <p className="text-ds-text-neutral-default-default">
@@ -234,7 +235,7 @@ export const WithBackButton: Story = {
             confirmButtonText="Next"
             onCancel={() => setOpen(false)}
             onConfirm={() => {
-              console.log('Next step');
+              debug('Next step');
               setOpen(false);
             }}
           />
@@ -270,7 +271,7 @@ export const DestructiveAction: Story = {
             confirmButtonVariant="warning"
             onCancel={() => setOpen(false)}
             onConfirm={() => {
-              console.log('Item deleted!');
+              debug('Item deleted!');
               setOpen(false);
             }}
           />
@@ -313,7 +314,7 @@ export const AllSizes: Story = {
     const [openMd, setOpenMd] = useState(false);
     const [openLg, setOpenLg] = useState(false);
     return (
-      <div className="gap-4 flex">
+      <div className="flex gap-4">
         <Dialog open={openSm} onOpenChange={setOpenSm}>
           <DialogTrigger asChild>
             <Button variant="outline">Small (400px)</Button>
@@ -437,7 +438,7 @@ export const FormInteraction: Story = {
           <DialogContent>
             <DialogHeader title="Sign Up" subtitle="Create your account" />
             <DialogContentSection>
-              <div className="gap-4 flex flex-col">
+              <div className="flex flex-col gap-4">
                 <Input title="Name" placeholder="Enter your name" required />
                 <Input
                   title="Email"

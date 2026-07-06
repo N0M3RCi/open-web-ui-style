@@ -23,25 +23,16 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { LucideIcon } from 'lucide-react';
 import {
   ChevronDown,
   ChevronRight,
   CodeXml,
   Download,
-  File,
-  FileArchive,
-  FileCode,
-  FileJson,
   FileText,
   Folder as FolderIcon,
   FolderOpen,
-  Image,
-  Music,
   Search,
   SquareTerminal,
-  Table2,
-  Video,
 } from 'lucide-react';
 import {
   createElement,
@@ -59,6 +50,7 @@ import useChatStoreAdapter from '@/hooks/useChatStoreAdapter';
 import { useSelectedProjectTurn } from '@/hooks/useSelectedProjectTurn';
 import { useHost } from '@/host';
 import { filterVisibleAgentFiles } from '@/lib/agentFileFilters';
+import { debug } from '@/lib/debug';
 import {
   deferInlineScriptsUntilLoad,
   injectFontStyles,
@@ -74,234 +66,13 @@ import { useAuthStore } from '@/store/authStore';
 import { useSpaceStore } from '@/store/spaceStore';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import {
+  isAudioFile,
+  isImageFile,
+  isVideoFile,
+  treeSegmentLabel,
+} from './fileTypes';
 import { ZoomControls } from './ZoomControls';
-
-const IMAGE_EXTENSIONS = [
-  'png',
-  'jpg',
-  'jpeg',
-  'gif',
-  'bmp',
-  'webp',
-  'svg',
-  'ico',
-  'heic',
-  'avif',
-];
-const AUDIO_EXTENSIONS = [
-  'mp3',
-  'wav',
-  'ogg',
-  'flac',
-  'aac',
-  'm4a',
-  'wma',
-  'opus',
-  'm4b',
-  'aiff',
-  'alac',
-];
-const VIDEO_EXTENSIONS = [
-  'mp4',
-  'webm',
-  'mov',
-  'avi',
-  'mkv',
-  'flv',
-  'wmv',
-  'm4v',
-  'mpg',
-  'mpeg',
-  '3gp',
-  'ogv',
-];
-
-const ARCHIVE_EXTENSIONS = [
-  'zip',
-  'rar',
-  '7z',
-  'tar',
-  'gz',
-  'bz2',
-  'xz',
-  'tgz',
-  'lz4',
-  'zst',
-];
-
-const CODE_EXTENSIONS = [
-  'js',
-  'mjs',
-  'cjs',
-  'ts',
-  'tsx',
-  'jsx',
-  'py',
-  'java',
-  'go',
-  'rs',
-  'cpp',
-  'cc',
-  'cxx',
-  'c',
-  'h',
-  'hpp',
-  'cs',
-  'php',
-  'rb',
-  'swift',
-  'kt',
-  'kts',
-  'sql',
-  'vue',
-  'svelte',
-  'wasm',
-  'ps1',
-  'bat',
-  'cmd',
-  'gradle',
-  'cmake',
-  'make',
-  'dockerfile',
-];
-
-const MARKUP_STYLE_EXTENSIONS = [
-  'html',
-  'htm',
-  'xml',
-  'css',
-  'scss',
-  'sass',
-  'less',
-  'yaml',
-  'yml',
-];
-
-/** Office / binary documents — use generic {@link File} icon */
-const DOCUMENT_EXTENSIONS = [
-  'pdf',
-  'doc',
-  'docx',
-  'odt',
-  'ppt',
-  'pptx',
-  'odp',
-  'key',
-  'pages',
-  'rtf',
-];
-
-const PLAIN_TEXT_EXTENSIONS = [
-  'txt',
-  'md',
-  'markdown',
-  'log',
-  'rst',
-  'adoc',
-  'tex',
-];
-
-const SPREADSHEET_EXTENSIONS = ['xls', 'xlsx', 'csv', 'ods', 'tsv'];
-
-type FileTypeTarget = {
-  name?: string;
-  path?: string;
-  type?: string;
-};
-const loggedFileTypeWarnings = new Set<string>();
-
-function getExt(value?: string) {
-  if (!value) return '';
-  const normalized = value.split(/[?#]/)[0];
-  const lastSegment = normalized.split('/').pop() || normalized;
-  if (!lastSegment.includes('.')) return '';
-  return lastSegment.split('.').pop()?.toLowerCase() || '';
-}
-
-function getFileType(file: FileTypeTarget) {
-  const extFromNameOrPath = getExt(file.name) || getExt(file.path);
-  const normalizedType = (file.type || '').replace(/^\./, '').toLowerCase();
-  const fileId = file.path || file.name || 'unknown-file';
-
-  if (!extFromNameOrPath && normalizedType) {
-    const key = `missing-ext|${fileId}|${normalizedType}`;
-    if (!loggedFileTypeWarnings.has(key)) {
-      loggedFileTypeWarnings.add(key);
-      console.warn(
-        `[Folder getFileType] extension missing in name/path, file.type fallback disabled: ${fileId} (type=${normalizedType})`
-      );
-    }
-  }
-
-  if (
-    extFromNameOrPath &&
-    normalizedType &&
-    normalizedType !== 'folder' &&
-    extFromNameOrPath !== normalizedType
-  ) {
-    const key = `mismatch|${fileId}|${extFromNameOrPath}|${normalizedType}`;
-    if (!loggedFileTypeWarnings.has(key)) {
-      loggedFileTypeWarnings.add(key);
-      console.warn(
-        `[Folder getFileType] extension/type mismatch for ${fileId}: inferred=${extFromNameOrPath}, type=${normalizedType}`
-      );
-    }
-  }
-
-  return extFromNameOrPath;
-}
-
-function workingFolderBasename(path: string) {
-  const normalized = path.replace(/\\/g, '/').replace(/\/$/, '');
-  const parts = normalized.split('/').filter(Boolean);
-  return parts[parts.length - 1] || normalized;
-}
-
-function treeSegmentLabel(value?: string | null, fallback = 'Project') {
-  const trimmed = (value || '').trim();
-  return (trimmed || fallback).replace(/[\\/]/g, '-');
-}
-
-export function isImageFile(file: FileTypeTarget) {
-  return IMAGE_EXTENSIONS.includes(getFileType(file));
-}
-export function isAudioFile(file: FileTypeTarget) {
-  return AUDIO_EXTENSIONS.includes(getFileType(file));
-}
-export function isVideoFile(file: FileTypeTarget) {
-  return VIDEO_EXTENSIONS.includes(getFileType(file));
-}
-
-function isArchiveFile(file: FileTypeTarget) {
-  return ARCHIVE_EXTENSIONS.includes(getFileType(file));
-}
-
-function isCodeLikeFile(file: FileTypeTarget) {
-  const ext = getFileType(file);
-  if (!ext) return false;
-  if (CODE_EXTENSIONS.includes(ext)) return true;
-  if (MARKUP_STYLE_EXTENSIONS.includes(ext)) return true;
-  return false;
-}
-
-/** Leading icon for file tree leaves (when no custom `icon` on the node). */
-function getLeafFileTreeIcon(file: FileTypeTarget): LucideIcon {
-  if (isImageFile(file)) return Image;
-  if (isVideoFile(file)) return Video;
-  if (isAudioFile(file)) return Music;
-  if (isArchiveFile(file)) return FileArchive;
-
-  const ext = getFileType(file);
-  if (!ext) return File;
-
-  if (ext === 'json' || ext === 'jsonl' || ext === 'jsonc') return FileJson;
-  if (isCodeLikeFile(file)) return FileCode;
-  if (SPREADSHEET_EXTENSIONS.includes(ext)) return Table2;
-  if (DOCUMENT_EXTENSIONS.includes(ext)) return File;
-  if (PLAIN_TEXT_EXTENSIONS.includes(ext)) return FileText;
-
-  return File;
-}
 
 // Type definitions
 interface FileTreeNode {
@@ -981,7 +752,7 @@ export default function Folder({ data: _data }: { data?: Agent }) {
     }
     setSelectedFile(file);
     setLoading(true);
-    console.log('file', JSON.parse(JSON.stringify(file)));
+    debug('file', JSON.parse(JSON.stringify(file)));
 
     if (file.isRemote && file.path?.startsWith('http')) {
       if (isImageFile(file)) {

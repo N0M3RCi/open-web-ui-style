@@ -12,13 +12,14 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import { debug } from '@/lib/debug';
 import { queryClient, queryKeys } from '@/lib/queryClient';
 import { proxyFetchTriggerConfig } from '@/service/triggerApi';
 import { ActivityType, useActivityLogStore } from '@/store/activityLogStore';
 import { useAuthStore } from '@/store/authStore';
 import { useTriggerStore } from '@/store/triggerStore';
 import { ExecutionStatus, ExecutionType, TriggerType } from '@/types';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 // Ping interval: send ping every 2 minutes
@@ -121,6 +122,8 @@ export function useExecutionSubscription(enabled: boolean = true) {
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastCloseTimestampRef = useRef<number>(0);
   const authFailedRef = useRef<boolean>(false);
+  const connectRef = useRef<(() => void) | null>(null);
+  const [isConnected, setIsConnected] = useState(false);
   const maxReconnectAttempts = 5;
   const debounceDelay = 5000; // 5 seconds debounce period
   const baseReconnectDelay = 1000;
@@ -195,7 +198,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
       (wsRef.current.readyState === WebSocket.CONNECTING ||
         wsRef.current.readyState === WebSocket.OPEN)
     ) {
-      console.log(
+      debug(
         '[ExecutionSubscription] Connection already exists (state:',
         wsRef.current.readyState,
         '), skipping'
@@ -204,7 +207,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
     }
 
     if (!enabled || !token) {
-      console.log(
+      debug(
         '[ExecutionSubscription] Skipping connection - enabled:',
         enabled,
         'hasToken:',
@@ -226,13 +229,14 @@ export function useExecutionSubscription(enabled: boolean = true) {
       const wsURL = baseURL.replace(/^https?:\/\//, ''); // Remove protocol
       const fullURL = `${wsProtocol}://${wsURL}/api/v1/execution/subscribe`;
 
-      console.log('[ExecutionSubscription] Connecting to:', fullURL);
+      debug('[ExecutionSubscription] Connecting to:', fullURL);
 
       const ws = new WebSocket(fullURL);
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log('[ExecutionSubscription] WebSocket connected');
+        debug('[ExecutionSubscription] WebSocket connected');
+        setIsConnected(true);
         reconnectAttemptsRef.current = 0;
         authFailedRef.current = false; // Reset auth failure flag on new connection
 
@@ -250,7 +254,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
         };
 
         ws.send(JSON.stringify(subscribeMessage));
-        console.log('[ExecutionSubscription] Sent subscription message');
+        debug('[ExecutionSubscription] Sent subscription message');
 
         // Start ping interval to check connection health
         startPingInterval(ws);
@@ -262,7 +266,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
 
           switch (message.type) {
             case 'connected':
-              console.log(
+              debug(
                 `[ExecutionSubscription] Connected with session: ${message.session_id}`
               );
               setWsConnectionStatusRef.current('connected');
@@ -280,7 +284,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
               const taskPrompt =
                 message.task_prompt || trigger?.task_prompt || '';
 
-              console.log(
+              debug(
                 `[ExecutionSubscription] Execution created: ${message.execution_id}`
               );
 
@@ -319,7 +323,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
             }
 
             case 'ack_confirmed':
-              console.log(
+              debug(
                 `[ExecutionSubscription] ACK confirmed for: ${message.execution_id}`
               );
               break;
@@ -332,7 +336,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
               const triggerName =
                 trigger?.name || `Trigger #${message.trigger_id}`;
 
-              console.log(
+              debug(
                 `[ExecutionSubscription] Execution updated: ${message.execution_id} - ${message.status}`
               );
 
@@ -359,13 +363,13 @@ export function useExecutionSubscription(enabled: boolean = true) {
             }
 
             case 'project_created':
-              console.log(
+              debug(
                 `[ExecutionSubscription] Project created: ${message.project_id} - ${message.project_name}`
               );
               break;
 
             case 'trigger_activated': {
-              console.log(
+              debug(
                 `[ExecutionSubscription] Trigger activated: ${message.trigger_id}`
               );
 
@@ -438,11 +442,12 @@ export function useExecutionSubscription(enabled: boolean = true) {
       };
 
       ws.onclose = (event) => {
-        console.log(
+        debug(
           '[ExecutionSubscription] WebSocket closed:',
           event.code,
           event.reason
         );
+        setIsConnected(false);
         wsRef.current = null;
         stopPingInterval();
         setWsConnectionStatusRef.current('disconnected');
@@ -477,7 +482,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
         const now = Date.now();
         lastCloseTimestampRef.current = now;
 
-        console.log(
+        debug(
           `[ExecutionSubscription] Debouncing reconnection for ${debounceDelay}ms`
         );
 
@@ -487,13 +492,13 @@ export function useExecutionSubscription(enabled: boolean = true) {
             if (reconnectAttemptsRef.current < maxReconnectAttempts) {
               const delay =
                 baseReconnectDelay * Math.pow(2, reconnectAttemptsRef.current);
-              console.log(
+              debug(
                 `[ExecutionSubscription] Reconnecting after debounce in ${delay}ms (attempt ${reconnectAttemptsRef.current + 1}/${maxReconnectAttempts})`
               );
 
               reconnectTimeoutRef.current = setTimeout(() => {
                 reconnectAttemptsRef.current++;
-                connect();
+                connectRef.current?.();
               }, delay);
             } else {
               console.error(
@@ -513,6 +518,10 @@ export function useExecutionSubscription(enabled: boolean = true) {
     }
   }, [enabled, token, startPingInterval, stopPingInterval]); // Only depend on enabled and token - primitives that rarely change
 
+  useEffect(() => {
+    connectRef.current = connect;
+  }, [connect]);
+
   const disconnect = useCallback(() => {
     if (reconnectTimeoutRef.current) {
       clearTimeout(reconnectTimeoutRef.current);
@@ -527,7 +536,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
     stopPingInterval();
 
     if (wsRef.current) {
-      console.log('[ExecutionSubscription] Disconnecting...');
+      debug('[ExecutionSubscription] Disconnecting...');
       wsRef.current.close(1000, 'Client disconnect'); // Normal closure
       wsRef.current = null;
     }
@@ -560,7 +569,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
 
   // Manual reconnect function that fully disconnects and reconnects
   const manualReconnect = useCallback(() => {
-    console.log('[ExecutionSubscription] Manual reconnect triggered');
+    debug('[ExecutionSubscription] Manual reconnect triggered');
     disconnect();
     // Small delay to ensure clean disconnect
     setTimeout(() => {
@@ -577,7 +586,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
   }, [manualReconnect, setWsReconnectCallback]);
 
   return {
-    isConnected: wsRef.current?.readyState === WebSocket.OPEN,
+    isConnected,
     disconnect,
     reconnect: manualReconnect,
   };

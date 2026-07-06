@@ -13,6 +13,7 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { proxyFetchGet } from '@/api/http';
+import { debug } from '@/lib/debug';
 import {
   ProjectType,
   useProjectRuntimeStore,
@@ -61,7 +62,7 @@ export function useTriggerTaskExecutor() {
       store: typeof projectStoreRef.current
     ): Promise<boolean> => {
       try {
-        console.log(
+        debug(
           '[TriggerTaskExecutor] Project not found locally, attempting to load from history:',
           projectId
         );
@@ -89,7 +90,7 @@ export function useTriggerTaskExecutor() {
           'Triggered task';
         const historyId = String(historyProject.tasks[0]?.id || '');
 
-        console.log('[TriggerTaskExecutor] Loading project from history:', {
+        debug('[TriggerTaskExecutor] Loading project from history:', {
           projectId,
           taskCount: taskIdsList.length,
           historyId,
@@ -126,11 +127,7 @@ export function useTriggerTaskExecutor() {
    */
   const executeTask = useCallback(
     async (task: TriggeredTask) => {
-      console.log(
-        '[TriggerTaskExecutor] Executing task:',
-        task.id,
-        task.triggerName
-      );
+      debug('[TriggerTaskExecutor] Executing task:', task.id, task.triggerName);
 
       // Show toast when execution starts
       toast.info(`Execution started: ${task.triggerName}`, {
@@ -154,10 +151,7 @@ export function useTriggerTaskExecutor() {
             false,
             { spaceId: task.spaceId || activeSpaceId || undefined }
           );
-          console.log(
-            '[TriggerTaskExecutor] Created new project:',
-            targetProjectId
-          );
+          debug('[TriggerTaskExecutor] Created new project:', targetProjectId);
         } else {
           // Project ID is specified, check if it exists locally
           const existingProject = store.getProjectById(targetProjectId);
@@ -167,7 +161,7 @@ export function useTriggerTaskExecutor() {
             const loaded = await loadProjectFromHistory(targetProjectId, store);
 
             if (!loaded) {
-              console.log(
+              debug(
                 '[TriggerTaskExecutor] Creating new project for specified ID:',
                 targetProjectId
               );
@@ -212,7 +206,7 @@ export function useTriggerTaskExecutor() {
           description: 'Task has been added to the project queue',
         });
 
-        console.log(
+        debug(
           '[TriggerTaskExecutor] Task queued successfully:',
           task.id,
           '-> queuedTaskId:',
@@ -231,7 +225,7 @@ export function useTriggerTaskExecutor() {
   // Watch for new tasks via WebSocket events and route to projectStore
   useEffect(() => {
     if (webSocketEvent) {
-      console.log(
+      debug(
         '[TriggerTaskExecutor] WebSocket event received:',
         webSocketEvent.executionId
       );

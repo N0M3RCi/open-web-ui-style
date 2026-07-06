@@ -22,6 +22,7 @@ import {
   skillsScan as brainSkillsScan,
   skillWrite as brainSkillWrite,
 } from '@/api/brain';
+import { debug } from '@/lib/debug';
 import {
   buildSkillMd,
   hasSkillsFsApi,
@@ -195,10 +196,7 @@ export const useSkillsStore = create<SkillsState>()(
               },
               legacyUserId
             );
-            console.log(
-              `[Skills] Updated config for skill: ${skill.name}`,
-              updates
-            );
+            debug(`[Skills] Updated config for skill: ${skill.name}`, updates);
           } catch (error) {
             console.error('[Skills] Failed to update skill config:', error);
             // Revert on error
@@ -271,7 +269,7 @@ export const useSkillsStore = create<SkillsState>()(
               if (!result.success) {
                 throw new Error('Failed to toggle skill configuration');
               }
-              console.log('Skill configuration updated:', result);
+              debug('Skill configuration updated:', result);
             }
           } catch (error) {
             // Revert on error
@@ -299,21 +297,21 @@ export const useSkillsStore = create<SkillsState>()(
           if (!result.success || !result.skills) return;
 
           if (userId) {
-            console.log(`[Skills] Initializing config for user: ${userId}`);
+            debug(`[Skills] Initializing config for user: ${userId}`);
             await brainSkillConfigInit(userId, legacyUserId);
           }
 
           let config: any = { global: null, project: null };
           try {
             if (userId) {
-              console.log(`[Skills] Loading config for user: ${userId}`);
+              debug(`[Skills] Loading config for user: ${userId}`);
               const loadResult = await brainSkillConfigLoad(
                 userId,
                 legacyUserId
               );
               if (loadResult.success && loadResult.config) {
                 config.global = loadResult.config;
-                console.log(
+                debug(
                   `[Skills] Loaded config with ${Object.keys(loadResult.config.skills || {}).length} skills configured`
                 );
               } else {

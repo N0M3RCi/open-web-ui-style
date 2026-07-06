@@ -37,11 +37,12 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 export default function Setting() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const appearance = useAuthStore((state) => state.appearance);
   const logoSrc = appearance === 'dark' ? logoWhite : logoBlack;
@@ -119,19 +120,22 @@ export default function Setting() {
   // Initialize tab from URL once, then manage locally without routing
   const getCurrentTab = () => {
     const path = location.pathname;
-    const tabFromUrl = path.split('/setting/')[1] || 'general';
+    const tabFromUrl =
+      path.split('/setting/')[1] || searchParams.get('subtab') || 'general';
     return settingMenus.find((menu) => menu.id === tabFromUrl)?.id || 'general';
   };
 
   const [activeTab, setActiveTab] = useState(getCurrentTab);
 
-  // Switch tabs locally (no navigation)
+  // Switch tabs locally and update the URL so the tab is preserved on remount
   const handleTabChange = (tabId: string) => {
     if (tabId === 'admin') {
       navigate('/admin/users');
       return;
     }
     setActiveTab(tabId);
+    // Update the URL subtab parameter so the correct tab is picked up on mount
+    navigate(`?tab=settings&subtab=${tabId}`, { replace: true });
   };
 
   // Close settings page

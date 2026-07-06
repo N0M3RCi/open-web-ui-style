@@ -35,6 +35,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import useChatStoreAdapter from '@/hooks/useChatStoreAdapter';
+import { debug } from '@/lib/debug';
 import { INIT_PROVODERS } from '@/lib/llm';
 import {
   getLocalPlatformName,
@@ -152,7 +153,7 @@ export function AddWorker({
 
   // environment variable management
   const initializeEnvValues = (mcp: McpItem) => {
-    console.log(mcp);
+    debug(mcp);
     if (mcp?.install_command?.env) {
       const initialValues: { [key: string]: EnvValue } = {};
       const initialVisibility: { [key: string]: boolean } = {};
@@ -443,7 +444,7 @@ export function AddWorker({
         mcpList.push(tool?.key || tool?.mcp_name);
       }
     });
-    console.log('mcpLocal.mcpServers', mcpLocal.mcpServers);
+    debug('mcpLocal.mcpServers', mcpLocal.mcpServers);
     if (mcpLocal.mcpServers && typeof mcpLocal.mcpServers === 'object') {
       for (const key of Object.keys(mcpLocal.mcpServers)) {
         if (!mcpList.includes(key)) {

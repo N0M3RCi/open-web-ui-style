@@ -16,6 +16,7 @@ import { showCreditsToast } from '@/components/Toast/creditsToast';
 import { showStorageToast } from '@/components/Toast/storageToast';
 import { showTrafficToast } from '@/components/Toast/trafficToast';
 import { createHost } from '@/host/createHost';
+import { debug } from '@/lib/debug';
 import { getAuthStore } from '@/store/authStore';
 import {
   getConnectionConfig,
@@ -500,7 +501,7 @@ export async function checkBackendHealth(): Promise<boolean> {
     clearTimeout(timeoutId);
     return res.ok;
   } catch (error) {
-    console.log('[Backend Health Check] Not ready:', error);
+    debug('[Backend Health Check] Not ready:', error);
     return false;
   }
 }
@@ -590,13 +591,13 @@ export async function waitForBackendReady(
   retryIntervalMs: number = 500
 ): Promise<boolean> {
   const startTime = Date.now();
-  console.log('[Backend Health Check] Waiting for backend to be ready...');
+  debug('[Backend Health Check] Waiting for backend to be ready...');
 
   while (Date.now() - startTime < maxWaitMs) {
     const isReady = await checkBackendHealth();
 
     if (isReady) {
-      console.log(
+      debug(
         `[Backend Health Check] Backend is ready after ${Date.now() - startTime}ms`
       );
 
@@ -606,7 +607,7 @@ export async function waitForBackendReady(
       return true;
     }
 
-    console.log(
+    debug(
       `[Backend Health Check] Backend not ready, retrying... (${Date.now() - startTime}ms elapsed)`
     );
     await new Promise((resolve) => setTimeout(resolve, retryIntervalMs));

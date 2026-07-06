@@ -21,6 +21,7 @@ import {
   proxyFetchPut,
 } from '@/api/http';
 import { useHost } from '@/host';
+import { debug } from '@/lib/debug';
 import { useAuthStore } from '@/store/authStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -260,11 +261,9 @@ export function useIntegrationManagement(items: IntegrationItem[]) {
               tokenResult.access_token
             );
             await fetchInstalled();
-            console.log(
-              'Slack authorization successful and configuration saved!'
-            );
+            debug('Slack authorization successful and configuration saved!');
           } else {
-            console.log(
+            debug(
               'Slack authorization successful, but access_token not found or env configuration not found'
             );
           }
@@ -294,20 +293,20 @@ export function useIntegrationManagement(items: IntegrationItem[]) {
               }
 
               await fetchInstalled();
-              console.log(
+              debug(
                 'LinkedIn authorization successful and configuration saved!'
               );
             } catch (e) {
               console.error('Failed to save LinkedIn token:', e);
             }
           } else {
-            console.log(
+            debug(
               'LinkedIn authorization successful, but access_token not found'
             );
           }
         }
       } catch (e: any) {
-        console.log(`${data.provider} authorization failed: ${e.message || e}`);
+        debug(`${data.provider} authorization failed: ${e.message || e}`);
       } finally {
         isLockedRef.current = false;
       }
@@ -383,23 +382,23 @@ export function useIntegrationManagement(items: IntegrationItem[]) {
       if (item.key === 'Google Calendar') {
         try {
           await fetchDelete('/uninstall/tool/google_calendar');
-          console.log('Cleaned up Google Calendar authentication tokens');
+          debug('Cleaned up Google Calendar authentication tokens');
         } catch (e) {
-          console.log('Failed to clean up Google Calendar tokens:', e);
+          debug('Failed to clean up Google Calendar tokens:', e);
         }
       } else if (item.key === 'Notion') {
         try {
           await fetchDelete('/uninstall/tool/notion');
-          console.log('Cleaned up Notion authentication tokens');
+          debug('Cleaned up Notion authentication tokens');
         } catch (e) {
-          console.log('Failed to clean up Notion tokens:', e);
+          debug('Failed to clean up Notion tokens:', e);
         }
       } else if (item.key === 'LinkedIn') {
         try {
           await fetchDelete('/uninstall/tool/linkedin');
-          console.log('Cleaned up LinkedIn authentication tokens');
+          debug('Cleaned up LinkedIn authentication tokens');
         } catch (e) {
-          console.log('Failed to clean up LinkedIn tokens:', e);
+          debug('Failed to clean up LinkedIn tokens:', e);
         }
       }
 

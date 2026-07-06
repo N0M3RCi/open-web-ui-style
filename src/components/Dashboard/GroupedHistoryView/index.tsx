@@ -16,6 +16,7 @@ import { proxyFetchDelete, proxyFetchPut } from '@/api/http';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tag } from '@/components/ui/tag';
 import { useHost } from '@/host';
+import { debug } from '@/lib/debug';
 import { isLegacySpace } from '@/lib/spaceLabel';
 import { fetchGroupedHistoryTasks } from '@/service/historyApi';
 import { getAuthStore, useAuthStore } from '@/store/authStore';
@@ -225,7 +226,7 @@ export default function GroupedHistoryView({
           targetProject.tasks &&
           targetProject.tasks.length > 0
         ) {
-          console.log(
+          debug(
             `Deleting project ${projectId} with ${targetProject.tasks.length} tasks`
           );
 
@@ -233,7 +234,7 @@ export default function GroupedHistoryView({
           for (const history of targetProject.tasks) {
             try {
               await proxyFetchDelete(`/api/v1/chat/history/${history.id}`);
-              console.log(`Successfully deleted task ${history.task_id}`);
+              debug(`Successfully deleted task ${history.task_id}`);
 
               // Also delete local files for this task if available (via Electron IPC)
               const { email } = getAuthStore();
@@ -245,7 +246,7 @@ export default function GroupedHistoryView({
                     history.task_id,
                     history.project_id ?? undefined
                   );
-                  console.log(
+                  debug(
                     `Successfully cleaned up local files for task ${history.task_id}`
                   );
                 } catch (error) {
@@ -268,12 +269,10 @@ export default function GroupedHistoryView({
             prevProjects.filter((project) => project.project_id !== projectId)
           );
 
-          console.log(`Completed deletion of project ${projectId}`);
+          debug(`Completed deletion of project ${projectId}`);
         } else if (targetProject) {
           // Project exists but has no tasks, just remove from store
-          console.log(
-            `Project ${projectId} has no tasks, removing from store only`
-          );
+          debug(`Project ${projectId} has no tasks, removing from store only`);
           projectStore.removeProject(projectId);
           setProjects((prevProjects) =>
             prevProjects.filter((project) => project.project_id !== projectId)
@@ -319,9 +318,7 @@ export default function GroupedHistoryView({
         console.error(`Failed to update project name: ${response.code}`);
         // Optionally: revert the local change if API call fails
       } else {
-        console.log(
-          `Successfully updated project ${projectId} name to ${newName}`
-        );
+        debug(`Successfully updated project ${projectId} name to ${newName}`);
       }
     } catch (error) {
       console.error(`Error updating project name:`, error);

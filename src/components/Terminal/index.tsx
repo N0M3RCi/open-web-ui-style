@@ -13,6 +13,7 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import useChatStoreAdapter from '@/hooks/useChatStoreAdapter';
+import { debug } from '@/lib/debug';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { Terminal } from '@xterm/xterm';
@@ -123,7 +124,7 @@ export default function TerminalComponent({
   // initialize xterm terminal
   useEffect(() => {
     if (!terminalRef.current || isInitialized.current) return;
-    console.log('isInitialized.current', isInitialized.current);
+    debug('isInitialized.current', isInitialized.current);
     // mark as initialized
     isInitialized.current = true;
 
@@ -236,7 +237,7 @@ export default function TerminalComponent({
     // check if it is the case of component re-initialization
     // if lastTerminalLength is 0 but content has data, it means re-initialization
     if (lastTerminalLength.current === 0 && currentLength > 0) {
-      console.log('component re-initialization, skip history data write');
+      debug('component re-initialization, skip history data write');
       lastTerminalLength.current = currentLength;
       return;
     }
@@ -245,7 +246,7 @@ export default function TerminalComponent({
     if (currentLength > lastTerminalLength.current) {
       const newData = terminalData.slice(lastTerminalLength.current);
 
-      console.log('newData', newData);
+      debug('newData', newData);
       newData.forEach((item) => {
         if (!xtermRef.current) return;
 

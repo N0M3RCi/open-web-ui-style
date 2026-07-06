@@ -28,6 +28,7 @@ import {
 } from '@/hooks/useIntegrationManagement';
 import { useHost } from '@/host';
 import { capitalizeFirstLetter, getProxyBaseURL } from '@/lib';
+import { debug } from '@/lib/debug';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
 import type { TFunction } from 'i18next';
@@ -118,7 +119,7 @@ function buildIntegrationsFromConfigInfo(
                 config_name: 'MCP_REMOTE_CONFIG_DIR',
                 config_value: response.toolkit_name || 'NotionMCPToolkit',
               });
-              console.log('Notion MCP installed successfully');
+              debug('Notion MCP installed successfully');
               const notionItem = {
                 id: 0,
                 key: key,
@@ -182,7 +183,7 @@ function buildIntegrationsFromConfigInfo(
                   configError
                 );
               }
-              console.log('Google Calendar installed successfully');
+              debug('Google Calendar installed successfully');
               const calendarItem = {
                 id: 0,
                 key: key,
@@ -194,11 +195,11 @@ function buildIntegrationsFromConfigInfo(
               };
               addOption(calendarItem, true);
             } else if (response.status === 'authorizing') {
-              console.log(
+              debug(
                 'Google Calendar authorization in progress. Please complete in browser.'
               );
               if (response.message) {
-                console.log(response.message);
+                debug(response.message);
               }
             } else {
               console.error(
@@ -426,11 +427,11 @@ const ToolSelect = forwardRef<
       activeMcp.install_command.env = env;
 
       // Save all env vars and wait for completion
-      console.log('[installMcp] Saving env vars for', activeMcp.key);
+      debug('[installMcp] Saving env vars for', activeMcp.key);
       try {
         await Promise.all(
           Object.keys(activeMcp.install_command.env).map(async (key) => {
-            console.log(
+            debug(
               '[installMcp] Saving',
               key,
               '=',
@@ -443,7 +444,7 @@ const ToolSelect = forwardRef<
             );
           })
         );
-        console.log('[installMcp] All env vars saved successfully');
+        debug('[installMcp] All env vars saved successfully');
       } catch (error) {
         console.error('[installMcp] Failed to save env vars:', error);
         // Continue anyway to trigger installation
@@ -472,14 +473,12 @@ const ToolSelect = forwardRef<
 
       // Trigger instantiation for Google Calendar
       if (activeMcp.key === 'Google Calendar') {
-        console.log(
-          '[ToolSelect installMcp] Starting Google Calendar installation'
-        );
+        debug('[ToolSelect installMcp] Starting Google Calendar installation');
         try {
           const response = await fetchPost('/install/tool/google_calendar');
 
           if (response.success) {
-            console.log('[ToolSelect installMcp] Immediate success');
+            debug('[ToolSelect installMcp] Immediate success');
             // Mark as successfully installed by writing refresh token marker
             const existingConfigs = await proxyFetchGet('/api/v1/configs');
             const existing = Array.isArray(existingConfigs)
@@ -520,7 +519,7 @@ const ToolSelect = forwardRef<
             addOption(selectedItem, true);
           } else if (response.status === 'authorizing') {
             // Authorization in progress - browser should have opened
-            console.log(
+            debug(
               '[ToolSelect installMcp] Authorization required, starting polling loop'
             );
 
@@ -533,13 +532,13 @@ const ToolSelect = forwardRef<
                 const statusResponse = await fetchGet(
                   '/oauth/status/google_calendar'
                 );
-                console.log(
+                debug(
                   '[ToolSelect installMcp] OAuth status:',
                   statusResponse.status
                 );
 
                 if (statusResponse.status === 'success') {
-                  console.log(
+                  debug(
                     '[ToolSelect installMcp] Authorization completed successfully!'
                   );
 
@@ -588,7 +587,7 @@ const ToolSelect = forwardRef<
                     };
                     addOption(selectedItem, true);
                   }
-                  console.log(
+                  debug(
                     '[ToolSelect installMcp] Installation complete, returning'
                   );
                   return;
@@ -599,9 +598,7 @@ const ToolSelect = forwardRef<
                   );
                   return;
                 } else if (statusResponse.status === 'cancelled') {
-                  console.log(
-                    '[ToolSelect installMcp] Authorization cancelled'
-                  );
+                  debug('[ToolSelect installMcp] Authorization cancelled');
                   return;
                 }
               } catch (error) {
@@ -615,7 +612,7 @@ const ToolSelect = forwardRef<
               await new Promise((r) => setTimeout(r, 1500));
             }
 
-            console.log('[ToolSelect installMcp] Polling timeout');
+            debug('[ToolSelect installMcp] Polling timeout');
             return;
           } else {
             console.error(

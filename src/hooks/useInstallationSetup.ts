@@ -14,6 +14,7 @@
 
 import { checkBackendHealth, resetBaseURL } from '@/api/http';
 import { useHost } from '@/host';
+import { debug } from '@/lib/debug';
 import { useAuthStore } from '@/store/authStore';
 import {
   getConnectionConfig,
@@ -73,7 +74,7 @@ export const useInstallationSetup = () => {
     try {
       await getSkillsStore().syncFromDisk();
       syncedSkillsConfigKey.current = syncKey;
-      console.log(
+      debug(
         `[useInstallationSetup] Skills config synced for user ${currentAuth.user_id}`
       );
     } catch (error) {
@@ -86,7 +87,7 @@ export const useInstallationSetup = () => {
 
   // Shared function to poll backend/Brain status
   const startBackendPolling = useCallback(() => {
-    console.log('[useInstallationSetup] Starting backend polling');
+    debug('[useInstallationSetup] Starting backend polling');
 
     const checkViaHealth = async (): Promise<boolean> => {
       try {
@@ -100,7 +101,7 @@ export const useInstallationSetup = () => {
           return true;
         }
       } catch (e) {
-        console.log('[useInstallationSetup] Health check failed:', e);
+        debug('[useInstallationSetup] Health check failed:', e);
       }
       return false;
     };
@@ -126,7 +127,7 @@ export const useInstallationSetup = () => {
           }
         }
       } catch (e) {
-        console.log('[useInstallationSetup] Electron backend check failed:', e);
+        debug('[useInstallationSetup] Electron backend check failed:', e);
       }
       return false;
     };
@@ -136,10 +137,10 @@ export const useInstallationSetup = () => {
 
     doCheck().then((isReady) => {
       if (isReady) {
-        console.log('[useInstallationSetup] Backend ready, skipping polling');
+        debug('[useInstallationSetup] Backend ready, skipping polling');
         return;
       }
-      console.log('[useInstallationSetup] Backend not ready, starting polling');
+      debug('[useInstallationSetup] Backend not ready, starting polling');
       const pollInterval = setInterval(() => {
         doCheck().then((ready) => {
           if (ready) clearInterval(pollInterval);
@@ -159,7 +160,7 @@ export const useInstallationSetup = () => {
   useEffect(() => {
     // When user logs in after logout, needsBackendRestart will be true
     if (needsBackendRestart && email !== null) {
-      console.log(
+      debug(
         '[useInstallationSetup] Detected login after logout, waiting for backend restart'
       );
 
@@ -191,7 +192,7 @@ export const useInstallationSetup = () => {
 
     // Web mode: skip Electron install, poll Brain health directly
     if (!host?.electronAPI || !host?.ipcRenderer) {
-      console.log('[useInstallationSetup] Web mode: polling Brain health');
+      debug('[useInstallationSetup] Web mode: polling Brain health');
       installationCompleted.current = true;
       setWaitingBackend();
       startBackendPolling();
@@ -205,7 +206,7 @@ export const useInstallationSetup = () => {
 
         if (result.success) {
           if (result.isInstalled) {
-            console.log(
+            debug(
               '[useInstallationSetup] Tools already installed, waiting for backend'
             );
             installationCompleted.current = true;
@@ -214,7 +215,7 @@ export const useInstallationSetup = () => {
           }
 
           if (initState !== 'done' && !result.isInstalled) {
-            console.log(
+            debug(
               '[useInstallationSetup] Tools not installed, ensuring carousel state'
             );
             setInitState('carousel');
@@ -258,7 +259,7 @@ export const useInstallationSetup = () => {
 
   useEffect(() => {
     const checkAndSetDone = () => {
-      console.log(
+      debug(
         '[useInstallationSetup] Checking readiness - Installation:',
         installationCompleted.current,
         'Backend:',
@@ -266,7 +267,7 @@ export const useInstallationSetup = () => {
       );
 
       if (installationCompleted.current && backendReady.current) {
-        console.log(
+        debug(
           '[useInstallationSetup] Both installation and backend are ready, setting initState to done'
         );
         setInitState('done');
@@ -292,14 +293,14 @@ export const useInstallationSetup = () => {
       code?: number;
       error?: string;
     }) => {
-      console.log(
+      debug(
         '[useInstallationSetup] Installation complete event received:',
         data
       );
 
       if (data.success) {
         installationCompleted.current = true;
-        console.log('[useInstallationSetup] Installation marked as completed');
+        debug('[useInstallationSetup] Installation marked as completed');
 
         // setSuccess() will be called in handleBackendReady to prevent premature state change
         checkAndSetDone();
@@ -313,26 +314,24 @@ export const useInstallationSetup = () => {
       port?: number;
       error?: string;
     }) => {
-      console.log('[useInstallationSetup] Backend ready event received:', data);
+      debug('[useInstallationSetup] Backend ready event received:', data);
 
       if (data.success && data.port) {
         // Reset cached baseURL so next getBaseURL fetches fresh port (handles restart)
         resetBaseURL();
         resetConnectionConfig();
         setConnectionConfig({ brainEndpoint: `http://localhost:${data.port}` });
-        console.log(
-          `[useInstallationSetup] Backend is ready on port ${data.port}`
-        );
+        debug(`[useInstallationSetup] Backend is ready on port ${data.port}`);
         backendReady.current = true;
         // If backend is ready, installation must be complete (or satisfied enough)
         // This handles race condition where install-complete event is missed or skipped
         if (!installationCompleted.current) {
-          console.log(
+          debug(
             '[useInstallationSetup] Backend ready implies installation complete - setting flag'
           );
           installationCompleted.current = true;
         }
-        console.log('[useInstallationSetup] Backend marked as ready');
+        debug('[useInstallationSetup] Backend marked as ready');
 
         setSuccess();
         setNeedsBackendRestart(false);
