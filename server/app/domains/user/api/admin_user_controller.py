@@ -26,8 +26,8 @@ from app.core.database import session
 from app.core.encrypt import password_hash
 from app.model.user.user import Status, User
 from app.model.user.user_stat import UserStat, UserStatOut
-from app.shared.auth import admin_must
-from app.shared.auth.admin_auth import V1AdminAuth
+from app.shared.auth import auth_must
+from app.shared.auth.user_auth import V1UserAuth
 from app.shared.exception import UserException
 
 router = APIRouter(prefix="/admin/users", tags=["Admin - Users"])
@@ -92,7 +92,7 @@ def list_users(
     search: str = Query(default="", max_length=255),
     status: int | None = Query(default=None),
     db_session: Session = Depends(session),
-    auth: V1AdminAuth = Depends(admin_must),
+    auth: V1UserAuth = Depends(auth_must),
 ):
     """List all users with pagination and optional search/filter."""
     conditions = [User.deleted_at.is_(None)]
@@ -141,7 +141,7 @@ def list_users(
 def create_user(
     data: CreateUserIn,
     db_session: Session = Depends(session),
-    auth: V1AdminAuth = Depends(admin_must),
+    auth: V1UserAuth = Depends(auth_must),
 ):
     """Create a new user account."""
     existing = User.by(User.email == data.email, s=db_session).one_or_none()
@@ -177,7 +177,7 @@ def create_user(
 def get_user(
     user_id: int,
     db_session: Session = Depends(session),
-    auth: V1AdminAuth = Depends(admin_must),
+    auth: V1UserAuth = Depends(auth_must),
 ):
     """Get detailed user info including stats."""
     user = db_session.get(User, user_id)
@@ -209,7 +209,7 @@ def update_user(
     user_id: int,
     data: UpdateUserIn,
     db_session: Session = Depends(session),
-    auth: V1AdminAuth = Depends(admin_must),
+    auth: V1UserAuth = Depends(auth_must),
 ):
     """Update user fields (email, username, nickname, credits, status, etc.)."""
     user = db_session.get(User, user_id)
@@ -243,7 +243,7 @@ def update_user(
 def delete_user(
     user_id: int,
     db_session: Session = Depends(session),
-    auth: V1AdminAuth = Depends(admin_must),
+    auth: V1UserAuth = Depends(auth_must),
 ):
     """Soft-delete a user account."""
     user = db_session.get(User, user_id)
