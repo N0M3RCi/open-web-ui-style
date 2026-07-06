@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 from pathlib import Path
 
@@ -26,7 +26,7 @@ pytestmark = pytest.mark.unit
 
 
 def test_policy_is_disabled_by_default(monkeypatch):
-    monkeypatch.delenv("NOVA_REMOTE_SUB_AGENT_ENABLED", raising=False)
+    monkeypatch.delenv("MERCI_REMOTE_SUB_AGENT_ENABLED", raising=False)
 
     policy = build_default_policy()
 
@@ -36,9 +36,9 @@ def test_policy_is_disabled_by_default(monkeypatch):
 
 
 def test_policy_allows_enabled_provider(monkeypatch):
-    monkeypatch.setenv("NOVA_REMOTE_SUB_AGENT_ENABLED", "true")
+    monkeypatch.setenv("MERCI_REMOTE_SUB_AGENT_ENABLED", "true")
     monkeypatch.setenv(
-        "NOVA_REMOTE_SUB_AGENT_ALLOWED_PROVIDERS",
+        "MERCI_REMOTE_SUB_AGENT_ALLOWED_PROVIDERS",
         "gemini_agents,other_provider",
     )
 
@@ -49,7 +49,7 @@ def test_policy_allows_enabled_provider(monkeypatch):
 
 
 def test_configured_policy_does_not_read_env_enablement(monkeypatch):
-    monkeypatch.setenv("NOVA_REMOTE_SUB_AGENT_ENABLED", "true")
+    monkeypatch.setenv("MERCI_REMOTE_SUB_AGENT_ENABLED", "true")
 
     policy = build_configured_policy(None)
 

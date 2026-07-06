@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 """
 Hands = Brain capabilities, driven by deployment env, not by Channel.
@@ -84,7 +84,7 @@ def _new_http_cluster(
 
 
 def _build_remote_cluster() -> IHandsCluster | None:
-    config_file = env("NOVA_HANDS_CLUSTER_CONFIG_FILE", "").strip()
+    config_file = env("MERCI_HANDS_CLUSTER_CONFIG_FILE", "").strip()
     if not config_file:
         return None
 
@@ -138,7 +138,7 @@ def _create_remote_hands(workspace_root: str) -> RemoteHands:
     cluster = _build_remote_cluster()
     if cluster is None:
         logger.warning(
-            "RemoteHands enabled but NOVA_HANDS_CLUSTER_CONFIG_FILE is missing/invalid; "
+            "RemoteHands enabled but MERCI_HANDS_CLUSTER_CONFIG_FILE is missing/invalid; "
             "browser resource acquisition will fallback to localhost endpoint"
         )
     return RemoteHands(cluster=cluster, workspace_root=workspace_root)
@@ -147,11 +147,11 @@ def _create_remote_hands(workspace_root: str) -> RemoteHands:
 def init_environment_hands(config: dict | None = None) -> IHands:
     """Initialize global EnvironmentHands (capability set) at Brain startup"""
     global _environment_hands
-    mode = env("NOVA_HANDS_MODE", "").strip().lower()
-    remote_enabled = _is_truthy(env("NOVA_HANDS_REMOTE", "false"))
+    mode = env("MERCI_HANDS_MODE", "").strip().lower()
+    remote_enabled = _is_truthy(env("MERCI_HANDS_REMOTE", "false"))
 
     if mode == "remote" or remote_enabled:
-        workspace_root = env("NOVA_WORKSPACE", "~/.nova/workspace")
+        workspace_root = env("MERCI_WORKSPACE", "~/.merci/workspace")
         logger.info(
             "Initializing RemoteHands from env switch",
             extra={"mode": mode, "remote_enabled": remote_enabled},
@@ -190,7 +190,7 @@ def get_hands_for_channel(
     - hands_override: For debugging; force full/sandbox/remote
     - workspace_root: Override workspace root (optional)
     """
-    root = workspace_root or env("NOVA_WORKSPACE", "~/.nova/workspace")
+    root = workspace_root or env("MERCI_WORKSPACE", "~/.merci/workspace")
 
     if hands_override:
         if hands_override in ("full", "sandbox", "remote"):

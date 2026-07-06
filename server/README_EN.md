@@ -92,16 +92,16 @@ npm run dev
 docker ps
 
 # Stop/Start API container (keep DB)
-docker stop nova_api
-docker start nova_api
+docker stop merci_unimind_api
+docker start merci_unimind_api
 
 # Stop/Start all (API + DB)
 docker compose stop
 docker compose start
 
 # View logs
-docker logs -f nova_api | cat
-docker logs -f nova_postgres | cat
+docker logs -f merci_unimind_api | cat
+docker logs -f merci_unimind_postgres | cat
 ```
 
 ---
@@ -112,14 +112,14 @@ You can run the API locally with hot-reload while keeping the database in Docker
 
 ```bash
 # Stop API in container, keep DB
-docker stop nova_api
+docker stop merci_unimind_api
 
 # Initialize database (first-time or when DB schema changes)
 cd server
 uv run alembic upgrade head
 
 # Run locally (provide DB connection string)
-export database_url=postgresql://postgres:123456@localhost:5432/nova
+export database_url=postgresql://postgres:123456@localhost:5432/merci-unimind
 uv run uvicorn main:api --reload --port 3001 --host 0.0.0.0
 ```
 

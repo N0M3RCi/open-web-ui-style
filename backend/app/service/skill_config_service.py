@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,9 +10,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
-"""Skills config: ~/.nova/user_<id>/skills-config.json."""
+"""Skills config: ~/.merci/user_<id>/skills-config.json."""
 
 import json
 import logging
@@ -28,7 +28,7 @@ from app.service.skill_service import (
 
 logger = logging.getLogger("skill_config")
 
-NOVA_ROOT = Path.home() / ".nova"
+MERCI_ROOT = Path.home() / ".merci"
 SKILL_CONFIG_FILENAME = "skills-config.json"
 
 
@@ -59,7 +59,7 @@ def legacy_skill_config_user_id(value: str | int | None) -> str | None:
 
 
 def _config_path_for_key(user_key: str) -> Path:
-    return NOVA_ROOT / user_key / SKILL_CONFIG_FILENAME
+    return MERCI_ROOT / user_key / SKILL_CONFIG_FILENAME
 
 
 def _config_path(user_id: str | int) -> Path:

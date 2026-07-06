@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+// ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 // Directly use venv's python.exe (not uv run) to avoid Windows .exe launcher
 // placeholder issues - same reason we use direct python for backend/uvicorn.
 /* global process, console */

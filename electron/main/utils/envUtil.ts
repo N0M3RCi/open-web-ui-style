@@ -89,7 +89,7 @@ export function removeEnvKey(lines: string[], key: string) {
 }
 
 /**
- * Read the value of a key from the global ~/.nova/.env file.
+ * Read the value of a key from the global ~/.merci/.env file.
  */
 export function readGlobalEnvKey(key: string): string | null {
   try {

@@ -79,16 +79,16 @@ npm run dev
 docker ps
 
 # Parar/Iniciar contêiner da API (manter DB)
-docker stop nova_api
-docker start nova_api
+docker stop merci_unimind_api
+docker start merci_unimind_api
 
 # Parar/Iniciar tudo (API + DB)
 docker compose stop
 docker compose start
 
 # Exibir logs
-docker logs -f nova_api | cat
-docker logs -f nova_postgres | cat
+docker logs -f merci_unimind_api | cat
+docker logs -f merci_unimind_postgres | cat
 ```
 
 ---
@@ -99,14 +99,14 @@ Você pode executar a API localmente com hot-reload enquanto mantém o banco de 
 
 ```bash
 # Parar API no contêiner, manter DB
-docker stop nova_api
+docker stop merci_unimind_api
 
 # Inicializar banco de dados (primeira execução ou quando o esquema do BD muda)
 cd server
 uv run alembic upgrade head
 
 # Executar localmente (fornecer string de conexão do BD)
-export database_url=postgresql://postgres:123456@localhost:5432/nova
+export database_url=postgresql://postgres:123456@localhost:5432/merci-unimind
 uv run uvicorn main:api --reload --port 3001 --host 0.0.0.0
 ```
 

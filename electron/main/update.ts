@@ -75,7 +75,7 @@ export function update(win: Electron.BrowserWindow) {
   }
 
   const cdnBaseUrl =
-    process.env.NOVA_UPDATER_CDN_BASE_URL || DEFAULT_CDN_RELEASE_BASE_URL;
+    process.env.MERCI_UPDATER_CDN_BASE_URL || DEFAULT_CDN_RELEASE_BASE_URL;
   const channel = getGitHubReleaseChannel(process.platform, process.arch);
   const feed = {
     provider: 'custom' as const,

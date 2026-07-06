@@ -2,10 +2,10 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:15
-    container_name: nova_postgres
+    container_name: merci_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: nova
+      POSTGRES_DB: merci
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123456
       POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'
@@ -14,9 +14,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - nova_network
+      - merci_network
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres -d nova']
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d merci']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,14 +24,14 @@ services:
   # Redis
   redis:
     image: redis:7-alpine
-    container_name: nova-redis-dev
+    container_name: merci-redis-dev
     restart: unless-stopped
     ports:
       - '6379:6379'
     volumes:
-      - nova_redis_data:/data
+      - merci_redis_data:/data
     networks:
-      - nova_network
+      - merci_network
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
@@ -41,8 +41,8 @@ services:
 volumes:
   postgres_data:
     driver: local
-  nova_redis_data:
+  merci_redis_data:
 
 networks:
-  nova_network:
+  merci_network:
     driver: bridge

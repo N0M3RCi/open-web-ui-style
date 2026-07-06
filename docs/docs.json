@@ -91,7 +91,7 @@
             "icon": "brain",
             "pages": [
               "/models/overview",
-              "/models/nova-cloud",
+              "/models/merci-cloud",
               "/core/models/byok",
               "/core/models/local-model",
               "/models/provider-reference",

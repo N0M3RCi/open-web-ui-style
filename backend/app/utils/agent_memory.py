@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import datetime
 import json
@@ -39,9 +39,9 @@ def _env_int(name: str, default: int) -> int:
         return default
 
 
-_SNAPSHOT_MESSAGE_CONTENT_CAP = _env_int("NOVA_SNAPSHOT_MESSAGE_CAP", 4000)
-_SNAPSHOT_TOOL_ARG_CAP = _env_int("NOVA_SNAPSHOT_TOOL_ARG_CAP", 2000)
-_SNAPSHOT_TASK_FIELD_CAP = _env_int("NOVA_SNAPSHOT_TASK_FIELD_CAP", 8000)
+_SNAPSHOT_MESSAGE_CONTENT_CAP = _env_int("MERCI_SNAPSHOT_MESSAGE_CAP", 4000)
+_SNAPSHOT_TOOL_ARG_CAP = _env_int("MERCI_SNAPSHOT_TOOL_ARG_CAP", 2000)
+_SNAPSHOT_TASK_FIELD_CAP = _env_int("MERCI_SNAPSHOT_TASK_FIELD_CAP", 8000)
 _TRUNCATION_MARKER = "... [snapshot truncated]"
 
 

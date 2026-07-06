@@ -315,7 +315,7 @@ export async function startBackend(
     `Backend SERVER_URL resolved to: ${serverUrl} (source: ${resolvedSource})`
   );
 
-  // Ensure prebuilt terminal venv is copied to ~/.nova/venvs for terminal toolkit
+  // Ensure prebuilt terminal venv is copied to ~/.merci/venvs for terminal toolkit
   ensureTerminalVenvAtUserPath(currentVersion);
 
   // Add nodejs-wheel paths for browser toolkit (needs npm, npx, and node)
@@ -337,7 +337,7 @@ export async function startBackend(
     ...uvEnv,
     ...proxyEnv,
     SERVER_URL: serverUrl,
-    NOVA_RUNTIME: 'electron',
+    MERCI_RUNTIME: 'electron',
     PYTHONIOENCODING: 'utf-8',
     PYTHONUNBUFFERED: '1',
     npm_config_cache: npmCacheDir,

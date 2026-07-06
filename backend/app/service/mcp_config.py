@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import json
 import logging
@@ -18,7 +18,7 @@ from pathlib import Path
 
 logger = logging.getLogger("mcp_config")
 
-MCP_CONFIG_DIR = Path.home() / ".nova"
+MCP_CONFIG_DIR = Path.home() / ".merci"
 MCP_CONFIG_PATH = MCP_CONFIG_DIR / "mcp.json"
 
 
@@ -54,7 +54,7 @@ def get_mcp_config_path() -> Path:
 
 
 def read_mcp_config() -> dict:
-    """Read MCP config from ~/.nova/mcp.json."""
+    """Read MCP config from ~/.merci/mcp.json."""
     if not MCP_CONFIG_PATH.exists():
         default = {"mcpServers": {}}
         write_mcp_config(default)
@@ -74,7 +74,7 @@ def read_mcp_config() -> dict:
 
 
 def write_mcp_config(config: dict) -> None:
-    """Write MCP config to ~/.nova/mcp.json."""
+    """Write MCP config to ~/.merci/mcp.json."""
     MCP_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     MCP_CONFIG_PATH.write_text(
         json.dumps(config, indent=2, ensure_ascii=False),

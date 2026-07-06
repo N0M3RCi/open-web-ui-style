@@ -95,7 +95,7 @@ jobs:
       - name: Point electron-builder publish target to private repo
         shell: bash
         run: |
-          node -e "const fs=require('fs'); const path='electron-builder.json'; const config=JSON.parse(fs.readFileSync(path,'utf8')); if (Array.isArray(config.publish)) { config.publish=config.publish.map((entry) => entry && entry.provider === 'github' ? { ...entry, repo: 'nova-private-lab' } : entry); } fs.writeFileSync(path, JSON.stringify(config, null, 2) + '\n');"
+          node -e "const fs=require('fs'); const path='electron-builder.json'; const config=JSON.parse(fs.readFileSync(path,'utf8')); if (Array.isArray(config.publish)) { config.publish=config.publish.map((entry) => entry && entry.provider === 'github' ? { ...entry, repo: 'merci-private-lab' } : entry); } fs.writeFileSync(path, JSON.stringify(config, null, 2) + '\n');"
 
       - name: Install Python Dependencies
         run: |

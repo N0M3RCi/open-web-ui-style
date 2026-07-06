@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -60,8 +60,8 @@ def test_workforce_initialization():
 
 
 @pytest.mark.unit
-def test_nova_make_sub_tasks_success():
-    """Test nova_make_sub_tasks successfully decomposes task."""
+def test_merci_make_sub_tasks_success():
+    """Test merci_make_sub_tasks successfully decomposes task."""
     api_task_id = "test_api_task_123"
     workforce = Workforce(
         api_task_id=api_task_id, description="Test workforce"
@@ -84,7 +84,7 @@ def test_nova_make_sub_tasks_success():
         ),
         patch("app.utils.workforce.validate_task_content", return_value=True),
     ):
-        result = workforce.nova_make_sub_tasks(task)
+        result = workforce.merci_make_sub_tasks(task)
 
         assert result == mock_subtasks
         assert workforce._task is task
@@ -92,8 +92,8 @@ def test_nova_make_sub_tasks_success():
 
 
 @pytest.mark.unit
-def test_nova_make_sub_tasks_with_streaming_decomposition():
-    """Test nova_make_sub_tasks with streaming decomposition result."""
+def test_merci_make_sub_tasks_with_streaming_decomposition():
+    """Test merci_make_sub_tasks with streaming decomposition result."""
     api_task_id = "test_api_task_123"
     workforce = Workforce(
         api_task_id=api_task_id, description="Test workforce"
@@ -116,7 +116,7 @@ def test_nova_make_sub_tasks_with_streaming_decomposition():
         ),
         patch("app.utils.workforce.validate_task_content", return_value=True),
     ):
-        result = workforce.nova_make_sub_tasks(task)
+        result = workforce.merci_make_sub_tasks(task)
 
         assert len(result) == 3
         assert all(isinstance(subtask, Task) for subtask in result)
@@ -126,8 +126,8 @@ def test_nova_make_sub_tasks_with_streaming_decomposition():
 
 
 @pytest.mark.unit
-def test_nova_make_sub_tasks_invalid_content():
-    """Test nova_make_sub_tasks with invalid task content."""
+def test_merci_make_sub_tasks_invalid_content():
+    """Test merci_make_sub_tasks with invalid task content."""
     api_task_id = "test_api_task_123"
     workforce = Workforce(
         api_task_id=api_task_id, description="Test workforce"
@@ -139,7 +139,7 @@ def test_nova_make_sub_tasks_invalid_content():
         "app.utils.workforce.validate_task_content", return_value=False
     ):
         with pytest.raises(UserException):
-            workforce.nova_make_sub_tasks(task)
+            workforce.merci_make_sub_tasks(task)
 
         assert task.state == TaskState.FAILED
         assert "Invalid or empty content" in task.result
@@ -147,8 +147,8 @@ def test_nova_make_sub_tasks_invalid_content():
 
 @pytest.mark.unit
 @pytest.mark.asyncio
-async def test_nova_start_success():
-    """Test nova_start successfully starts workforce."""
+async def test_merci_start_success():
+    """Test merci_start successfully starts workforce."""
     api_task_id = "test_api_task_123"
     workforce = Workforce(
         api_task_id=api_task_id, description="Test workforce"
@@ -163,7 +163,7 @@ async def test_nova_start_success():
         patch.object(workforce, "start", new_callable=AsyncMock) as mock_start,
         patch.object(workforce, "save_snapshot") as mock_save_snapshot,
     ):
-        await workforce.nova_start(subtasks)
+        await workforce.merci_start(subtasks)
 
         assert len(workforce._pending_tasks) >= len(subtasks)
 
@@ -175,8 +175,8 @@ async def test_nova_start_success():
 
 @pytest.mark.unit
 @pytest.mark.asyncio
-async def test_nova_start_with_exception():
-    """Test nova_start handles exceptions properly."""
+async def test_merci_start_with_exception():
+    """Test merci_start handles exceptions properly."""
     api_task_id = "test_api_task_123"
     workforce = Workforce(
         api_task_id=api_task_id, description="Test workforce"
@@ -194,7 +194,7 @@ async def test_nova_start_with_exception():
         patch.object(workforce, "save_snapshot"),
     ):
         with pytest.raises(Exception, match="Workforce start failed"):
-            await workforce.nova_start(subtasks)
+            await workforce.merci_start(subtasks)
 
         assert workforce._state == WorkforceState.STOPPED
 
@@ -483,20 +483,20 @@ async def test_cleanup_handles_exception():
 
 
 @pytest.mark.unit
-def test_nova_make_sub_tasks_with_none_task():
-    """Test nova_make_sub_tasks with None task."""
+def test_merci_make_sub_tasks_with_none_task():
+    """Test merci_make_sub_tasks with None task."""
     api_task_id = "error_test_123"
     workforce = Workforce(
         api_task_id=api_task_id, description="Error test workforce"
     )
 
     with pytest.raises((AttributeError, TypeError)):
-        workforce.nova_make_sub_tasks(None)
+        workforce.merci_make_sub_tasks(None)
 
 
 @pytest.mark.unit
-def test_nova_make_sub_tasks_with_malformed_task():
-    """Test nova_make_sub_tasks with malformed task object."""
+def test_merci_make_sub_tasks_with_malformed_task():
+    """Test merci_make_sub_tasks with malformed task object."""
     api_task_id = "error_test_123"
     workforce = Workforce(
         api_task_id=api_task_id, description="Error test workforce"
@@ -510,13 +510,13 @@ def test_nova_make_sub_tasks_with_malformed_task():
         "app.utils.workforce.validate_task_content", return_value=False
     ):
         with pytest.raises(UserException):
-            workforce.nova_make_sub_tasks(fake_task)
+            workforce.merci_make_sub_tasks(fake_task)
 
 
 @pytest.mark.unit
 @pytest.mark.asyncio
-async def test_nova_start_with_empty_subtasks():
-    """Test nova_start with empty subtasks list."""
+async def test_merci_start_with_empty_subtasks():
+    """Test merci_start with empty subtasks list."""
     api_task_id = "empty_test_123"
     workforce = Workforce(
         api_task_id=api_task_id, description="Empty test workforce"
@@ -526,7 +526,7 @@ async def test_nova_start_with_empty_subtasks():
         patch.object(workforce, "start", new_callable=AsyncMock),
         patch.object(workforce, "save_snapshot"),
     ):
-        await workforce.nova_start([])
+        await workforce.merci_start([])
 
         workforce.start.assert_called_once()
 
@@ -640,10 +640,10 @@ async def test_full_workforce_lifecycle():
         patch("app.utils.workforce.asyncio.run", return_value=subtasks),
         patch.object(workforce, "start", new_callable=AsyncMock),
     ):
-        result_subtasks = workforce.nova_make_sub_tasks(main_task)
+        result_subtasks = workforce.merci_make_sub_tasks(main_task)
         assert len(result_subtasks) == 3
 
-        await workforce.nova_start(result_subtasks)
+        await workforce.merci_start(result_subtasks)
 
         mock_worker = MagicMock(spec=ListenChatAgent)
         mock_worker.agent_id = "integration_worker_123"

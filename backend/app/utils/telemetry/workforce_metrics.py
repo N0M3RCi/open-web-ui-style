@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import base64
 import json
@@ -52,35 +52,35 @@ ENV_OTEL_EXPORTER_OTLP_HEADERS = "OTEL_EXPORTER_OTLP_HEADERS"
 
 # Default values
 DEFAULT_LANGFUSE_BASE_URL = "https://us.cloud.langfuse.com"
-DEFAULT_LANGFUSE_TAGS = ["workforce", "camel", "nova"]
+DEFAULT_LANGFUSE_TAGS = ["workforce", "camel", ".merci"]
 LANGFUSE_OTEL_PATH = "/api/public/otel"
 
-# Attribute keys for nova.project namespace
-ATTR_PROJECT_ID = "nova.project.id"
+# Attribute keys for merci.project namespace
+ATTR_PROJECT_ID = "merci.project.id"
 
-# Attribute keys for nova.task namespace
-ATTR_TASK_ID = "nova.task.id"
-ATTR_TASK_DESCRIPTION = "nova.task.description"
-ATTR_TASK_PARENT_ID = "nova.task.parent_id"
-ATTR_TASK_TYPE = "nova.task.type"
-ATTR_TASK_STATUS = "nova.task.status"
-ATTR_TASK_UPDATE_TYPE = "nova.task.update_type"
-ATTR_TASK_UPDATE_OLD_VALUE = "nova.task.update.old_value"
-ATTR_TASK_UPDATE_NEW_VALUE = "nova.task.update.new_value"
-ATTR_TASK_UPDATE_METADATA = "nova.task.update.metadata"
-ATTR_TASK_QUEUE_TIME_SECONDS = "nova.task.queue_time_seconds"
-ATTR_TASK_PROCESSING_TIME_SECONDS = "nova.task.processing_time_seconds"
-ATTR_TASK_QUALITY_SCORE = "nova.task.quality_score"
-ATTR_TASK_TIMESTAMP = "nova.task.timestamp"
-ATTR_TASK_DEPENDENCIES = "nova.task.dependencies"
-ATTR_TASK_SUBTASK_IDS = "nova.task.subtask_ids"
+# Attribute keys for merci.task namespace
+ATTR_TASK_ID = "merci.task.id"
+ATTR_TASK_DESCRIPTION = "merci.task.description"
+ATTR_TASK_PARENT_ID = "merci.task.parent_id"
+ATTR_TASK_TYPE = "merci.task.type"
+ATTR_TASK_STATUS = "merci.task.status"
+ATTR_TASK_UPDATE_TYPE = "merci.task.update_type"
+ATTR_TASK_UPDATE_OLD_VALUE = "merci.task.update.old_value"
+ATTR_TASK_UPDATE_NEW_VALUE = "merci.task.update.new_value"
+ATTR_TASK_UPDATE_METADATA = "merci.task.update.metadata"
+ATTR_TASK_QUEUE_TIME_SECONDS = "merci.task.queue_time_seconds"
+ATTR_TASK_PROCESSING_TIME_SECONDS = "merci.task.processing_time_seconds"
+ATTR_TASK_QUALITY_SCORE = "merci.task.quality_score"
+ATTR_TASK_TIMESTAMP = "merci.task.timestamp"
+ATTR_TASK_DEPENDENCIES = "merci.task.dependencies"
+ATTR_TASK_SUBTASK_IDS = "merci.task.subtask_ids"
 
-# Attribute keys for nova.worker namespace
-ATTR_WORKER_ID = "nova.worker.id"
-ATTR_WORKER_TYPE = "nova.worker.type"
-ATTR_WORKER_ROLE = "nova.worker.role"
-ATTR_WORKER_AGENT = "nova.worker.agent"
-ATTR_WORKER_MODEL_TYPE = "nova.worker.model.type"
+# Attribute keys for merci.worker namespace
+ATTR_WORKER_ID = "merci.worker.id"
+ATTR_WORKER_TYPE = "merci.worker.type"
+ATTR_WORKER_ROLE = "merci.worker.role"
+ATTR_WORKER_AGENT = "merci.worker.agent"
+ATTR_WORKER_MODEL_TYPE = "merci.worker.model.type"
 
 # Attribute keys for workforce namespace
 ATTR_WORKFORCE_TOTAL_TASKS = "workforce.total_tasks"
@@ -90,8 +90,8 @@ ATTR_LANGFUSE_SESSION_ID = "langfuse.session.id"
 ATTR_LANGFUSE_TAGS = "langfuse.tags"
 
 # OpenTelemetry service and tracer names
-SERVICE_NAME_WORKFORCE = "nova-workforce"
-TRACER_NAME_WORKFORCE = "nova.workforce"
+SERVICE_NAME_WORKFORCE = "merci-workforce"
+TRACER_NAME_WORKFORCE = "merci.workforce"
 
 # Span names
 SPAN_WORKFORCE_EXECUTION = "workforce.execution"
@@ -327,7 +327,7 @@ class WorkforceMetricsCallback(WorkforceMetrics):
         with self.tracer.start_as_current_span(
             SPAN_WORKER_CREATED, context=ctx
         ) as span:
-            # Nova-specific attributes
+            # M3RCI - UniMind-specific attributes
             span.set_attribute(ATTR_WORKER_ID, event.worker_id)
             span.set_attribute(ATTR_WORKER_TYPE, event.worker_type)
             span.set_attribute(ATTR_WORKER_ROLE, event.role)
@@ -529,7 +529,7 @@ class WorkforceMetricsCallback(WorkforceMetrics):
             if event.token_usage:
                 # Store all token usage as custom attributes
                 for key, value in event.token_usage.items():
-                    span.set_attribute(f"nova.task.token_usage.{key}", value)
+                    span.set_attribute(f"merci.task.token_usage.{key}", value)
 
             span.set_status(Status(StatusCode.OK))
             span.end()

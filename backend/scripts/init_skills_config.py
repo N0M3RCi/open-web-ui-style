@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 """
 Initialize skills configuration file with default settings.
@@ -32,18 +32,18 @@ def init_global_config(
 
     Args:
         user_id: User identifier for user-specific config. If None, uses legacy path.
-        scan_skills: If True, scan ~/.nova/skills/ and add found skills to config
+        scan_skills: If True, scan ~/.merci/skills/ and add found skills to config
     """
     if user_id:
-        # User-specific config: ~/.nova/<user_id>/skills-config.json
+        # User-specific config: ~/.merci/<user_id>/skills-config.json
         config_path = (
-            Path.home() / ".nova" / str(user_id) / "skills-config.json"
+            Path.home() / ".merci" / str(user_id) / "skills-config.json"
         )
     else:
-        # Legacy global config: ~/.nova/skills-config.json
-        config_path = Path.home() / ".nova" / "skills-config.json"
+        # Legacy global config: ~/.merci/skills-config.json
+        config_path = Path.home() / ".merci" / "skills-config.json"
 
-    skills_dir = Path.home() / ".nova" / "skills"
+    skills_dir = Path.home() / ".merci" / "skills"
 
     # Check if config already exists
     if config_path.exists():
@@ -110,7 +110,7 @@ def init_project_config(project_path: str) -> None:
         print(f"❌ Project directory does not exist: {project_path}")
         sys.exit(1)
 
-    config_path = project_dir / ".nova" / "skills-config.json"
+    config_path = project_dir / ".merci" / "skills-config.json"
 
     # Check if config already exists
     if config_path.exists():

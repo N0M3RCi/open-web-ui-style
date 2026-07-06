@@ -1,4 +1,4 @@
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,7 +10,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# ========= Copyright 2025-2026 @ Nova.ai All Rights Reserved. =========
+# ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 from dataclasses import dataclass
 from fnmatch import fnmatch
@@ -134,20 +134,20 @@ def build_default_policy(
     working_directory: str | Path | None = None,
 ) -> RemoteSubAgentPolicy:
     snapshot_mb = _parse_int(
-        env("NOVA_REMOTE_SUB_AGENT_MAX_SNAPSHOT_MB"),
+        env("MERCI_REMOTE_SUB_AGENT_MAX_SNAPSHOT_MB"),
         _DEFAULT_MAX_SNAPSHOT_BYTES // (1024 * 1024),
     )
     return RemoteSubAgentPolicy(
-        enabled=_parse_bool(env("NOVA_REMOTE_SUB_AGENT_ENABLED"), False),
+        enabled=_parse_bool(env("MERCI_REMOTE_SUB_AGENT_ENABLED"), False),
         allowed_providers=_parse_providers(
-            env("NOVA_REMOTE_SUB_AGENT_ALLOWED_PROVIDERS")
+            env("MERCI_REMOTE_SUB_AGENT_ALLOWED_PROVIDERS")
         ),
         allow_snapshot_download=_parse_bool(
-            env("NOVA_REMOTE_SUB_AGENT_ALLOW_SNAPSHOT_DOWNLOAD"),
+            env("MERCI_REMOTE_SUB_AGENT_ALLOW_SNAPSHOT_DOWNLOAD"),
             False,
         ),
         max_wall_time_seconds=_parse_int(
-            env("NOVA_REMOTE_SUB_AGENT_MAX_WALL_TIME_SECONDS"),
+            env("MERCI_REMOTE_SUB_AGENT_MAX_WALL_TIME_SECONDS"),
             600,
         ),
         max_snapshot_bytes=snapshot_mb * 1024 * 1024,
