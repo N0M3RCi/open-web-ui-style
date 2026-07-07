@@ -23,7 +23,7 @@ jobs:
           npm ci --ignore-scripts
           npm run build:web
 
-      - name: Deploy frontend to VPS webroot
+      - name: Deploy frontend to VPS webroot (rsync --delete cleans stale files)
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
@@ -33,7 +33,7 @@ jobs:
           REMOTE_USER: ${{ secrets.VPS_USER }}
           TARGET: /var/www/merci/
 
-      - name: Pull code and rebuild on VPS
+      - name: Sync to secondary webroot and restart services
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -41,19 +41,15 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -e
+            echo "=== Syncing to secondary webroot ==="
+            rsync -a --delete /var/www/merci/ /var/www/html/
+
             echo "=== Pulling latest code ==="
             cd /opt/open-web-ui-style
             git pull origin main
 
             echo "=== Installing dependencies ==="
             npm ci --ignore-scripts
-
-            echo "=== Building frontend ==="
-            npm run build
-
-            echo "=== Deploying to webroots ==="
-            cp -r dist/* /var/www/merci/
-            cp -r dist/* /var/www/html/
 
             echo "=== Restarting Docker services (if needed) ==="
             cd /opt/open-web-ui-style/server
