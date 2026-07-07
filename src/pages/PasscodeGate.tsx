@@ -16,6 +16,7 @@ import { proxyFetchPost } from '@/api/http';
 import { useAuthStore } from '@/store/authStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import merciLogo from '@/assets/logo/merci_icon.png';
 
 const PASSCODE_LENGTH = 6;
 
@@ -372,8 +373,8 @@ export default function PasscodeGate() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 text-center">
-            <div className="border-black bg-white shadow-yellow-500/20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl border-2 shadow-lg">
-              <span className="text-black text-3xl font-bold">AI Chatbot</span>
+            <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center">
+              <img src={merciLogo} alt="M3RCI" className="h-full w-full object-contain" />
             </div>
             <h1 className="text-black text-2xl font-bold">M3RCI-UniMind</h1>
             <p className="text-black/60 mt-1 text-sm">
@@ -397,7 +398,7 @@ export default function PasscodeGate() {
                     : 'text-black/50 hover:text-black/80'
                 }`}
               >
-                Enter Passcode
+                Enter 6 digit Passcode
               </button>
               <button
                 type="button"
@@ -421,7 +422,7 @@ export default function PasscodeGate() {
               <div>
                 <div className="mb-6">
                   <label className="text-black/80 mb-2 block text-sm font-medium">
-                    Enter your 6-digit passcode
+                    
                   </label>
                   <div className="flex justify-center gap-2.5">
                     {Array.from({ length: PASSCODE_LENGTH }).map((_, i) => (
