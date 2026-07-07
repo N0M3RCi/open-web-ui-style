@@ -12,10 +12,9 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
-import { proxyFetchPost } from '@/api/http';
 import { isDesktop } from '@/client/platform';
 import { useAuthStore } from '@/store/authStore';
-import { lazy, useEffect, useReducer, useRef } from 'react';
+import { lazy, useEffect, useReducer } from 'react';
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
 
 import Layout from '@/components/Layout';
@@ -27,6 +26,7 @@ const History = lazy(() => import('@/pages/History'));
 const NotFound = lazy(() => import('@/pages/NotFound'));
 const RemoteControl = lazy(() => import('@/pages/RemoteControl'));
 const AdminUsers = lazy(() => import('@/pages/AdminUsers'));
+const PasscodeGate = lazy(() => import('@/pages/PasscodeGate'));
 
 /**
  * Redirect /setting or /setting/:tab to /history?tab=settings
@@ -83,17 +83,7 @@ const ProtectedRoute = () => {
     initialized: false,
   });
 
-  const {
-    token,
-    localProxyValue,
-    logout,
-    setAuth,
-    setLocalProxyValue,
-    setInitState,
-    setIsFirstLaunch,
-    setModelType,
-  } = useAuthStore();
-  const autoLoginAttempted = useRef(false);
+  const { token, localProxyValue, logout } = useAuthStore();
 
   useEffect(() => {
     // Check VITE_USE_LOCAL_PROXY value on app startup
@@ -110,51 +100,30 @@ const ProtectedRoute = () => {
       }
     }
 
-    // Local mode: auto-login once on mount to get a fresh token,
-    // even when a (possibly stale) token exists from a previous session.
-    if (IS_LOCAL_MODE && !autoLoginAttempted.current) {
-      autoLoginAttempted.current = true;
-      proxyFetchPost('/api/v1/user/auto-login', {})
-        .then((data) => {
-          if (data && data.token) {
-            setAuth({ email: data.email, ...data });
-            setLocalProxyValue(import.meta.env.VITE_USE_LOCAL_PROXY || null);
-            setModelType('custom');
-            setInitState('done');
-            setIsFirstLaunch(false);
-            dispatch({
-              type: 'INITIALIZE',
-              payload: { isAuthenticated: true },
-            });
-          } else {
-            dispatch({
-              type: 'INITIALIZE',
-              payload: { isAuthenticated: false },
-            });
-          }
-        })
-        .catch(() => {
-          dispatch({
-            type: 'INITIALIZE',
-            payload: { isAuthenticated: false },
-          });
-        });
+    // Local mode: if no token exists, redirect to passcode login.
+    // Do NOT auto-login — let the student enter their passcode.
+    if (IS_LOCAL_MODE && !token) {
+      dispatch({
+        type: 'INITIALIZE',
+        payload: { isAuthenticated: false },
+      });
+      return;
+    }
+
+    // Local mode with existing token: just mark as authenticated.
+    // The token was obtained via passcode login — do NOT auto-login.
+    if (IS_LOCAL_MODE && token) {
+      dispatch({
+        type: 'INITIALIZE',
+        payload: { isAuthenticated: true },
+      });
       return;
     }
 
     if (!IS_LOCAL_MODE) {
       dispatch({ type: 'INITIALIZE', payload: { isAuthenticated: !!token } });
     }
-  }, [
-    token,
-    localProxyValue,
-    logout,
-    setAuth,
-    setLocalProxyValue,
-    setInitState,
-    setIsFirstLaunch,
-    setModelType,
-  ]);
+  }, [token, localProxyValue, logout]);
 
   if (state.loading || !state.initialized) {
     return (
@@ -168,9 +137,10 @@ const ProtectedRoute = () => {
   }
 
   const redirect = `${location.pathname}${location.search}`;
-  return (
-    <Navigate to={`/login?redirect=${encodeURIComponent(redirect)}`} replace />
-  );
+  const loginPath = IS_LOCAL_MODE
+    ? '/passcode'
+    : `/login?redirect=${encodeURIComponent(redirect)}`;
+  return <Navigate to={loginPath} replace />;
 };
 
 // Main route configuration
@@ -178,6 +148,7 @@ const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<Login />} />
     <Route path="/signup" element={<Signup />} />
+    <Route path="/passcode" element={<PasscodeGate />} />
     {ENABLE_DESKTOP_REMOTE_CONTROL_FALLBACK ? (
       <Route path="/remote-control/:sessionId" element={<RemoteControl />} />
     ) : null}

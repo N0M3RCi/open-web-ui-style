@@ -18,6 +18,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi_babel import _
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlmodel import paginate
+from pydantic import BaseModel
 from sqlmodel import Session, select, col
 
 from app.core.database import session
@@ -111,3 +112,19 @@ async def set_prefer(data: ProviderPreferIn, auth: V1UserAuth = Depends(auth_mus
     if not result["success"]:
         raise HTTPException(status_code=500, detail="Failed to set prefer")
     return {"success": True}
+
+
+class ProviderModelTypeIn(BaseModel):
+    model_type: str
+
+
+@router.patch("/provider/{id}/model-type", name="update provider model type and set prefer")
+async def update_model_type(id: int, data: ProviderModelTypeIn, auth: V1UserAuth = Depends(auth_must)):
+    """Update model_type of a provider and set it as preferred."""
+    result = ProviderService.update(id, auth.id, {"model_type": data.model_type})
+    if not result["success"]:
+        raise HTTPException(status_code=404, detail=_("Provider not found"))
+    result2 = ProviderService.set_prefer(id, auth.id)
+    if not result2["success"]:
+        raise HTTPException(status_code=500, detail="Failed to set prefer")
+    return result["provider"]

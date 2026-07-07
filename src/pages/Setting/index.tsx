@@ -21,7 +21,17 @@ import Appearance from '@/pages/Setting/Appearance';
 import General from '@/pages/Setting/General';
 import Models from '@/pages/Setting/Models';
 import Privacy from '@/pages/Setting/Privacy';
-import { Brain, Fingerprint, Palette, Settings, Shield } from 'lucide-react';
+import Students from '@/pages/Setting/Students';
+import { useAuthStore } from '@/store/authStore';
+import {
+  Brain,
+  Fingerprint,
+  LogOut,
+  Palette,
+  Settings,
+  Shield,
+  Users,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -31,6 +41,8 @@ export default function Setting() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { t } = useTranslation();
+  const { logout } = useAuthStore();
+  const IS_LOCAL_MODE = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
   // Setting menu configuration
   const settingMenus = [
     {
@@ -63,6 +75,16 @@ export default function Setting() {
       icon: Shield,
       path: '/admin/users',
     },
+    ...(IS_LOCAL_MODE
+      ? [
+          {
+            id: 'students',
+            name: 'Students',
+            icon: Users,
+            path: '/setting/students',
+          },
+        ]
+      : []),
   ];
   // Initialize tab from URL once, then manage locally without routing
   const getCurrentTab = () => {
@@ -107,6 +129,19 @@ export default function Setting() {
           contentClassName="hidden"
         />
         <div className="mt-auto" />
+        {IS_LOCAL_MODE && (
+          <button
+            type="button"
+            onClick={() => {
+              logout();
+              navigate('/passcode', { replace: true });
+            }}
+            className="hover:bg-red-500/10 flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-400 transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </button>
+        )}
       </div>
 
       <div className="flex h-auto w-full flex-1 flex-col">
@@ -116,6 +151,7 @@ export default function Setting() {
           {activeTab === 'models' && <Models />}
           {activeTab === 'privacy' && <Privacy />}
           {activeTab === 'admin' && <AdminUsers />}
+          {activeTab === 'students' && <Students />}
         </div>
       </div>
     </div>
