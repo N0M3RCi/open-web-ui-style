@@ -12,14 +12,14 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import { proxyFetchGet, proxyFetchPut } from '@/api/http';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LocaleEnum, switchLanguage } from '@/i18n';
-import { SITE_URL } from '@/lib';
 import { useAuthStore } from '@/store/authStore';
 import { useInstallationStore } from '@/store/installationStore';
-import { LogOut, Settings } from 'lucide-react';
-import { createRef, RefObject, useEffect, useState } from 'react';
+import { Check, LogOut, Pencil, X } from 'lucide-react';
+import { createRef, RefObject, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -60,6 +60,26 @@ export default function SettingGeneral() {
   const [proxyUrl, setProxyUrl] = useState('');
   const [isProxySaving, setIsProxySaving] = useState(false);
   const [proxyNeedsRestart, setProxyNeedsRestart] = useState(false);
+
+  // Profile editing state
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileNickname, setProfileNickname] = useState('');
+  const [profileFullname, setProfileFullname] = useState('');
+  const [profileSaving, setProfileSaving] = useState(false);
+
+  const loadProfile = useCallback(async () => {
+    try {
+      const data = await proxyFetchGet('/api/v1/user');
+      if (data?.nickname) setProfileNickname(data.nickname);
+      if (data?.fullname) setProfileFullname(data.fullname);
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
 
   const languageList = [
     {
@@ -195,62 +215,123 @@ export default function SettingGeneral() {
       {/* Content Section */}
       <div className="mb-xl flex flex-col gap-6">
         {/* Profile Section */}
-        <div className="item-center flex flex-row justify-between rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4">
-          <div className="flex flex-col gap-2">
-            <div className="text-body-base font-bold text-ds-text-neutral-default-default">
-              {t('setting.profile')}
+        <div className="flex flex-col rounded-2xl bg-ds-bg-neutral-default-default px-6 py-4">
+          <div className="item-center flex flex-row justify-between">
+            <div className="flex flex-col gap-2">
+              <div className="text-body-base font-bold text-ds-text-neutral-default-default">
+                {t('setting.profile')}
+              </div>
+              <div className="text-body-sm">
+                <Trans
+                  i18nKey="setting.you-are-currently-signed-in-with"
+                  values={{ email: authStore.email }}
+                  components={{
+                    email: (
+                      <span className="text-ds-text-status-splitting-strong-default underline" />
+                    ),
+                  }}
+                />
+              </div>
             </div>
-            <div className="text-body-sm">
-              <Trans
-                i18nKey="setting.you-are-currently-signed-in-with"
-                values={{ email: authStore.email }}
-                components={{
-                  email: (
-                    <span className="text-ds-text-status-splitting-strong-default underline" />
-                  ),
+            <div className="flex items-center gap-sm">
+              {!editingProfile && (
+                <Button
+                  onClick={() => {
+                    loadProfile();
+                    setEditingProfile(true);
+                  }}
+                  variant="primary"
+                  textWeight="semibold"
+                  buttonContent="text"
+                  buttonRadius="lg"
+                  tone="neutral"
+                  size="sm"
+                >
+                  <Pencil />
+                  {t('setting.manage')}
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                textWeight="semibold"
+                buttonContent="text"
+                buttonRadius="lg"
+                tone="neutral"
+                size="sm"
+                onClick={() => {
+                  chatStore?.clearTasks?.();
+
+                  resetInstallation();
+                  setNeedsBackendRestart(true);
+
+                  authStore.logout();
+                  navigate('/login');
                 }}
-              />
+              >
+                <LogOut />
+                {t('setting.log-out')}
+              </Button>
             </div>
           </div>
-          <div className="flex items-center gap-sm">
-            <Button
-              onClick={() => {
-                const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
-                window.location.href = isLocal
-                  ? '/history?tab=settings'
-                  : `${SITE_URL}/dashboard?email=${authStore.email}`;
-              }}
-              variant="primary"
-              textWeight="semibold"
-              buttonContent="text"
-              buttonRadius="lg"
-              tone="neutral"
-              size="sm"
-            >
-              <Settings />
-              {t('setting.manage')}
-            </Button>
-            <Button
-              variant="outline"
-              textWeight="semibold"
-              buttonContent="text"
-              buttonRadius="lg"
-              tone="neutral"
-              size="sm"
-              onClick={() => {
-                chatStore?.clearTasks?.();
-
-                resetInstallation(); // Reset installation state for new account
-                setNeedsBackendRestart(true); // Mark that backend is restarting
-
-                authStore.logout();
-                navigate('/login');
-              }}
-            >
-              <LogOut />
-              {t('setting.log-out')}
-            </Button>
-          </div>
+          {editingProfile && (
+            <div className="mt-4 flex flex-col gap-3 border-t border-ds-border-neutral-subtle-default pt-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-label-xs text-ds-text-neutral-muted-default">
+                  Nickname
+                </label>
+                <Input
+                  value={profileNickname}
+                  onChange={(e) => setProfileNickname(e.target.value)}
+                  placeholder="Your nickname"
+                  className="h-9 max-w-sm"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-label-xs text-ds-text-neutral-muted-default">
+                  Full Name
+                </label>
+                <Input
+                  value={profileFullname}
+                  onChange={(e) => setProfileFullname(e.target.value)}
+                  placeholder="Your full name"
+                  className="h-9 max-w-sm"
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  disabled={profileSaving}
+                  onClick={async () => {
+                    setProfileSaving(true);
+                    try {
+                      await proxyFetchPut('/api/v1/user', {
+                        nickname: profileNickname,
+                        fullname: profileFullname,
+                      });
+                      toast.success('Profile updated');
+                      setEditingProfile(false);
+                    } catch {
+                      toast.error('Failed to update profile');
+                    } finally {
+                      setProfileSaving(false);
+                    }
+                  }}
+                >
+                  <Check />
+                  {profileSaving ? 'Saving...' : 'Save'}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setEditingProfile(false)}
+                >
+                  <X />
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Language Section */}

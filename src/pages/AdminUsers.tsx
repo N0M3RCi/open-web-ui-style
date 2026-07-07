@@ -12,7 +12,12 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
-import { proxyFetchDelete, proxyFetchGet, proxyFetchPost, proxyFetchPut } from '@/api/http';
+import {
+  proxyFetchDelete,
+  proxyFetchGet,
+  proxyFetchPost,
+  proxyFetchPut,
+} from '@/api/http';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -23,7 +28,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useAuthStore } from '@/store/authStore';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -35,6 +40,7 @@ interface UserItem {
   fullname: string | null;
   credits: number;
   status: number;
+  role: string;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -54,6 +60,7 @@ interface UserDetail {
   fullname: string | null;
   credits: number;
   status: number;
+  role: string;
   created_at: string | null;
   updated_at: string | null;
   stats: {
@@ -94,6 +101,7 @@ export default function AdminUsers() {
   const [formFullname, setFormFullname] = useState('');
   const [formCredits, setFormCredits] = useState('0');
   const [formStatus, setFormStatus] = useState('1');
+  const [formRole, setFormRole] = useState('user');
   const [formSubmitting, setFormSubmitting] = useState(false);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
@@ -107,7 +115,7 @@ export default function AdminUsers() {
       });
       if (q) params.set('search', q);
       const data = await proxyFetchGet(
-        `/api/v1/admin/users?${params.toString()}`,
+        `/api/v1/admin/users?${params.toString()}`
       );
       setUsers(data.items ?? []);
       setTotal(data.total ?? 0);
@@ -141,6 +149,7 @@ export default function AdminUsers() {
     setFormFullname('');
     setFormCredits('0');
     setFormStatus('1');
+    setFormRole('user');
     setShowForm(true);
   };
 
@@ -153,6 +162,7 @@ export default function AdminUsers() {
     setFormFullname(user.fullname ?? '');
     setFormCredits(String(user.credits));
     setFormStatus(String(user.status));
+    setFormRole(user.role || 'user');
     setShowForm(true);
   };
 
@@ -176,6 +186,7 @@ export default function AdminUsers() {
           fullname: formFullname || null,
           credits: Number(formCredits),
           status: Number(formStatus),
+          role: formRole,
         };
         if (formPassword) {
           // Password update via separate field — backend handles it
@@ -191,6 +202,7 @@ export default function AdminUsers() {
           nickname: formNickname || null,
           fullname: formFullname || null,
           credits: Number(formCredits),
+          role: formRole,
         });
         toast.success('User created');
       }
@@ -236,7 +248,7 @@ export default function AdminUsers() {
           </h1>
           <Button
             onClick={openCreateForm}
-            className="bg-ds-bg-brand-default-default px-4 py-2 text-body-sm font-semibold text-white hover:bg-ds-bg-brand-subtle-hover"
+            className="text-white bg-ds-bg-brand-default-default px-4 py-2 text-body-sm font-semibold hover:bg-ds-bg-brand-subtle-hover"
           >
             + Create User
           </Button>
@@ -275,6 +287,7 @@ export default function AdminUsers() {
                       <th className="px-6 py-3 font-medium">Username</th>
                       <th className="px-6 py-3 font-medium">Nickname</th>
                       <th className="px-6 py-3 font-medium">Credits</th>
+                      <th className="px-6 py-3 font-medium">Role</th>
                       <th className="px-6 py-3 font-medium">Status</th>
                       <th className="px-6 py-3 font-medium">Created</th>
                       <th className="px-6 py-3 font-medium">Actions</th>
@@ -284,7 +297,7 @@ export default function AdminUsers() {
                     {users.length === 0 ? (
                       <tr>
                         <td
-                          colSpan={8}
+                          colSpan={9}
                           className="px-6 py-12 text-center text-body-sm text-ds-text-neutral-muted-default"
                         >
                           No users found
@@ -300,13 +313,22 @@ export default function AdminUsers() {
                             {user.id}
                           </td>
                           <td className="px-6 py-3">{user.email}</td>
-                          <td className="px-6 py-3">
-                            {user.username || '-'}
-                          </td>
-                          <td className="px-6 py-3">
-                            {user.nickname || '-'}
-                          </td>
+                          <td className="px-6 py-3">{user.username || '-'}</td>
+                          <td className="px-6 py-3">{user.nickname || '-'}</td>
                           <td className="px-6 py-3">{user.credits}</td>
+                          <td className="px-6 py-3">
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-label-xs font-medium ${
+                                user.role === 'admin'
+                                  ? 'bg-ds-bg-status-completed-subtle-default text-ds-text-status-completed-subtle-default'
+                                  : user.role === 'student'
+                                    ? 'bg-purple-100 text-purple-700'
+                                    : 'bg-ds-bg-neutral-default-hover text-ds-text-neutral-muted-default'
+                              }`}
+                            >
+                              {user.role || 'user'}
+                            </span>
+                          </td>
                           <td className="px-6 py-3">
                             <span
                               className={`inline-flex items-center rounded-full px-2 py-0.5 text-label-xs font-medium ${
@@ -384,7 +406,7 @@ export default function AdminUsers() {
 
               {/* Detail panel */}
               {selectedUser && (
-                <div className="w-80 shrink-0 border-l border-ds-border-neutral-subtle-disabled overflow-auto p-4">
+                <div className="w-80 shrink-0 overflow-auto border-l border-ds-border-neutral-subtle-disabled p-4">
                   <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-label-sm font-semibold text-ds-text-neutral-default-default">
                       User Details
@@ -442,12 +464,26 @@ export default function AdminUsers() {
                       </div>
                       <div>
                         <span className="text-label-xs text-ds-text-neutral-muted-default">
+                          Role
+                        </span>
+                        <p
+                          className={
+                            selectedUser.role === 'admin'
+                              ? 'text-ds-text-status-completed-subtle-default'
+                              : 'text-ds-text-neutral-muted-default'
+                          }
+                        >
+                          {selectedUser.role || 'user'}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-label-xs text-ds-text-neutral-muted-default">
                           Joined
                         </span>
                         <p>
                           {selectedUser.created_at
                             ? new Date(
-                                selectedUser.created_at,
+                                selectedUser.created_at
                               ).toLocaleDateString()
                             : '-'}
                         </p>
@@ -497,7 +533,7 @@ export default function AdminUsers() {
 
       {/* Create/Edit Modal */}
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="bg-black/50 fixed inset-0 z-50 flex items-center justify-center">
           <div className="w-full max-w-md rounded-2xl bg-ds-bg-neutral-default-default p-6 shadow-lg">
             <h2 className="mb-4 text-label-lg font-bold text-ds-text-neutral-default-default">
               {editingUser ? 'Edit User' : 'Create User'}
@@ -516,7 +552,9 @@ export default function AdminUsers() {
               </div>
               <div>
                 <label className="mb-1 block text-label-xs text-ds-text-neutral-muted-default">
-                  {editingUser ? 'New Password (leave blank to keep)' : 'Password *'}
+                  {editingUser
+                    ? 'New Password (leave blank to keep)'
+                    : 'Password *'}
                 </label>
                 <Input
                   type="password"
@@ -560,6 +598,21 @@ export default function AdminUsers() {
                   className="h-9"
                 />
               </div>
+              <div>
+                <label className="mb-1 block text-label-xs text-ds-text-neutral-muted-default">
+                  Role
+                </label>
+                <Select value={formRole} onValueChange={setFormRole}>
+                  <SelectTrigger className="h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="user">User</SelectItem>
+                    <SelectItem value="student">Student</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="flex gap-3">
                 <div className="flex-1">
                   <label className="mb-1 block text-label-xs text-ds-text-neutral-muted-default">
@@ -577,10 +630,7 @@ export default function AdminUsers() {
                     <label className="mb-1 block text-label-xs text-ds-text-neutral-muted-default">
                       Status
                     </label>
-                    <Select
-                      value={formStatus}
-                      onValueChange={setFormStatus}
-                    >
+                    <Select value={formStatus} onValueChange={setFormStatus}>
                       <SelectTrigger className="h-9">
                         <SelectValue />
                       </SelectTrigger>
@@ -603,7 +653,7 @@ export default function AdminUsers() {
               <Button
                 onClick={handleFormSubmit}
                 disabled={formSubmitting}
-                className="h-9 bg-ds-bg-brand-default-default px-4 text-body-sm text-white hover:bg-ds-bg-brand-subtle-hover"
+                className="text-white h-9 bg-ds-bg-brand-default-default px-4 text-body-sm hover:bg-ds-bg-brand-subtle-hover"
               >
                 {formSubmitting
                   ? 'Saving...'

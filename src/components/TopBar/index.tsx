@@ -13,13 +13,9 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { proxyFetchGet } from '@/api/http';
-import giftWhiteIcon from '@/assets/custom/gift-white.svg';
-import giftIcon from '@/assets/custom/gift.svg';
 import merciIconBlack from '@/assets/logo/merci_icon_black.svg';
 import merciIconWhite from '@/assets/logo/merci_icon_white.svg';
 import { type HistoryTabId } from '@/components/Dashboard/HistoryTabsNav';
-import InviteCodeDialog from '@/components/Dialog/InviteCodeDialog';
-import ReportBugDialog from '@/components/Dialog/ReportBugDialog';
 import { SpaceSwitchDropdown } from '@/components/ProjectPageSidebar/SpaceSwitchDropdown';
 import AlertDialog from '@/components/ui/alertDialog';
 import { Button } from '@/components/ui/button';
@@ -54,7 +50,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowLeft,
   ChevronsUpDown,
-  CircleHelp,
   Folder,
   Minus,
   PanelLeft,
@@ -143,8 +138,6 @@ function HeaderWin() {
   const navigate = useNavigate();
   const location = useLocation();
   const { canGoBack } = useStackNavigationBounds();
-  const [reportBugOpen, setReportBugOpen] = useState(false);
-  const [inviteCodeDialogOpen, setInviteCodeDialogOpen] = useState(false);
   const [renameSpaceDialogOpen, setRenameSpaceDialogOpen] = useState(false);
   const [renameSpaceValue, setRenameSpaceValue] = useState('');
   const [renamingSpace, setRenamingSpace] = useState(false);
@@ -264,10 +257,6 @@ function HeaderWin() {
         .sort((a, b) => b.updatedAt - a.updatedAt),
     [activeSpaceId, projectsBySpaceId, spacesById]
   );
-
-  const openInviteCodeDialog = () => {
-    setInviteCodeDialogOpen(true);
-  };
 
   const navigateToHistoryTab = useCallback(
     (tab: HistoryTabId) => {
@@ -635,46 +624,6 @@ function HeaderWin() {
         } no-drag relative z-50 flex h-7 shrink-0 items-center`}
       >
         <div className="flex h-full shrink-0 items-center">
-          <TooltipSimple
-            content={t('layout.support')}
-            side="bottom"
-            align="end"
-          >
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="no-drag rounded-full"
-              aria-label={t('layout.support')}
-              onClick={() => setReportBugOpen(true)}
-              buttonContent="icon-only"
-            >
-              <CircleHelp aria-hidden />
-            </Button>
-          </TooltipSimple>
-          <TooltipSimple
-            content={t('layout.refer-friends')}
-            side="bottom"
-            align="end"
-          >
-            <Button
-              onClick={openInviteCodeDialog}
-              variant="ghost"
-              size="sm"
-              className="no-drag rounded-full"
-              buttonContent="icon-only"
-              aria-label={t('layout.refer-friends')}
-            >
-              <img
-                src={appearance === 'dark' ? giftWhiteIcon : giftIcon}
-                alt=""
-                width={16}
-                height={16}
-                aria-hidden
-              />
-            </Button>
-          </TooltipSimple>
-
           <div className="ml-1.5 flex h-full shrink-0 items-center gap-1 border-y-0 border-l border-r-0 border-solid border-ds-border-neutral-subtle-default pl-1.5">
             <AnimatePresence mode="wait" initial={false}>
               {isHomeRoute ? (
@@ -781,11 +730,6 @@ function HeaderWin() {
           </div>
         </div>
       )}
-      <ReportBugDialog open={reportBugOpen} onOpenChange={setReportBugOpen} />
-      <InviteCodeDialog
-        open={inviteCodeDialogOpen}
-        onOpenChange={setInviteCodeDialogOpen}
-      />
     </div>
   );
 }
