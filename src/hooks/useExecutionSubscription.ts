@@ -221,7 +221,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
 
     try {
       const baseURL = import.meta.env.DEV
-        ? import.meta.env.VITE_PROXY_URL
+        ? import.meta.env.VITE_BASE_URL
         : import.meta.env.VITE_BASE_URL;
 
       // When the base URL is a relative path (e.g. /api), derive the protocol
