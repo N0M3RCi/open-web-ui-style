@@ -274,7 +274,7 @@ async function handleResponse(
     if (err?.response?.status === 401) {
       const { logout } = getAuthStore();
       logout();
-      window.location.href = '/passcode';
+      window.location.href = '/enter';
     }
 
     throw err;
@@ -370,7 +370,7 @@ export async function sseTransport(
       if (response.status === 401) {
         const { logout } = getAuthStore();
         logout();
-        window.location.href = '/passcode';
+        window.location.href = '/enter';
         return;
       }
       if (options.onopen) {

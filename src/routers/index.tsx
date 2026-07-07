@@ -138,7 +138,7 @@ const ProtectedRoute = () => {
 
   const redirect = `${location.pathname}${location.search}`;
   const loginPath = IS_LOCAL_MODE
-    ? '/passcode'
+    ? '/enter'
     : `/login?redirect=${encodeURIComponent(redirect)}`;
   return <Navigate to={loginPath} replace />;
 };
@@ -148,7 +148,7 @@ const AppRoutes = () => (
   <Routes>
     <Route path="/login" element={<Login />} />
     <Route path="/signup" element={<Signup />} />
-    <Route path="/passcode" element={<PasscodeGate />} />
+    <Route path="/enter" element={<PasscodeGate />} />
     {ENABLE_DESKTOP_REMOTE_CONTROL_FALLBACK ? (
       <Route path="/remote-control/:sessionId" element={<RemoteControl />} />
     ) : null}

@@ -18,6 +18,9 @@ electron/main/index.ts
 electron/main/fileReader.ts
 electron/preload/index.ts
 #
+# ParticleCanvas — canvas 2D API requires raw color strings for fillStyle/strokeStyle.
+src/pages/PasscodeGate.tsx
+#
 # Animation assets — demo/preview components use hardcoded colors intentionally for visual fidelity.
 src/assets/animation/project/ProjectWorkspaceDisplay.tsx
 src/assets/animation/workspace/WorkspaceDisplay.tsx
