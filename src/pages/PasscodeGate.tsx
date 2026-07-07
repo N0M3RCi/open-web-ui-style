@@ -389,7 +389,7 @@ export default function PasscodeGate() {
                     : 'text-yellow-400/70 hover:text-yellow-300'
                 }`}
               >
-                Enter your 6 digit Passcode
+                Your 6 digit Passcode
               </button>
               <button
                 type="button"
