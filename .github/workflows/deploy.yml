@@ -70,7 +70,16 @@ jobs:
             rsync -a --delete dist-web/ /var/www/html/ 2>&1 || true
             rsync -a --delete dist-web/ /opt/open-web-ui-style/dist-web/ 2>&1 || true
 
+            echo "=== Configuring nginx proxy for Brain service ==="
+            BRAIN_CONF="/etc/nginx/conf.d/brain-proxy.conf"
+            if [ ! -f "$BRAIN_CONF" ]; then
+              printf 'location /brain/ {\n    proxy_pass http://localhost:5001/;\n    proxy_http_version 1.1;\n    proxy_set_header Upgrade $http_upgrade;\n    proxy_set_header Connection "upgrade";\n    proxy_set_header Host $host;\n    proxy_set_header X-Real-IP $remote_addr;\n    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n    proxy_set_header X-Forwarded-Proto $scheme;\n    proxy_cache_bypass $http_upgrade;\n    proxy_read_timeout 86400s;\n    proxy_send_timeout 86400s;\n}\n' | sudo tee "$BRAIN_CONF" > /dev/null 2>&1 && echo "Created brain proxy config" || echo "Failed to create brain proxy config"
+            else
+              echo "Brain proxy config already exists"
+            fi
+            sudo nginx -s reload 2>&1 || echo "nginx reload failed"
+
             echo "=== Restarting Docker services ==="
-            cd /opt/open-web-ui-style/server && docker compose restart merci_api merci_celery_worker merci_celery_beat 2>&1 || echo "docker restart failed"
+            cd /opt/open-web-ui-style/server && docker compose restart merci_api merci_brain merci_celery_worker merci_celery_beat 2>&1 || echo "docker restart failed"
 
             echo "Deploy finished at $(date)"
