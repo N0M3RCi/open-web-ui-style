@@ -14,14 +14,12 @@
 
 import { AddWorker } from '@/components/AddWorker';
 import BottomBox, { type FileAttachment } from '@/components/ChatBox/BottomBox';
-import { SESSION_SIDE_PANEL_CONTENT_WIDTH_CLASS } from '@/components/Session/sessionSidePanelLayout';
 import { Button } from '@/components/ui/button';
 import { BASE_WORKFLOW_AGENTS } from '@/components/WorkFlow/baseWorkers';
 import { isBaseWorkflowAgent } from '@/components/Workspace/FoldedAgentCard';
 import { SingleAgentList } from '@/components/Workspace/SingleAgentList';
 import { WorkforceAgentList } from '@/components/Workspace/WorkforceAgentList';
 import { WorkspaceAllSessions } from '@/components/Workspace/WorkspaceAllSessions';
-import { WorkspaceCoworkPanel } from '@/components/Workspace/WorkspaceCoworkPanel';
 import { WorkspaceExamplePrompts } from '@/components/Workspace/WorkspaceExamplePrompts';
 import { WorkspaceInstructionMd } from '@/components/Workspace/WorkspaceInstructionMd';
 import { WorkspaceProjectPicker } from '@/components/Workspace/WorkspaceProjectPicker';
@@ -52,15 +50,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 const EMPTY_TASK_ASSIGNING: Agent[] = [];
-
-const MEMORY_STORAGE_KEY = 'merci-sidebar-instructions-memory-on';
-
-function readMemoryInitial(): boolean {
-  if (typeof window === 'undefined') return true;
-  const v = window.localStorage.getItem(MEMORY_STORAGE_KEY);
-  if (v === null) return true;
-  return v === 'true';
-}
 
 interface WorkspaceProps {
   /**
@@ -228,12 +217,7 @@ export default function Workspace({
     'all-sessions': t('layout.projects'),
     'instruction-md': t('layout.instructions-rules-tone'),
   };
-  const [memoryOn, setMemoryOn] = useState(readMemoryInitial);
   const textareaRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    window.localStorage.setItem(MEMORY_STORAGE_KEY, String(memoryOn));
-  }, [memoryOn]);
 
   useEffect(() => {
     if (workspaceChatFocusRequestId === 0) return;
@@ -562,23 +546,6 @@ export default function Workspace({
     );
   }
 
-  const sidePanel =
-    workspaceSubPage === null ? (
-      <div className="shrink-0 overflow-hidden">
-        <div
-          className={cn(
-            'flex h-full flex-col overflow-hidden',
-            SESSION_SIDE_PANEL_CONTENT_WIDTH_CLASS
-          )}
-        >
-          <WorkspaceCoworkPanel
-            memoryOn={memoryOn}
-            onMemoryToggle={() => setMemoryOn((v) => !v)}
-          />
-        </div>
-      </div>
-    ) : null;
-
   return (
     <div className="relative z-[1] flex h-full min-h-0 w-full min-w-0 flex-row overflow-hidden">
       {/* Center section: header + content */}
@@ -693,7 +660,6 @@ export default function Workspace({
         </div>
       </div>
 
-      {sidePanel}
-    </div>
+      </div>
   );
 }
