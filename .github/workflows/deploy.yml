@@ -4,6 +4,7 @@ name: Deploy to VPS
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -23,8 +24,9 @@ jobs:
           npm install --ignore-scripts
           npm run build:web
 
-      - name: Deploy frontend to VPS webroot (rsync --delete cleans stale files)
+      - name: Deploy frontend via rsync
         uses: easingthemes/ssh-deploy@main
+        continue-on-error: true
         env:
           SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
           ARGS: '-rlgoDzvc -i --delete'
@@ -33,7 +35,18 @@ jobs:
           REMOTE_USER: ${{ secrets.VPS_USER }}
           TARGET: /var/www/merci/
 
-      - name: Sync to secondary webroot and restart services
+      - name: Deploy frontend via scp (fallback)
+        uses: appleboy/scp-action@v1
+        continue-on-error: true
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: 'dist-web/'
+          target: /var/www/merci/
+          strip_components: 1
+
+      - name: Sync webroots, pull code, and restart services
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -42,7 +55,7 @@ jobs:
           script: |
             set -e
             echo "=== Syncing to secondary webroot ==="
-            rsync -a --delete /var/www/merci/ /var/www/html/
+            rsync -a --delete /var/www/merci/ /var/www/html/ 2>/dev/null || true
 
             echo "=== Pulling latest code ==="
             cd /opt/open-web-ui-style
@@ -51,7 +64,12 @@ jobs:
             echo "=== Installing dependencies ==="
             npm ci --ignore-scripts
 
-            echo "=== Restarting Docker services (if needed) ==="
+            echo "=== Building web app (VPS-side) ==="
+            npm run build:web
+            rsync -a --delete dist-web/ /var/www/merci/ 2>/dev/null || true
+            rsync -a --delete dist-web/ /var/www/html/ 2>/dev/null || true
+
+            echo "=== Restarting Docker services ==="
             cd /opt/open-web-ui-style/server
             docker compose restart merci_api merci_celery_worker merci_celery_beat 2>/dev/null || true
 
