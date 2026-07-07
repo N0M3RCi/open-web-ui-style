@@ -89,6 +89,9 @@ interface AuthState {
   // API/auth environment that issued the persisted auth state.
   authEnvironmentKey: string | null;
 
+  // flag to distinguish passcode (student) users from admin users
+  isPasscodeUser: boolean;
+
   // worker list data
   workerListData: { [key: string]: Agent[] };
 
@@ -96,6 +99,7 @@ interface AuthState {
   setAuth: (auth: AuthInfo) => void;
   logout: () => void;
   setLocalProxyValue: (value: string | null) => void;
+  setIsPasscodeUser: (value: boolean) => void;
 
   // set related methods
   setAppearance: (appearance: string) => void;
@@ -205,6 +209,7 @@ const authStore = create<AuthState>()(
       share_token: null,
       localProxyValue: null,
       authEnvironmentKey: getAuthEnvironmentKey(),
+      isPasscodeUser: false,
       workerListData: {},
 
       // auth related methods
@@ -224,6 +229,10 @@ const authStore = create<AuthState>()(
         hydrateSpacesForUser(user_id);
       },
 
+      setIsPasscodeUser: (value: boolean) => {
+        set({ isPasscodeUser: value });
+      },
+
       logout: () => {
         const previousUserId = get().user_id;
         if (previousUserId != null) {
@@ -237,6 +246,7 @@ const authStore = create<AuthState>()(
           username: null,
           email: null,
           user_id: null,
+          isPasscodeUser: false,
           initState: 'carousel',
           localProxyValue: null,
           authEnvironmentKey: getAuthEnvironmentKey(),

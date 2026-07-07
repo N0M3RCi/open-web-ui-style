@@ -41,7 +41,7 @@ export default function Setting() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { t } = useTranslation();
-  const { logout } = useAuthStore();
+  const { logout, isPasscodeUser } = useAuthStore();
   const IS_LOCAL_MODE = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
   // Setting menu configuration
   const settingMenus = [
@@ -69,13 +69,17 @@ export default function Setting() {
       icon: Fingerprint,
       path: '/setting/privacy',
     },
-    {
-      id: 'admin',
-      name: 'Admin',
-      icon: Shield,
-      path: '/admin/users',
-    },
-    ...(IS_LOCAL_MODE
+    ...(!isPasscodeUser
+      ? [
+          {
+            id: 'admin',
+            name: 'Admin',
+            icon: Shield,
+            path: '/admin/users',
+          },
+        ]
+      : []),
+    ...(IS_LOCAL_MODE && !isPasscodeUser
       ? [
           {
             id: 'students',
@@ -150,8 +154,8 @@ export default function Setting() {
           {activeTab === 'appearance' && <Appearance />}
           {activeTab === 'models' && <Models />}
           {activeTab === 'privacy' && <Privacy />}
-          {activeTab === 'admin' && <AdminUsers />}
-          {activeTab === 'students' && <Students />}
+          {!isPasscodeUser && activeTab === 'admin' && <AdminUsers />}
+          {!isPasscodeUser && activeTab === 'students' && <Students />}
         </div>
       </div>
     </div>

@@ -209,6 +209,7 @@ export default function PasscodeGate() {
     setLocalProxyValue,
     setInitState,
     setIsFirstLaunch,
+    setIsPasscodeUser,
   } = useAuthStore();
 
   const [tab, setTab] = useState<'login' | 'register' | 'admin'>('login');
@@ -266,6 +267,7 @@ export default function PasscodeGate() {
       });
       if (data && data.token) {
         setAuth({ email: data.email, ...data });
+        setIsPasscodeUser(true);
         setLocalProxyValue(import.meta.env.VITE_USE_LOCAL_PROXY || null);
         setModelType('custom');
         setInitState('done');
@@ -601,7 +603,7 @@ export default function PasscodeGate() {
                       }
                     }}
                     placeholder="admin@example.com"
-                    className="border-yellow-500/20 bg-black placeholder:text-yellow-400/30 focus:ring-yellow-500/30 mb-3 w-full rounded-lg border px-4 py-3 text-sm text-yellow-400 outline-none transition-colors focus:border-yellow-500 focus:ring-2"
+                    className="border-yellow-500/20 bg-white placeholder:text-black/30 focus:ring-yellow-500/30 mb-3 w-full rounded-lg border px-4 py-3 text-sm text-black outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                   />
                   <label className="text-yellow-400/80 mb-2 block text-sm font-medium">
                     Password
@@ -616,7 +618,7 @@ export default function PasscodeGate() {
                       }
                     }}
                     placeholder="Enter your password"
-                    className="border-yellow-500/20 bg-black placeholder:text-yellow-400/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm text-yellow-400 outline-none transition-colors focus:border-yellow-500 focus:ring-2"
+                    className="border-yellow-500/20 bg-white placeholder:text-black/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm text-black outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                   />
                   {adminLoginError && (
                     <p className="mb-4 text-sm font-medium text-red-400">
