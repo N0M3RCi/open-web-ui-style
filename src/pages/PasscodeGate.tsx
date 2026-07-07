@@ -14,14 +14,15 @@
 
 import { proxyFetchPost } from '@/api/http';
 import { useAuthStore } from '@/store/authStore';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const PASSCODE_LENGTH = 6;
 
-// ─── Particle Constellation Canvas ───────────────────────────────────────────
+// ─── Live Constellation Canvas ────────────────────────────────────────────────
 
-function ParticleCanvas() {
+function ConstellationCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mouseRef = useRef({ x: -1000, y: -1000 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -36,46 +37,120 @@ function ParticleCanvas() {
     canvas.width = w;
     canvas.height = h;
 
-    const PARTICLE_COUNT = 120;
-    const CONNECTION_DIST = 140;
+    const PARTICLE_COUNT = 180;
+    const CONNECTION_DIST = 160;
     const particles: {
       x: number;
       y: number;
       vx: number;
       vy: number;
       size: number;
+      baseSize: number;
+      phase: number;
     }[] = [];
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const baseSize = Math.random() * 3 + 1.5;
       particles.push({
         x: Math.random() * w,
         y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        size: Math.random() * 2.5 + 1,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: baseSize,
+        baseSize,
+        phase: Math.random() * Math.PI * 2,
       });
     }
 
+    // Mouse tracking
+    const handleMouse = (e: MouseEvent | TouchEvent) => {
+      let cx: number;
+      let cy: number;
+      if ('touches' in e) {
+        if (e.touches.length === 0) return;
+        cx = e.touches[0].clientX;
+        cy = e.touches[0].clientY;
+      } else {
+        cx = e.clientX;
+        cy = e.clientY;
+      }
+      mouseRef.current = { x: cx, y: cy };
+    };
+    const handleMouseLeave = () => {
+      mouseRef.current = { x: -1000, y: -1000 };
+    };
+    window.addEventListener('mousemove', handleMouse);
+    window.addEventListener('touchmove', handleMouse, { passive: true });
+    window.addEventListener('touchend', handleMouseLeave);
+
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
+      const now = Date.now() / 1000;
+      const mx = mouseRef.current.x;
+      const my = mouseRef.current.y;
 
-      // Update and draw particles
+      // ── Update and draw particles ──────────────────────────────────────
       for (const p of particles) {
+        // Gentle mouse repulsion
+        const dx = p.x - mx;
+        const dy = p.y - my;
+        const mDist = Math.sqrt(dx * dx + dy * dy);
+        if (mDist < 120 && mDist > 0) {
+          const force = (120 - mDist) / 120;
+          p.vx += (dx / mDist) * force * 0.3;
+          p.vy += (dy / mDist) * force * 0.3;
+        }
+
+        // Damping
+        p.vx *= 0.99;
+        p.vy *= 0.99;
+
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
+        // Wrap around edges
+        if (p.x < -20) p.x = w + 20;
+        if (p.x > w + 20) p.x = -20;
+        if (p.y < -20) p.y = h + 20;
+        if (p.y > h + 20) p.y = -20;
 
-        // Draw particle
+        // Pulsing size
+        const pulse = Math.sin(now * 0.8 + p.phase) * 0.3 + 0.7;
+        p.size = p.baseSize * pulse;
+
+        // Glow layer
+        const glow = ctx.createRadialGradient(
+          p.x,
+          p.y,
+          0,
+          p.x,
+          p.y,
+          p.size * 4
+        );
+        glow.addColorStop(0, 'rgba(255, 215, 0, 0.6)');
+        glow.addColorStop(0.4, 'rgba(255, 215, 0, 0.15)');
+        glow.addColorStop(1, 'rgba(255, 215, 0, 0)');
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
+        ctx.fillStyle = glow;
+        ctx.fill();
+
+        // Core particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = '#1a1a1a';
         ctx.fill();
+
+        // Yellow highlight on larger particles
+        if (p.baseSize > 3) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255, 215, 0, 0.8)';
+          ctx.fill();
+        }
       }
 
-      // Draw connections (constellation lines)
-      ctx.lineWidth = 0.8;
+      // ── Constellation connections ──────────────────────────────────────
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -83,15 +158,22 @@ function ParticleCanvas() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < CONNECTION_DIST) {
-            const alpha = (1 - dist / CONNECTION_DIST) * 0.5;
-            // Yellow-to-black gradient based on position
-            const mix = Math.random() > 0.5 ? 0 : 1;
-            ctx.strokeStyle = mix
-              ? `rgba(255, 215, 0, ${alpha})`
-              : `rgba(0, 0, 0, ${alpha * 0.6})`;
+            const ratio = dist / CONNECTION_DIST;
+            const alpha = (1 - ratio) * 0.55;
+            // Yellow lines
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(255, 215, 0, ${alpha * 0.7})`;
+            ctx.lineWidth = (1 - ratio) * 1.2 + 0.2;
+            ctx.stroke();
+
+            // Black accent lines (thinner, offset)
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0, 0, 0, ${alpha * 0.25})`;
+            ctx.lineWidth = (1 - ratio) * 0.5 + 0.1;
             ctx.stroke();
           }
         }
@@ -113,6 +195,9 @@ function ParticleCanvas() {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouse);
+      window.removeEventListener('touchmove', handleMouse);
+      window.removeEventListener('touchend', handleMouseLeave);
     };
   }, []);
 
@@ -157,7 +242,6 @@ export default function PasscodeGate() {
   // Keep hidden input focused when on login tab
   useEffect(() => {
     if (tab === 'login') {
-      // Small delay to let DOM settle after tab switch
       const t = setTimeout(() => passcodeInputRef.current?.focus(), 100);
       return () => clearTimeout(t);
     }
@@ -168,6 +252,13 @@ export default function PasscodeGate() {
     if (tab === 'admin') {
       const t = setTimeout(() => adminEmailRef.current?.focus(), 100);
       return () => clearTimeout(t);
+    }
+  }, [tab]);
+
+  // Click anywhere on login tab to refocus the hidden input
+  const handleLoginAreaClick = useCallback(() => {
+    if (tab === 'login') {
+      passcodeInputRef.current?.focus();
     }
   }, [tab]);
 
@@ -269,12 +360,15 @@ export default function PasscodeGate() {
 
   return (
     <>
-      <ParticleCanvas />
-      <div className="bg-white relative z-10 flex min-h-screen items-center justify-center p-4">
+      <ConstellationCanvas />
+      <div
+        className="bg-white relative z-10 flex min-h-screen items-center justify-center p-4"
+        onClick={handleLoginAreaClick}
+      >
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 text-center">
-            <div className="border-black bg-white mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl border-2 shadow-lg">
+            <div className="border-black bg-white shadow-yellow-500/20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl border-2 shadow-lg">
               <span className="text-black text-3xl font-bold">M</span>
             </div>
             <h1 className="text-black text-2xl font-bold">M3RCI Classroom</h1>
@@ -284,16 +378,16 @@ export default function PasscodeGate() {
           </div>
 
           {/* Card */}
-          <div className="border-black/10 bg-white rounded-2xl border-2 p-6 shadow-xl">
+          <div className="bg-white shadow-yellow-500/10 rounded-2xl border-2 border-yellow-500 p-6 shadow-xl">
             {/* Tabs */}
-            <div className="border-black/10 bg-black/5 mb-6 flex rounded-lg border p-1">
+            <div className="border-black/10 bg-black/[0.03] mb-6 flex rounded-lg border p-1">
               <button
                 type="button"
                 onClick={() => {
                   setTab('login');
                   setLoginError('');
                 }}
-                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all ${
                   tab === 'login'
                     ? 'bg-black text-white shadow-sm'
                     : 'text-black/50 hover:text-black/80'
@@ -308,7 +402,7 @@ export default function PasscodeGate() {
                   setRegisterError('');
                   setRegisterStep('form');
                 }}
-                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all ${
                   tab === 'register'
                     ? 'bg-black text-white shadow-sm'
                     : 'text-black/50 hover:text-black/80'
@@ -325,20 +419,24 @@ export default function PasscodeGate() {
                   <label className="text-black/80 mb-2 block text-sm font-medium">
                     Enter your 6-digit passcode
                   </label>
-                  <div className="flex justify-center gap-2">
+                  <div className="flex justify-center gap-2.5">
                     {Array.from({ length: PASSCODE_LENGTH }).map((_, i) => (
                       <div
                         key={i}
-                        className={`flex h-14 w-11 items-center justify-center rounded-lg border text-xl font-bold transition-all ${
+                        className={`flex h-14 w-11 items-center justify-center rounded-xl border-2 text-xl font-bold transition-all duration-150 ${
                           passcode[i]
-                            ? 'text-black border-yellow-500 bg-yellow-100'
+                            ? 'text-black shadow-yellow-500/20 border-yellow-500 bg-yellow-50 shadow-sm'
                             : passcode.length === i && !loggingIn
-                              ? 'border-black/30 bg-black/5 text-black'
-                              : 'border-black/10 bg-black/5 text-black/30'
+                              ? 'border-black/40 bg-black/[0.04] text-black'
+                              : 'border-black/10 bg-black/[0.02] text-black/20'
                         }`}
                       >
                         {passcode[i] ||
-                          (passcode.length === i && !loggingIn ? '|' : '')}
+                          (passcode.length === i && !loggingIn ? (
+                            <span className="animate-pulse">|</span>
+                          ) : (
+                            ''
+                          ))}
                       </div>
                     ))}
                   </div>
@@ -365,18 +463,14 @@ export default function PasscodeGate() {
                       }
                     }}
                   />
-                  {/* Click-to-focus overlay */}
-                  <div
-                    className="mt-2 flex cursor-text justify-center"
-                    onClick={() => passcodeInputRef.current?.focus()}
-                  >
-                    <span className="text-black/40 text-xs">
-                      Click here and type your passcode
+                  <div className="mt-2 flex cursor-text justify-center">
+                    <span className="text-black/30 text-xs">
+                      Click anywhere and type your passcode
                     </span>
                   </div>
                 </div>
                 {loginError && (
-                  <p className="mb-4 text-center text-sm text-red-500">
+                  <p className="mb-4 text-center text-sm font-medium text-red-500">
                     {loginError}
                   </p>
                 )}
@@ -409,7 +503,7 @@ export default function PasscodeGate() {
                         }
                       }}
                       placeholder="e.g. Alice"
-                      className="border-black/10 bg-white text-black placeholder-black/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500"
+                      className="border-black/10 bg-white text-black placeholder:text-black/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                     />
                     {registerError && (
                       <p className="mb-4 text-sm text-red-500">
@@ -420,7 +514,7 @@ export default function PasscodeGate() {
                       type="button"
                       disabled={!name.trim() || registering}
                       onClick={handleRegister}
-                      className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                      className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {registering ? 'Generating...' : 'Generate Passcode'}
                     </button>
@@ -434,11 +528,11 @@ export default function PasscodeGate() {
                       <p className="text-black/60 mb-2 text-sm">
                         Your passcode
                       </p>
-                      <div className="inline-flex gap-2">
+                      <div className="inline-flex gap-2.5">
                         {generatedPasscode.split('').map((digit, i) => (
                           <div
                             key={i}
-                            className="text-black flex h-14 w-11 items-center justify-center rounded-lg border border-yellow-500 bg-yellow-100 text-xl font-bold"
+                            className="text-black shadow-yellow-500/20 flex h-14 w-11 items-center justify-center rounded-xl border-2 border-yellow-500 bg-yellow-50 text-xl font-bold shadow-sm"
                           >
                             {digit}
                           </div>
@@ -447,19 +541,19 @@ export default function PasscodeGate() {
                     </div>
 
                     {/* Warning notice */}
-                    <div className="mb-4 rounded-lg border border-amber-400 bg-amber-50 p-4">
+                    <div className="border-yellow-500/30 mb-4 rounded-xl border bg-gradient-to-br from-amber-50 to-yellow-50 p-4">
                       <div className="mb-1 flex items-start gap-2">
                         <span className="mt-0.5 text-lg">⚠️</span>
                         <div>
-                          <p className="text-sm font-semibold text-amber-700">
+                          <p className="text-black text-sm font-bold">
                             IMPORTANT — Please Read
                           </p>
-                          <p className="mt-1 text-xs leading-relaxed text-amber-600">
+                          <p className="text-black/70 mt-1 text-xs leading-relaxed">
                             This passcode is the <strong>ONLY</strong> way to
                             access your account. Write it down or save it
                             somewhere safe right now.
                           </p>
-                          <p className="mt-1 text-xs leading-relaxed text-amber-500">
+                          <p className="mt-1 text-xs leading-relaxed text-yellow-700">
                             Without this passcode, you will lose access to your
                             chats and data.
                           </p>
@@ -471,7 +565,7 @@ export default function PasscodeGate() {
                           id="confirm-saved"
                           checked={confirmed}
                           onChange={(e) => setConfirmed(e.target.checked)}
-                          className="border-black/20 h-4 w-4 rounded text-yellow-500 focus:ring-yellow-500"
+                          className="border-black/30 h-4 w-4 rounded text-yellow-500 focus:ring-yellow-500"
                         />
                         <label
                           htmlFor="confirm-saved"
@@ -486,7 +580,7 @@ export default function PasscodeGate() {
                       type="button"
                       disabled={!confirmed}
                       onClick={handleDoneRegister}
-                      className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                      className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       Got it, I&apos;ve saved it!
                     </button>
@@ -513,7 +607,7 @@ export default function PasscodeGate() {
                       }
                     }}
                     placeholder="admin@example.com"
-                    className="border-black/10 bg-white text-black placeholder-black/30 mb-3 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500"
+                    className="border-black/10 bg-white text-black placeholder:text-black/30 focus:ring-yellow-500/30 mb-3 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                   />
                   <label className="text-black/80 mb-2 block text-sm font-medium">
                     Password
@@ -528,10 +622,10 @@ export default function PasscodeGate() {
                       }
                     }}
                     placeholder="Enter your password"
-                    className="border-black/10 bg-white text-black placeholder-black/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-1 focus:ring-yellow-500"
+                    className="border-black/10 bg-white text-black placeholder:text-black/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                   />
                   {adminLoginError && (
-                    <p className="mb-4 text-sm text-red-500">
+                    <p className="mb-4 text-sm font-medium text-red-500">
                       {adminLoginError}
                     </p>
                   )}
@@ -543,7 +637,7 @@ export default function PasscodeGate() {
                       adminLoggingIn
                     }
                     onClick={handleAdminLogin}
-                    className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+                    className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {adminLoggingIn ? 'Signing in...' : 'Sign In'}
                   </button>
@@ -561,7 +655,7 @@ export default function PasscodeGate() {
                   setTab('admin');
                   setAdminLoginError('');
                 }}
-                className="text-black/50 decoration-black/20 hover:text-black/80 hover:decoration-black/40 text-sm font-medium underline underline-offset-2 transition-colors"
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-yellow-600 transition-all hover:bg-yellow-50 hover:text-yellow-700"
               >
                 Admin Login
               </button>
@@ -572,7 +666,7 @@ export default function PasscodeGate() {
                   setTab('login');
                   setLoginError('');
                 }}
-                className="text-black/50 decoration-black/20 hover:text-black/80 hover:decoration-black/40 text-sm font-medium underline underline-offset-2 transition-colors"
+                className="text-black/50 hover:bg-black/5 hover:text-black/80 rounded-lg px-4 py-2 text-sm font-semibold transition-all"
               >
                 Back to Passcode Login
               </button>
