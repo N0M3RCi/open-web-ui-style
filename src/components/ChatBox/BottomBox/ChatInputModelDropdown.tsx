@@ -17,7 +17,7 @@
  * Configured models switch inline; unconfigured options open Settings → Models.
  */
 
-import { proxyFetchGet, proxyFetchPatch } from '@/api/http';
+import { proxyFetchGet, proxyFetchPatch, proxyFetchPost } from '@/api/http';
 import folderIcon from '@/assets/logo/merci_icon_rich.svg';
 import {
   DropdownMenu,
@@ -29,6 +29,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { createHost } from '@/host/createHost';
 import {
   applyDefaultModelSelection,
@@ -38,7 +39,6 @@ import {
 } from '@/lib/applyDefaultModelSelection';
 import { INIT_PROVODERS } from '@/lib/llm';
 import { getProviderValid } from '@/lib/providerStatus';
-import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import {
   getLocalPlatformName,
@@ -149,9 +149,9 @@ export function ChatInputModelDropdown({
   const [providerModels, setProviderModels] = useState<
     Record<string, Array<{ id: string }>>
   >({});
-  const [fetchingModels, setFetchingModels] = useState<
-    Record<string, boolean>
-  >({});
+  const [fetchingModels, setFetchingModels] = useState<Record<string, boolean>>(
+    {}
+  );
   const [customModelInputs, setCustomModelInputs] = useState<
     Record<string, string>
   >({});
@@ -742,7 +742,7 @@ export function ChatInputModelDropdown({
                           {customInput.trim() && (
                             <button
                               type="button"
-                              className="shrink-0 rounded px-1.5 py-1 text-body-xs font-medium text-ds-text-accent-blue-default hover:bg-ds-bg-neutral-subtle-hover"
+                              className="text-ds-text-accent-blue-default shrink-0 rounded px-1.5 py-1 text-body-xs font-medium hover:bg-ds-bg-neutral-subtle-hover"
                               onClick={() => {
                                 if (form[idx]?.provider_id) {
                                   void handleModelTypeChange(
