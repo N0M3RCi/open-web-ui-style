@@ -389,7 +389,7 @@ export default function PasscodeGate() {
                     : 'text-black/50 hover:text-black/80'
                 }`}
               >
-                Enter 6 digit Passcode
+                Enter your 6 digit Passcode
               </button>
               <button
                 type="button"
@@ -496,7 +496,7 @@ export default function PasscodeGate() {
                           void handleRegister();
                         }
                       }}
-                      placeholder="e.g. Alice"
+                      placeholder="e.g. Prince"
                       className="border-black/10 bg-white text-black placeholder:text-black/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                     />
                     {registerError && (
