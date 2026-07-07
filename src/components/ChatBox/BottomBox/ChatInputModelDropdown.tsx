@@ -18,7 +18,6 @@
  */
 
 import { proxyFetchGet, proxyFetchPatch, proxyFetchPost } from '@/api/http';
-import folderIcon from '@/assets/logo/merci_icon_rich.svg';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -537,12 +536,7 @@ export function ChatInputModelDropdown({
                 activeSubTriggerRef.current = e.currentTarget;
               }}
             >
-              <img
-                src={folderIcon}
-                alt=""
-                className="mt-0.5 h-4 w-4 shrink-0"
-                aria-hidden
-              />
+              <span className="mt-0.5 text-xs">🤖</span>
               <span className="min-w-0 flex-1 text-left text-body-sm">
                 {t('setting.nova-cloud')}
               </span>

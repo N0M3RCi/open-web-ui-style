@@ -374,9 +374,9 @@ export default function PasscodeGate() {
           </div>
 
           {/* Card */}
-          <div className="bg-white shadow-yellow-500/10 rounded-2xl border-2 border-yellow-500 p-6 shadow-xl">
+          <div className="bg-black shadow-yellow-500/20 rounded-2xl border-2 border-yellow-500 p-6 shadow-xl">
             {/* Tabs */}
-            <div className="border-black/10 bg-black/[0.03] mb-6 flex rounded-lg border p-1">
+            <div className="border-yellow-500/20 bg-yellow-500/10 mb-6 flex rounded-lg border p-1">
               <button
                 type="button"
                 onClick={() => {
@@ -385,8 +385,8 @@ export default function PasscodeGate() {
                 }}
                 className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all ${
                   tab === 'login'
-                    ? 'bg-black text-white shadow-sm'
-                    : 'text-black/50 hover:text-black/80'
+                    ? 'text-black bg-yellow-500 shadow-sm'
+                    : 'text-yellow-400/70 hover:text-yellow-300'
                 }`}
               >
                 Enter your 6 digit Passcode
@@ -400,8 +400,8 @@ export default function PasscodeGate() {
                 }}
                 className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-all ${
                   tab === 'register'
-                    ? 'bg-black text-white shadow-sm'
-                    : 'text-black/50 hover:text-black/80'
+                    ? 'text-black bg-yellow-500 shadow-sm'
+                    : 'text-yellow-400/70 hover:text-yellow-300'
                 }`}
               >
                 Get a Passcode
@@ -412,7 +412,7 @@ export default function PasscodeGate() {
             {tab === 'login' && (
               <div>
                 <div className="mb-6">
-                  <label className="text-black/80 mb-2 block text-sm font-medium"></label>
+                  <label className="text-yellow-400/80 mb-2 block text-sm font-medium"></label>
                   <div className="flex justify-center gap-2.5">
                     {Array.from({ length: PASSCODE_LENGTH }).map((_, i) => (
                       <div
@@ -458,22 +458,22 @@ export default function PasscodeGate() {
                     }}
                   />
                   <div className="mt-2 flex cursor-text justify-center">
-                    <span className="text-black/30 text-xs">
+                    <span className="text-yellow-400/40 text-xs">
                       Click anywhere and type your passcode
                     </span>
                   </div>
                 </div>
                 {loginError && (
-                  <p className="mb-4 text-center text-sm font-medium text-red-500">
+                  <p className="mb-4 text-center text-sm font-medium text-red-400">
                     {loginError}
                   </p>
                 )}
                 {loggingIn && (
-                  <p className="text-black/50 text-center text-sm">
+                  <p className="text-yellow-400/60 text-center text-sm">
                     Signing in...
                   </p>
                 )}
-                <p className="text-black/30 text-center text-xs">
+                <p className="text-yellow-400/40 text-center text-xs">
                   Forgot your passcode? Contact your instructor.
                 </p>
               </div>
@@ -484,7 +484,7 @@ export default function PasscodeGate() {
               <div>
                 {registerStep === 'form' && (
                   <div>
-                    <label className="text-black/80 mb-2 block text-sm font-medium">
+                    <label className="text-yellow-400/80 mb-2 block text-sm font-medium">
                       Enter your name to get a passcode
                     </label>
                     <input
@@ -497,10 +497,10 @@ export default function PasscodeGate() {
                         }
                       }}
                       placeholder="e.g. Prince"
-                      className="border-black/10 bg-white text-black placeholder:text-black/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
+                      className="border-yellow-500/20 bg-black placeholder:text-yellow-400/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm text-yellow-400 outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                     />
                     {registerError && (
-                      <p className="mb-4 text-sm text-red-500">
+                      <p className="mb-4 text-sm text-red-400">
                         {registerError}
                       </p>
                     )}
@@ -508,7 +508,7 @@ export default function PasscodeGate() {
                       type="button"
                       disabled={!name.trim() || registering}
                       onClick={handleRegister}
-                      className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50"
+                      className="text-black w-full rounded-lg bg-yellow-500 px-4 py-3 text-sm font-medium transition-all hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {registering ? 'Generating...' : 'Generate Passcode'}
                     </button>
@@ -519,7 +519,7 @@ export default function PasscodeGate() {
                   <div>
                     {/* Passcode display */}
                     <div className="mb-4 text-center">
-                      <p className="text-black/60 mb-2 text-sm">
+                      <p className="text-yellow-400/60 mb-2 text-sm">
                         Your passcode
                       </p>
                       <div className="inline-flex gap-2.5">
@@ -535,19 +535,19 @@ export default function PasscodeGate() {
                     </div>
 
                     {/* Warning notice */}
-                    <div className="border-yellow-500/30 mb-4 rounded-xl border bg-gradient-to-br from-amber-50 to-yellow-50 p-4">
+                    <div className="border-yellow-500/30 from-yellow-900/40 to-amber-950/40 mb-4 rounded-xl border bg-gradient-to-br p-4">
                       <div className="mb-1 flex items-start gap-2">
                         <span className="mt-0.5 text-lg">⚠️</span>
                         <div>
-                          <p className="text-black text-sm font-bold">
+                          <p className="text-sm font-bold text-yellow-400">
                             IMPORTANT — Please Read
                           </p>
-                          <p className="text-black/70 mt-1 text-xs leading-relaxed">
+                          <p className="text-yellow-400/70 mt-1 text-xs leading-relaxed">
                             This passcode is the <strong>ONLY</strong> way to
                             access your account. Write it down or save it
                             somewhere safe right now.
                           </p>
-                          <p className="mt-1 text-xs leading-relaxed text-yellow-700">
+                          <p className="mt-1 text-xs leading-relaxed text-yellow-500">
                             Without this passcode, you will lose access to your
                             chats and data.
                           </p>
@@ -559,11 +559,11 @@ export default function PasscodeGate() {
                           id="confirm-saved"
                           checked={confirmed}
                           onChange={(e) => setConfirmed(e.target.checked)}
-                          className="border-black/30 h-4 w-4 rounded text-yellow-500 focus:ring-yellow-500"
+                          className="border-yellow-500/30 h-4 w-4 rounded text-yellow-500 focus:ring-yellow-500"
                         />
                         <label
                           htmlFor="confirm-saved"
-                          className="text-black/70 text-xs"
+                          className="text-yellow-400/70 text-xs"
                         >
                           I have saved my passcode
                         </label>
@@ -574,7 +574,7 @@ export default function PasscodeGate() {
                       type="button"
                       disabled={!confirmed}
                       onClick={handleDoneRegister}
-                      className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50"
+                      className="text-black w-full rounded-lg bg-yellow-500 px-4 py-3 text-sm font-medium transition-all hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       Got it, I&apos;ve saved it!
                     </button>
@@ -587,7 +587,7 @@ export default function PasscodeGate() {
             {tab === 'admin' && (
               <div>
                 <div className="mb-6">
-                  <label className="text-black/80 mb-2 block text-sm font-medium">
+                  <label className="text-yellow-400/80 mb-2 block text-sm font-medium">
                     Admin Email
                   </label>
                   <input
@@ -601,9 +601,9 @@ export default function PasscodeGate() {
                       }
                     }}
                     placeholder="admin@example.com"
-                    className="border-black/10 bg-white text-black placeholder:text-black/30 focus:ring-yellow-500/30 mb-3 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
+                    className="border-yellow-500/20 bg-black placeholder:text-yellow-400/30 focus:ring-yellow-500/30 mb-3 w-full rounded-lg border px-4 py-3 text-sm text-yellow-400 outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                   />
-                  <label className="text-black/80 mb-2 block text-sm font-medium">
+                  <label className="text-yellow-400/80 mb-2 block text-sm font-medium">
                     Password
                   </label>
                   <input
@@ -616,10 +616,10 @@ export default function PasscodeGate() {
                       }
                     }}
                     placeholder="Enter your password"
-                    className="border-black/10 bg-white text-black placeholder:text-black/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
+                    className="border-yellow-500/20 bg-black placeholder:text-yellow-400/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm text-yellow-400 outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                   />
                   {adminLoginError && (
-                    <p className="mb-4 text-sm font-medium text-red-500">
+                    <p className="mb-4 text-sm font-medium text-red-400">
                       {adminLoginError}
                     </p>
                   )}
@@ -631,7 +631,7 @@ export default function PasscodeGate() {
                       adminLoggingIn
                     }
                     onClick={handleAdminLogin}
-                    className="bg-black text-white hover:bg-black/80 w-full rounded-lg px-4 py-3 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50"
+                    className="text-black w-full rounded-lg bg-yellow-500 px-4 py-3 text-sm font-medium transition-all hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {adminLoggingIn ? 'Signing in...' : 'Sign In'}
                   </button>
@@ -649,7 +649,7 @@ export default function PasscodeGate() {
                   setTab('admin');
                   setAdminLoginError('');
                 }}
-                className="rounded-lg px-4 py-2 text-sm font-semibold text-yellow-600 transition-all hover:bg-yellow-50 hover:text-yellow-700"
+                className="hover:bg-yellow-500/10 rounded-lg px-4 py-2 text-sm font-semibold text-yellow-500 transition-all hover:text-yellow-400"
               >
                 Admin Login
               </button>
@@ -660,7 +660,7 @@ export default function PasscodeGate() {
                   setTab('login');
                   setLoginError('');
                 }}
-                className="text-black/50 hover:bg-black/5 hover:text-black/80 rounded-lg px-4 py-2 text-sm font-semibold transition-all"
+                className="text-yellow-400/60 hover:bg-yellow-500/10 rounded-lg px-4 py-2 text-sm font-semibold transition-all hover:text-yellow-400"
               >
                 Back to Passcode Login
               </button>

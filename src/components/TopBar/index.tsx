@@ -13,8 +13,6 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import { proxyFetchGet } from '@/api/http';
-import merciIconBlack from '@/assets/logo/merci_icon_black.svg';
-import merciIconWhite from '@/assets/logo/merci_icon_white.svg';
 import { type HistoryTabId } from '@/components/Dashboard/HistoryTabsNav';
 import { SpaceSwitchDropdown } from '@/components/ProjectPageSidebar/SpaceSwitchDropdown';
 import AlertDialog from '@/components/ui/alertDialog';
@@ -566,14 +564,7 @@ function HeaderWin() {
               aria-label={t('layout.home')}
               className="no-drag focus-visible:ring-ds-ring-brand-default-focus/50 flex min-h-[28px] items-center gap-1.5 rounded-full px-2 text-label-sm font-bold text-ds-text-neutral-default-default outline-none transition-colors hover:bg-ds-bg-neutral-default-hover focus-visible:ring-[3px]"
             >
-              <img
-                src={appearance === 'dark' ? merciIconWhite : merciIconBlack}
-                alt=""
-                className="h-5 w-5 select-none"
-                width={16}
-                height={16}
-                draggable={false}
-              />
+              <span className="text-base">🤖</span>
               {t('layout.home')}
             </button>
 
