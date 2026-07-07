@@ -54,6 +54,15 @@ export default defineConfig(({ mode }) => {
       emptyOutDir: true,
       sourcemap: true,
       assetsInlineLimit: 2048,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            antd: ['antd'],
+            echarts: ['echarts', 'echarts-for-react'],
+          },
+        },
+      },
     },
     server: {
       port: 5173,
