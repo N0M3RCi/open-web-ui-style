@@ -12,6 +12,7 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { useHost } from '@/host';
 import { debug } from '@/lib/debug';
 import { persister, queryClient } from '@/lib/queryClient';
@@ -29,8 +30,7 @@ import { useAuthStore } from './store/authStore';
 function App() {
   const host = useHost();
   const navigate = useNavigate();
-  const { setInitState } = useAuthStore();
-  const { token, initState } = useAuthStore();
+  const { token, initState, setInitState } = useAuthStore();
 
   // Subscribe to execution events when user is authenticated
   // Note: Removed triggers.length check to prevent reconnection on every trigger update
@@ -77,13 +77,18 @@ function App() {
   }, [host, navigate, setInitState]);
 
   return (
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={{ persister }}
-    >
-      <AppRoutes />
-      <Toaster style={{ zIndex: '999999 !important', position: 'fixed' }} />
-    </PersistQueryClientProvider>
+    <ErrorBoundary>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister }}
+      >
+        <AppRoutes />
+        <Toaster
+          style={{ zIndex: 999999, position: 'fixed' }}
+          position="bottom-right"
+        />
+      </PersistQueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

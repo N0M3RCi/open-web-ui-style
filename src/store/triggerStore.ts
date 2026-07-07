@@ -35,10 +35,7 @@ export interface WebSocketEvent {
 }
 
 export type WebSocketConnectionStatus =
-  | 'disconnected'
-  | 'connecting'
-  | 'connected'
-  | 'unhealthy';
+  'disconnected' | 'connecting' | 'connected' | 'unhealthy';
 
 export interface RemoteControlSession {
   sessionId: string;
@@ -122,7 +119,7 @@ export const useTriggerStore = create<TriggerStore>((set, get) => ({
 
   addTrigger: (triggerData: Partial<Trigger>) => {
     const newTrigger: Trigger = {
-      id: triggerData.id,
+      id: triggerData.id ?? Date.now(),
       ...triggerData,
     } as Trigger;
 
@@ -153,11 +150,19 @@ export const useTriggerStore = create<TriggerStore>((set, get) => ({
     const originalTrigger = get().triggers.find((t) => t.id === triggerId);
     if (!originalTrigger) return null;
 
+    const duplicate = {
+      ...originalTrigger,
+      id: Date.now(), // Generate a new unique numeric ID
+      name: `${originalTrigger.name} (Copy)`,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
     set((state) => ({
-      triggers: [...state.triggers, originalTrigger],
+      triggers: [...state.triggers, duplicate],
     }));
 
-    return originalTrigger;
+    return duplicate;
   },
 
   getTriggerById: (triggerId: number) => {

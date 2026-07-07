@@ -33,9 +33,14 @@ export default function SettingPrivacy() {
   }, []);
 
   const handleToggleHelpImprove = (checked: boolean) => {
+    const previousValue = helpImprove;
     setHelpImprove(checked);
     proxyFetchPut('/api/v1/user/privacy', { help_improve: checked }).catch(
-      (err) => console.error('Failed to update settings:', err)
+      (err) => {
+        console.error('Failed to update settings:', err);
+        // Revert on failure
+        setHelpImprove(previousValue);
+      }
     );
   };
 

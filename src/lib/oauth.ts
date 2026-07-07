@@ -44,36 +44,51 @@ export class OAuth {
   }
 
   async startOauth(mcpName: string) {
-    const mcp = mcpMap[mcpName as keyof typeof mcpMap];
-    if (!mcp) throw new Error(`MCP ${mcpName} not found`);
+    try {
+      const mcp = mcpMap[mcpName as keyof typeof mcpMap];
+      if (!mcp) throw new Error(`MCP ${mcpName} not found`);
 
-    this.url = mcp.url;
-    this.provider = mcp.provider;
-    const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
-    this.redirect_uris = [`${siteUrl}/api/v1/oauth/${this.provider}/callback`];
-    this.authServerUrl = new URL(mcp.url).origin;
-    this.resourcePath = mcp?.resourcePath || this.resourcePath;
-    this.authorizationServerPath =
-      mcp?.authorizationServerPath || this.authorizationServerPath;
+      this.url = mcp.url;
+      this.provider = mcp.provider;
+      const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+      this.redirect_uris = [
+        `${siteUrl}/api/v1/oauth/${this.provider}/callback`,
+      ];
+      this.authServerUrl = new URL(mcp.url).origin;
+      this.resourcePath = mcp?.resourcePath || this.resourcePath;
+      this.authorizationServerPath =
+        mcp?.authorizationServerPath || this.authorizationServerPath;
 
-    this.resourceMetadata = await this.getResourceMetadata();
-    this.authorizationServerMetadata =
-      await this.getAuthorizationServerMetadata();
-    this.registerClientData = await this.clientRegistration();
-    const oauthUrl = await this.generateAuthUrl();
-    window.location.href = oauthUrl;
+      this.resourceMetadata = await this.getResourceMetadata();
+      this.authorizationServerMetadata =
+        await this.getAuthorizationServerMetadata();
+      this.registerClientData = await this.clientRegistration();
+      const oauthUrl = await this.generateAuthUrl();
+      window.location.href = oauthUrl;
+    } catch (error) {
+      console.error(`OAuth initialization failed for ${mcpName}:`, error);
+      throw error;
+    }
   }
 
   async getResourceMetadata() {
-    return await fetch(this.authServerUrl + this.resourcePath).then((res) =>
-      res.json()
-    );
+    const res = await fetch(this.authServerUrl + this.resourcePath);
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch resource metadata: ${res.status} ${res.statusText}`
+      );
+    }
+    return await res.json();
   }
 
   async getAuthorizationServerMetadata() {
-    return await fetch(this.authServerUrl + this.authorizationServerPath).then(
-      (res) => res.json()
-    );
+    const res = await fetch(this.authServerUrl + this.authorizationServerPath);
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch authorization server metadata: ${res.status} ${res.statusText}`
+      );
+    }
+    return await res.json();
   }
 
   async clientRegistration() {
@@ -82,7 +97,7 @@ export class OAuth {
       grant_types_supported,
       response_types_supported,
     } = this.authorizationServerMetadata;
-    return await fetch(registration_endpoint, {
+    const res = await fetch(registration_endpoint, {
       method: 'POST',
       body: JSON.stringify({
         client_name: this.client_name,
@@ -92,7 +107,13 @@ export class OAuth {
         response_types: response_types_supported,
         token_endpoint_auth_method: 'none',
       }),
-    }).then((res) => res.json());
+    });
+    if (!res.ok) {
+      throw new Error(
+        `Client registration failed: ${res.status} ${res.statusText}`
+      );
+    }
+    return await res.json();
   }
 
   async generateAuthUrl() {
@@ -101,7 +122,14 @@ export class OAuth {
     const { authorization_endpoint } = this.authorizationServerMetadata;
     const { code_challenge, code_verifier } = await this.pkceChallenge();
     this.codeVerifier = code_verifier;
-    return `${authorization_endpoint}?response_type=${responseType}&client_id=${this.registerClientData.client_id}&redirect_uri=${this.redirect_uris[0]}&code_challenge_method=${codeChallengeMethod}&code_challenge=${code_challenge}`;
+    const params = new URLSearchParams({
+      response_type: responseType,
+      client_id: this.registerClientData.client_id,
+      redirect_uri: this.redirect_uris[0],
+      code_challenge_method: codeChallengeMethod,
+      code_challenge: code_challenge,
+    });
+    return `${authorization_endpoint}?${params.toString()}`;
   }
 
   async getToken(code: string, email: string) {
@@ -121,11 +149,15 @@ export class OAuth {
       params.set('resource', this.resourceMetadata.resource);
     }
 
-    const token = await fetch(token_endpoint, {
+    const res = await fetch(token_endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params.toString(),
-    }).then((res) => res.json());
+    });
+    if (!res.ok) {
+      throw new Error(`Token exchange failed: ${res.status} ${res.statusText}`);
+    }
+    const token = await res.json();
 
     this.saveToken(this.provider, email, {
       ...token,
@@ -163,11 +195,15 @@ export class OAuth {
       params.set('client_secret', this.registerClientData.client_secret);
     }
 
-    const newToken = await fetch(token_endpoint, {
+    const res = await fetch(token_endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: params.toString(),
-    }).then((res) => res.json());
+    });
+    if (!res.ok) {
+      throw new Error(`Token refresh failed: ${res.status} ${res.statusText}`);
+    }
+    const newToken = await res.json();
 
     const electronAPI = getElectronAPI();
     if (electronAPI?.envWrite) {
@@ -188,26 +224,58 @@ export class OAuth {
   }
 
   // --- local token storage for multiple accounts and providers ---
+  // NOTE: Tokens are stored in localStorage with basic obfuscation.
+  // In a production Electron environment, these should be stored via
+  // the IPC layer (electronAPI.envWrite) for better security.
+  // localStorage is accessible to any JavaScript on the same origin,
+  // so XSS can still exfiltrate tokens. This is a defense-in-depth
+  // measure against casual access, not a true security boundary.
 
   getStorageKey() {
     return 'oauth_tokens';
   }
 
+  /** Simple obfuscation to prevent casual reading from localStorage. */
+  _obfuscate(data: string): string {
+    return btoa(data);
+  }
+
+  /** Reverse of _obfuscate. Returns null on corrupted data. */
+  _deobfuscate(encoded: string): string | null {
+    try {
+      return atob(encoded);
+    } catch {
+      return null;
+    }
+  }
+
   getAllTokens(): Record<string, Record<string, any>> {
-    const data = localStorage.getItem(this.getStorageKey());
-    return data ? JSON.parse(data) : {};
+    try {
+      const data = localStorage.getItem(this.getStorageKey());
+      if (!data) return {};
+      const decoded = this._deobfuscate(data);
+      if (!decoded) return {};
+      return JSON.parse(decoded);
+    } catch {
+      // Corrupted data — reset
+      localStorage.removeItem(this.getStorageKey());
+      return {};
+    }
   }
 
   saveToken(provider: string, email: string, tokenData: any) {
     const all = this.getAllTokens();
     if (!all[provider]) all[provider] = {};
     all[provider][email] = tokenData;
-    localStorage.setItem(this.getStorageKey(), JSON.stringify(all));
+    localStorage.setItem(
+      this.getStorageKey(),
+      this._obfuscate(JSON.stringify(all))
+    );
   }
 
   loadToken(provider: string, email: string): any | null {
     const all = this.getAllTokens();
-    return (all?.[provider] && all?.[provider]?.[email]) || null;
+    return all[provider]?.[email] ?? null;
   }
 
   clearToken(provider: string, email: string) {
@@ -217,7 +285,10 @@ export class OAuth {
       if (Object.keys(all[provider]).length === 0) {
         delete all[provider];
       }
-      localStorage.setItem(this.getStorageKey(), JSON.stringify(all));
+      localStorage.setItem(
+        this.getStorageKey(),
+        this._obfuscate(JSON.stringify(all))
+      );
     }
   }
 

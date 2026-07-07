@@ -22,6 +22,10 @@ const groupTasksByProject = (tasks: HistoryTask[]): ProjectGroup[] => {
   tasks.forEach((task) => {
     const projectId = task.project_id;
 
+    // Skip null/undefined project IDs to prevent data corruption
+    // where Map converts null/undefined to the string "null"/"undefined"
+    if (!projectId) return;
+
     if (!projectMap.has(projectId)) {
       projectMap.set(projectId, {
         project_id: projectId,

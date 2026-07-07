@@ -22,7 +22,7 @@
  * - Message handling
  */
 
-import { act, renderHook } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Mock dependencies - moved to top before other imports
@@ -153,6 +153,13 @@ import { ChatTaskStatus } from '../../../src/types/constants';
 describe('ChatStore - Core Functionality', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset singleton store state to prevent cross-test leakage
+    useChatStore.setState({
+      activeTaskId: null,
+      nextTaskId: null,
+      tasks: {},
+      updateCount: 0,
+    });
   });
 
   describe('Confirmed user prompt resolution', () => {
@@ -384,38 +391,38 @@ describe('ChatStore - Core Functionality', () => {
 
   describe('Task Creation', () => {
     it('should create a task with unique ID', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId1 = result.current.getState().create();
-        const taskId2 = result.current.getState().create();
+        const taskId1 = store.getState().create();
+        const taskId2 = store.getState().create();
 
         expect(taskId1).toBeDefined();
         expect(taskId2).toBeDefined();
         expect(taskId1).not.toBe(taskId2);
-        expect(result.current.getState().tasks[taskId1]).toBeDefined();
-        expect(result.current.getState().tasks[taskId2]).toBeDefined();
+        expect(store.getState().tasks[taskId1]).toBeDefined();
+        expect(store.getState().tasks[taskId2]).toBeDefined();
       });
     });
 
     it('should create a task with custom ID', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
       const customId = 'custom-task-123';
 
       act(() => {
-        const taskId = result.current.getState().create(customId);
+        const taskId = store.getState().create(customId);
 
         expect(taskId).toBe(customId);
-        expect(result.current.getState().tasks[customId]).toBeDefined();
+        expect(store.getState().tasks[customId]).toBeDefined();
       });
     });
 
     it('should initialize task with correct default state', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
-        const task = result.current.getState().tasks[taskId];
+        const taskId = store.getState().create();
+        const task = store.getState().tasks[taskId];
 
         expect(task.status).toBe('pending');
         expect(task.messages).toEqual([]);
@@ -430,190 +437,188 @@ describe('ChatStore - Core Functionality', () => {
     });
 
     it('should set task as active when created', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        expect(result.current.getState().activeTaskId).toBe(taskId);
+        expect(store.getState().activeTaskId).toBe(taskId);
       });
     });
   });
 
   describe('Task Removal', () => {
     it('should remove a task by ID', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
-        expect(result.current.getState().tasks[taskId]).toBeDefined();
+        const taskId = store.getState().create();
+        expect(store.getState().tasks[taskId]).toBeDefined();
 
-        result.current.getState().removeTask(taskId);
+        store.getState().removeTask(taskId);
 
-        expect(result.current.getState().tasks[taskId]).toBeUndefined();
+        expect(store.getState().tasks[taskId]).toBeUndefined();
       });
     });
 
     it('should handle removing non-existent task gracefully', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
         // Should not throw
-        result.current.getState().removeTask('non-existent-id');
+        store.getState().removeTask('non-existent-id');
       });
     });
 
     it('should clear all tasks and create new one', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const _taskId1 = result.current.getState().create();
-        const _taskId2 = result.current.getState().create();
+        const _taskId1 = store.getState().create();
+        const _taskId2 = store.getState().create();
 
-        expect(Object.keys(result.current.getState().tasks)).toHaveLength(2);
+        expect(Object.keys(store.getState().tasks)).toHaveLength(2);
 
-        result.current.getState().clearTasks();
+        store.getState().clearTasks();
 
-        const remainingTasks = Object.keys(result.current.getState().tasks);
+        const remainingTasks = Object.keys(store.getState().tasks);
         expect(remainingTasks).toHaveLength(1);
-        expect(result.current.getState().activeTaskId).toBeDefined();
+        expect(store.getState().activeTaskId).toBeDefined();
       });
     });
   });
 
   describe('Status Management', () => {
     it('should update task status correctly', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().setStatus(taskId, 'running');
-        expect(result.current.getState().tasks[taskId].status).toBe('running');
+        store.getState().setStatus(taskId, 'running');
+        expect(store.getState().tasks[taskId].status).toBe('running');
 
-        result.current.getState().setStatus(taskId, 'finished');
-        expect(result.current.getState().tasks[taskId].status).toBe('finished');
+        store.getState().setStatus(taskId, 'finished');
+        expect(store.getState().tasks[taskId].status).toBe('finished');
 
-        result.current.getState().setStatus(taskId, 'pause');
-        expect(result.current.getState().tasks[taskId].status).toBe('pause');
+        store.getState().setStatus(taskId, 'pause');
+        expect(store.getState().tasks[taskId].status).toBe('pause');
       });
     });
 
     it('should set pending state independently of status', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().setIsPending(taskId, true);
-        expect(result.current.getState().tasks[taskId].isPending).toBe(true);
-        expect(result.current.getState().tasks[taskId].status).toBe('pending');
+        store.getState().setIsPending(taskId, true);
+        expect(store.getState().tasks[taskId].isPending).toBe(true);
+        expect(store.getState().tasks[taskId].status).toBe('pending');
 
-        result.current.getState().setStatus(taskId, 'running');
-        expect(result.current.getState().tasks[taskId].isPending).toBe(true);
-        expect(result.current.getState().tasks[taskId].status).toBe('running');
+        store.getState().setStatus(taskId, 'running');
+        expect(store.getState().tasks[taskId].isPending).toBe(true);
+        expect(store.getState().tasks[taskId].status).toBe('running');
       });
     });
   });
 
   describe('Token Management', () => {
     it('should accumulate tokens correctly', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().addTokens(taskId, 100);
-        expect(result.current.getState().getTokens(taskId)).toBe(100);
+        store.getState().addTokens(taskId, 100);
+        expect(store.getState().getTokens(taskId)).toBe(100);
 
-        result.current.getState().addTokens(taskId, 50);
-        expect(result.current.getState().getTokens(taskId)).toBe(150);
+        store.getState().addTokens(taskId, 50);
+        expect(store.getState().getTokens(taskId)).toBe(150);
 
-        result.current.getState().addTokens(taskId, 250);
-        expect(result.current.getState().getTokens(taskId)).toBe(400);
+        store.getState().addTokens(taskId, 250);
+        expect(store.getState().getTokens(taskId)).toBe(400);
       });
     });
 
     it('should handle negative token additions', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().addTokens(taskId, 100);
-        result.current.getState().addTokens(taskId, -50);
+        store.getState().addTokens(taskId, 100);
+        store.getState().addTokens(taskId, -50);
 
-        expect(result.current.getState().getTokens(taskId)).toBe(50);
+        expect(store.getState().getTokens(taskId)).toBe(50);
       });
     });
 
     it('should return 0 tokens for non-existent task', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
-      expect(result.current.getState().getTokens('non-existent')).toBe(0);
+      expect(store.getState().getTokens('non-existent')).toBe(0);
     });
 
     it('should preserve tokens when creating new task with initial tokens', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId1 = result.current.getState().create();
-        result.current.getState().addTokens(taskId1, 500);
+        const taskId1 = store.getState().create();
+        store.getState().addTokens(taskId1, 500);
 
         // Simulate new task in same project with accumulated tokens
-        const taskId2 = result.current.getState().create();
-        result.current.getState().addTokens(taskId2, 500); // Cumulative
+        const taskId2 = store.getState().create();
+        store.getState().addTokens(taskId2, 500); // Cumulative
 
-        expect(result.current.getState().getTokens(taskId2)).toBe(500);
+        expect(store.getState().getTokens(taskId2)).toBe(500);
       });
     });
   });
 
   describe('Message Management', () => {
     it('should add messages to task', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: generateUniqueId(),
           role: 'user',
           content: 'Hello, world!',
         });
 
-        expect(result.current.getState().tasks[taskId].messages).toHaveLength(
-          1
+        expect(store.getState().tasks[taskId].messages).toHaveLength(1);
+        expect(store.getState().tasks[taskId].messages[0].content).toBe(
+          'Hello, world!'
         );
-        expect(
-          result.current.getState().tasks[taskId].messages[0].content
-        ).toBe('Hello, world!');
       });
     });
 
     it('should maintain message order', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: '1',
           role: 'user',
           content: 'First',
         });
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: '2',
           role: 'agent',
           content: 'Second',
         });
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: '3',
           role: 'user',
           content: 'Third',
         });
 
-        const messages = result.current.getState().tasks[taskId].messages;
+        const messages = store.getState().tasks[taskId].messages;
         expect(messages).toHaveLength(3);
         expect(messages[0].content).toBe('First');
         expect(messages[1].content).toBe('Second');
@@ -622,58 +627,58 @@ describe('ChatStore - Core Functionality', () => {
     });
 
     it('should get last user message', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
-        result.current.getState().setActiveTaskId(taskId);
+        const taskId = store.getState().create();
+        store.getState().setActiveTaskId(taskId);
 
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: '1',
           role: 'user',
           content: 'First user message',
         });
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: '2',
           role: 'agent',
           content: 'Agent response',
         });
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: '3',
           role: 'user',
           content: 'Second user message',
         });
 
-        const lastUserMessage = result.current.getState().getLastUserMessage();
+        const lastUserMessage = store.getState().getLastUserMessage();
         expect(lastUserMessage?.content).toBe('Second user message');
       });
     });
 
     it('should return null when no user messages exist', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
-        result.current.getState().setActiveTaskId(taskId);
+        const taskId = store.getState().create();
+        store.getState().setActiveTaskId(taskId);
 
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: '1',
           role: 'agent',
           content: 'Agent message',
         });
 
-        const lastUserMessage = result.current.getState().getLastUserMessage();
+        const lastUserMessage = store.getState().getLastUserMessage();
         expect(lastUserMessage).toBeNull();
       });
     });
 
     it('should set messages replacing existing ones', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: '1',
           role: 'user',
           content: 'Original',
@@ -684,59 +689,53 @@ describe('ChatStore - Core Functionality', () => {
           { id: '3', role: 'agent' as const, content: 'New 2' },
         ];
 
-        result.current.getState().setMessages(taskId, newMessages);
+        store.getState().setMessages(taskId, newMessages);
 
-        expect(result.current.getState().tasks[taskId].messages).toHaveLength(
-          2
+        expect(store.getState().tasks[taskId].messages).toHaveLength(2);
+        expect(store.getState().tasks[taskId].messages[0].content).toBe(
+          'New 1'
         );
-        expect(
-          result.current.getState().tasks[taskId].messages[0].content
-        ).toBe('New 1');
       });
     });
   });
 
   describe('Task Time Tracking', () => {
     it('should track task time', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
         const startTime = Date.now();
 
-        result.current.getState().setTaskTime(taskId, startTime);
+        store.getState().setTaskTime(taskId, startTime);
 
-        expect(result.current.getState().tasks[taskId].taskTime).toBe(
-          startTime
-        );
+        expect(store.getState().tasks[taskId].taskTime).toBe(startTime);
       });
     });
 
     it('should track elapsed time', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().setElapsed(taskId, 5000);
+        store.getState().setElapsed(taskId, 5000);
 
-        expect(result.current.getState().tasks[taskId].elapsed).toBe(5000);
+        expect(store.getState().tasks[taskId].elapsed).toBe(5000);
       });
     });
 
     it('should format task time correctly', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
         // Test elapsed time formatting
-        result.current.getState().setTaskTime(taskId, 0);
-        result.current.getState().setElapsed(taskId, 3665000); // 1h 1m 5s
+        store.getState().setTaskTime(taskId, 0);
+        store.getState().setElapsed(taskId, 3665000); // 1h 1m 5s
 
-        const formatted = result.current
-          .getState()
-          .getFormattedTaskTime(taskId);
+        const formatted = store.getState().getFormattedTaskTime(taskId);
         expect(formatted).toBe('01:01:05');
       });
     });
@@ -744,58 +743,58 @@ describe('ChatStore - Core Functionality', () => {
 
   describe('Progress Tracking', () => {
     it('should update progress value', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
-        result.current.getState().setProgressValue(taskId, 50);
-        expect(result.current.getState().tasks[taskId].progressValue).toBe(50);
+        store.getState().setProgressValue(taskId, 50);
+        expect(store.getState().tasks[taskId].progressValue).toBe(50);
 
-        result.current.getState().setProgressValue(taskId, 100);
-        expect(result.current.getState().tasks[taskId].progressValue).toBe(100);
+        store.getState().setProgressValue(taskId, 100);
+        expect(store.getState().tasks[taskId].progressValue).toBe(100);
       });
     });
 
     it('should compute progress based on completed tasks', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        const taskId = result.current.getState().create();
+        const taskId = store.getState().create();
 
         // Set up task structure
-        result.current.getState().setTaskRunning(taskId, [
+        store.getState().setTaskRunning(taskId, [
           { id: '1', content: 'Task 1', status: 'completed' },
           { id: '2', content: 'Task 2', status: 'completed' },
           { id: '3', content: 'Task 3', status: 'running' },
           { id: '4', content: 'Task 4', status: 'waiting' },
         ] as any);
 
-        result.current.getState().computedProgressValue(taskId);
+        store.getState().computedProgressValue(taskId);
 
         // 2 out of 4 = 50%
-        expect(result.current.getState().tasks[taskId].progressValue).toBe(50);
+        expect(store.getState().tasks[taskId].progressValue).toBe(50);
       });
     });
   });
 
   describe('Update Counter', () => {
     it('should increment update count', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
-      const initialCount = result.current.getState().updateCount;
-
-      act(() => {
-        result.current.getState().setUpdateCount();
-      });
-
-      expect(result.current.getState().updateCount).toBe(initialCount + 1);
+      const initialCount = store.getState().updateCount;
 
       act(() => {
-        result.current.getState().setUpdateCount();
+        store.getState().setUpdateCount();
       });
 
-      expect(result.current.getState().updateCount).toBe(initialCount + 2);
+      expect(store.getState().updateCount).toBe(initialCount + 1);
+
+      act(() => {
+        store.getState().setUpdateCount();
+      });
+
+      expect(store.getState().updateCount).toBe(initialCount + 2);
     });
   });
 
@@ -808,15 +807,13 @@ describe('ChatStore - Core Functionality', () => {
         })
       );
 
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
       const appendInitChatStore = vi.fn(() => {
-        const optimisticTaskId = result.current
-          .getState()
-          .create('optimistic-task');
-        result.current.getState().setActiveTaskId(optimisticTaskId);
+        const optimisticTaskId = store.getState().create('optimistic-task');
+        store.getState().setActiveTaskId(optimisticTaskId);
         return {
           taskId: optimisticTaskId,
-          chatStore: result.current,
+          chatStore: store,
         };
       });
       const getProjectStoreState = vi.mocked(useProjectStore.getState);
@@ -835,8 +832,8 @@ describe('ChatStore - Core Functionality', () => {
 
       let startPromise!: Promise<void>;
       act(() => {
-        const initialTaskId = result.current.getState().create('initial-task');
-        startPromise = result.current
+        const initialTaskId = store.getState().create('initial-task');
+        startPromise = store
           .getState()
           .startTask(
             initialTaskId,
@@ -852,7 +849,7 @@ describe('ChatStore - Core Functionality', () => {
       });
 
       expect(appendInitChatStore).toHaveBeenCalledTimes(1);
-      expect(result.current.getState().tasks['optimistic-task']).toMatchObject({
+      expect(store.getState().tasks['optimistic-task']).toMatchObject({
         isPending: true,
         status: ChatTaskStatus.PENDING,
         messages: [
@@ -868,7 +865,7 @@ describe('ChatStore - Core Functionality', () => {
         await startPromise;
       });
 
-      expect(result.current.getState().tasks['optimistic-task']).toMatchObject({
+      expect(store.getState().tasks['optimistic-task']).toMatchObject({
         isPending: false,
         status: ChatTaskStatus.FINISHED,
       });
@@ -882,41 +879,39 @@ describe('ChatStore - Core Functionality', () => {
 
   describe('Cross-store task safety', () => {
     it('does not create phantom tasks through task-scoped setters', () => {
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       act(() => {
-        result.current.getState().setSelectedFile('missing-task', {
+        store.getState().setSelectedFile('missing-task', {
           name: 'missing.md',
           path: '/missing.md',
           type: 'md',
         });
-        result.current
-          .getState()
-          .setActiveWorkspace('missing-task', 'workflow');
-        result.current.getState().setActiveAgent('missing-task', 'agent-1');
+        store.getState().setActiveWorkspace('missing-task', 'workflow');
+        store.getState().setActiveAgent('missing-task', 'agent-1');
       });
 
-      expect(result.current.getState().tasks['missing-task']).toBeUndefined();
+      expect(store.getState().tasks['missing-task']).toBeUndefined();
     });
   });
 
   describe('Plan confirmation', () => {
     it('rolls back confirmed plan UI when backend start request fails', async () => {
       vi.mocked(fetchPut).mockRejectedValueOnce(new Error('network down'));
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       let taskId: string;
       await act(async () => {
-        taskId = result.current.getState().create();
-        result.current.getState().setActiveTaskId(taskId);
-        result.current.getState().setTaskInfo(taskId, [
+        taskId = store.getState().create();
+        store.getState().setActiveTaskId(taskId);
+        store.getState().setTaskInfo(taskId, [
           {
             id: 'task.1',
             content: 'Do the work',
             status: 'empty',
           } as any,
         ]);
-        result.current.getState().addMessages(taskId, {
+        store.getState().addMessages(taskId, {
           id: generateUniqueId(),
           role: 'agent',
           content: '',
@@ -926,10 +921,10 @@ describe('ChatStore - Core Functionality', () => {
       });
 
       await act(async () => {
-        await result.current.getState().handleConfirmTask('project-1', taskId!);
+        await store.getState().handleConfirmTask('project-1', taskId!);
       });
 
-      const task = result.current.getState().tasks[taskId!];
+      const task = store.getState().tasks[taskId!];
       const planMessage = task.messages.find(
         (message) => message.step === 'to_sub_tasks'
       );
@@ -960,23 +955,61 @@ describe('ChatStore - Core Functionality', () => {
 
       const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
+      const previousProjectStoreState =
+        useProjectStore.getState.getMockImplementation();
+      useProjectStore.getState.mockReturnValue({
+        activeProjectId: 'project-1',
+        getHistoryId: () => null,
+        setHistoryId: vi.fn(),
+        setProjectSpace: vi.fn(),
+        getProjectById: () => ({
+          id: 'project-1',
+          mode: 'single',
+          spaceId: 'space-1',
+        }),
+        appendInitChatStore: vi.fn(() => ({
+          taskId: store.getState().activeTaskId,
+          chatStore: store,
+        })),
+        getAllChatStores: vi.fn(() => []),
+      } as any);
+
+      // Mock proxyFetchGet to return a valid cloud model key
+      const previousProxyFetchGetImpl = proxyFetchGet.getMockImplementation();
+      proxyFetchGet.mockResolvedValue({
+        value: 'mock-cloud-key',
+        api_url: 'http://localhost:8000',
+        items: [],
+        warning_code: null,
+      });
 
       let taskId: string;
       await act(async () => {
-        taskId = result.current.getState().create();
-        result.current.getState().setActiveTaskId(taskId!);
-        result.current.getState().setStatus(taskId!, ChatTaskStatus.FINISHED);
-        result.current.getState().addMessages(taskId!, {
+        taskId = store.getState().create();
+        store.getState().setActiveTaskId(taskId!);
+        store.getState().setStatus(taskId!, ChatTaskStatus.FINISHED);
+        store.getState().addMessages(taskId!, {
           id: generateUniqueId(),
           role: 'user',
           content: 'Test message',
         });
-        result.current.getState().setHasMessages(taskId!, true);
+        store.getState().setHasMessages(taskId!, true);
       });
 
       await act(async () => {
-        await result.current.getState().startTask(taskId!);
+        await store
+          .getState()
+          .startTask(
+            taskId!,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            'project-1'
+          );
       });
 
       expect(mockFetchEventSource).toHaveBeenCalledTimes(1);
@@ -985,6 +1018,12 @@ describe('ChatStore - Core Functionality', () => {
       );
 
       logSpy.mockRestore();
+      if (previousProjectStoreState) {
+        useProjectStore.getState.mockImplementation(previousProjectStoreState);
+      }
+      if (previousProxyFetchGetImpl) {
+        proxyFetchGet.mockImplementation(previousProxyFetchGetImpl);
+      }
     });
   });
 
@@ -992,6 +1031,11 @@ describe('ChatStore - Core Functionality', () => {
     const replayProjectState = () => ({
       activeProjectId: 'proj-replay',
       getHistoryId: () => null,
+      getProjectById: () => ({
+        id: 'proj-replay',
+        mode: 'single',
+        spaceId: 'space-1',
+      }),
     });
 
     beforeEach(() => {
@@ -1012,14 +1056,14 @@ describe('ChatStore - Core Functionality', () => {
 
     it('replay() creates task and starts SSE', async () => {
       vi.mocked(fetchEventSource).mockImplementation(() => Promise.resolve());
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
 
       await act(async () => {
-        await result.current.getState().replay('replay-1', 'Q', 0.2);
+        await store.getState().replay('replay-1', 'Q', 0.2);
       });
 
-      expect(result.current.getState().tasks['replay-1']).toBeDefined();
-      expect(result.current.getState().activeTaskId).toBe('replay-1');
+      expect(store.getState().tasks['replay-1']).toBeDefined();
+      expect(store.getState().activeTaskId).toBe('replay-1');
       expect(fetchEventSource).toHaveBeenCalled();
     });
 
@@ -1027,12 +1071,12 @@ describe('ChatStore - Core Functionality', () => {
       vi.mocked(fetchEventSource).mockImplementation(() =>
         Promise.reject(new DOMException('', 'AbortError'))
       );
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
       let taskId!: string;
       await act(async () => {
-        taskId = result.current.getState().create();
-        result.current.getState().setHasMessages(taskId, true);
-        result.current.getState().addMessages(taskId, {
+        taskId = store.getState().create();
+        store.getState().setHasMessages(taskId, true);
+        store.getState().addMessages(taskId, {
           id: generateUniqueId(),
           role: 'user',
           content: 'Q',
@@ -1040,7 +1084,7 @@ describe('ChatStore - Core Functionality', () => {
       });
 
       await expect(
-        result.current.getState().startTask(taskId, 'replay', undefined, 0.2)
+        store.getState().startTask(taskId, 'replay', undefined, 0.2)
       ).resolves.toBeUndefined();
     });
 
@@ -1050,12 +1094,12 @@ describe('ChatStore - Core Functionality', () => {
       const consoleSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => {});
-      const { result } = renderHook(() => useChatStore());
+      const store = useChatStore;
       let taskId!: string;
       await act(async () => {
-        taskId = result.current.getState().create();
-        result.current.getState().setHasMessages(taskId, true);
-        result.current.getState().addMessages(taskId, {
+        taskId = store.getState().create();
+        store.getState().setHasMessages(taskId, true);
+        store.getState().addMessages(taskId, {
           id: generateUniqueId(),
           role: 'user',
           content: 'Q',
@@ -1063,7 +1107,7 @@ describe('ChatStore - Core Functionality', () => {
       });
 
       await expect(
-        result.current.getState().startTask(taskId, 'replay', undefined, 0.2)
+        store.getState().startTask(taskId, 'replay', undefined, 0.2)
       ).rejects.toThrow('SSE failed');
       expect(consoleSpy).toHaveBeenCalledWith(
         expect.stringContaining('SSE stream failed for task'),

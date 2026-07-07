@@ -345,20 +345,21 @@ const authStore = create<AuthState>()(
       // worker related methods
       setWorkerList: (workerList) => {
         const { email } = get();
+        if (!email) return; // Guard against null email (data corruption prevention)
         set((state) => ({
           ...state,
           workerListData: {
             ...state.workerListData,
-            [email as string]: workerList,
+            [email]: workerList,
           },
         }));
       },
 
       checkAgentTool: (tool) => {
         const { email } = get();
+        if (!email) return; // Guard against null email (data corruption prevention)
         set((state) => {
-          const currentEmail = email as string;
-          const originalList = state.workerListData[currentEmail] ?? [];
+          const originalList = state.workerListData[email] ?? [];
 
           debug('tool!!!', tool);
 
@@ -377,7 +378,7 @@ const authStore = create<AuthState>()(
             ...state,
             workerListData: {
               ...state.workerListData,
-              [currentEmail]: updatedList,
+              [email]: updatedList,
             },
           };
         });
@@ -487,6 +488,7 @@ const authStore = create<AuthState>()(
         username: state.username,
         email: state.email,
         user_id: state.user_id,
+        isPasscodeUser: state.isPasscodeUser,
         appearance: state.appearance,
         appearanceMode: state.appearanceMode,
         lightColorThemeId: state.lightColorThemeId,

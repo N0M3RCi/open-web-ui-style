@@ -78,6 +78,13 @@ export default function SettingGeneral() {
   const [providerList, setProviderList] = useState<any[]>([]);
   const [providerSaving, setProviderSaving] = useState(false);
   const [providerKeyVisible, setProviderKeyVisible] = useState(false);
+  const [providerKeyOriginal, setProviderKeyOriginal] = useState('');
+
+  /** Mask an API key, showing only the last 4 characters. */
+  const maskApiKey = (key: string): string => {
+    if (!key || key.length <= 4) return key;
+    return key.slice(0, 3) + '...' + key.slice(-4);
+  };
 
   const loadProviders = useCallback(async () => {
     try {
@@ -86,7 +93,8 @@ export default function SettingGeneral() {
       setProviderList(list);
       const saved = list.find((p: any) => p.api_key);
       if (saved) {
-        setProviderApiKey(saved.api_key || '');
+        setProviderApiKey(maskApiKey(saved.api_key || ''));
+        setProviderKeyOriginal(saved.api_key || '');
         setProviderApiHost(saved.endpoint_url || '');
         setProviderModel(saved.model_type || '');
       }
@@ -405,14 +413,28 @@ export default function SettingGeneral() {
                       });
 
                       // Save model provider config if API key is set
-                      if (providerApiKey && providerApiHost) {
+                      if (providerApiKey) {
+                        // Use the original key if the masked value hasn't changed
+                        const resolvedApiKey =
+                          providerApiKey === maskApiKey(providerKeyOriginal)
+                            ? providerKeyOriginal
+                            : providerApiKey;
+
+                        if (!providerApiHost) {
+                          toast.error(
+                            'Base URL is required when setting an API key'
+                          );
+                          setProfileSaving(false);
+                          return;
+                        }
+
                         const existing = providerList.find(
                           (p: any) => p.api_key
                         );
                         const data = {
                           provider_name: 'openai-compatible-model',
                           model_type: providerModel || null,
-                          api_key: providerApiKey,
+                          api_key: resolvedApiKey,
                           endpoint_url: providerApiHost,
                         };
                         if (existing?.id) {

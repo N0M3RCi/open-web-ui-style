@@ -16,6 +16,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useHost } from '@/host';
 import { fileInfoFromPath } from '@/lib/fileInfo';
 import { isHtmlDocument } from '@/lib/htmlFontStyles';
+import { STRICT_SANITIZE_CONFIG } from '@/lib/htmlSanitization';
 import { escapeHtml } from '@/lib/richText';
 import { usePageTabStore } from '@/store/pageTabStore';
 import '@/style/markdown-styles.css';
@@ -262,11 +263,8 @@ export const MarkDown = memo(
           rawHtml = rawHtml.replace(fullTag, newTag);
         }
 
-        // Sanitize HTML — explicitly allow class so syntax-highlighted code
-        // blocks keep their language-* className after sanitization.
-        const sanitized = DOMPurify.sanitize(rawHtml, {
-          ADD_ATTR: ['class'],
-        });
+        // Sanitize HTML using the shared strict config from htmlSanitization.ts
+        const sanitized = DOMPurify.sanitize(rawHtml, STRICT_SANITIZE_CONFIG);
         setHtml(sanitized);
         if (displayedContent === content && renderCompleteRef.current) {
           renderCompleteRef.current();

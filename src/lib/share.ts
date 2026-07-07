@@ -15,21 +15,39 @@
 import { proxyFetchPost } from '@/api/http';
 import { toast } from 'sonner';
 
-export const share = async (taskId: string) => {
+export const share = async (taskId: string): Promise<boolean> => {
   try {
     const res = await proxyFetchPost(`/api/v1/chat/share`, {
       task_id: taskId,
     });
-    const shareLink = `${window.location.origin}/callback?share_token=${res.share_token}__${taskId}`;
-    navigator.clipboard
-      .writeText(shareLink)
-      .then(() => {
+    const shareLink = `${window.location.origin}/callback?share_token=${encodeURIComponent(res.share_token)}&task_id=${encodeURIComponent(taskId)}`;
+
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      toast.success('The share link has been copied.');
+      return true;
+    } catch {
+      // Clipboard API failed — fallback: prompt the user to copy manually
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = shareLink;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
         toast.success('The share link has been copied.');
-      })
-      .catch((err) => {
-        console.error('Failed to copy:', err);
-      });
+        return true;
+      } catch {
+        // Last resort: show the link in a prompt
+        prompt('Copy this share link manually:', shareLink);
+        return true;
+      }
+    }
   } catch (error) {
     console.error('Failed to share task:', error);
+    toast.error('Failed to share. Please try again.');
+    return false;
   }
 };
