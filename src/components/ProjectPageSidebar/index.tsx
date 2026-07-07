@@ -20,7 +20,6 @@ import {
 } from '@/api/http';
 import { GlobalSearchDialog } from '@/components/GlobalSearch';
 import AlertDialog from '@/components/ui/alertDialog';
-import { Button } from '@/components/ui/button';
 import { TooltipSimple } from '@/components/ui/tooltip';
 import { useHost } from '@/host';
 import {
@@ -49,17 +48,12 @@ import {
   getVisibleProjectMetasForSpace,
   useSpaceStore,
 } from '@/store/spaceStore';
-import { useTriggerStore } from '@/store/triggerStore';
 import { ChatTaskStatus } from '@/types/constants';
-import { Cast, Inbox, LayoutGrid, Plus, Zap, ZapOff } from 'lucide-react';
+import { Inbox, LayoutGrid } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import {
-  NavTab,
-  NavTabReconnectSuffix,
-  triggerListenerLeadIconClass,
-} from './NavTab';
+import { NavTab } from './NavTab';
 import { ProjectNavList } from './ProjectNavList';
 
 export interface ProjectPageSidebarProps {
@@ -76,17 +70,10 @@ export default function ProjectPageSidebar({
   const requestWorkspaceChatFocus = usePageTabStore(
     (s) => s.requestWorkspaceChatFocus
   );
-  const requestOpenTriggerAddDialog = usePageTabStore(
-    (s) => s.requestOpenTriggerAddDialog
-  );
   const projectSidebarFolded = usePageTabStore((s) => s.projectSidebarFolded);
-  const unviewedTabs = usePageTabStore((s) => s.unviewedTabs);
   const inboxUnviewedForProjects = usePageTabStore(
     (s) => s.inboxUnviewedForProjects
   );
-  const wsConnectionStatus = useTriggerStore((s) => s.wsConnectionStatus);
-  const triggerReconnect = useTriggerStore((s) => s.triggerReconnect);
-  const triggersListenerConnected = wsConnectionStatus === 'connected';
   const projectStore = useProjectRuntimeStore();
   const navLeadByProjectId = useProjectRuntimeStore(
     (s) => s.navLeadByProjectId
@@ -122,18 +109,6 @@ export default function ProjectPageSidebar({
       return new Set();
     }
   });
-
-  const scheduledTabLabel = t('layout.scheduled-tab');
-  const triggersTabTooltip = scheduledTabLabel;
-
-  const triggersTabAriaLabel = useMemo(() => {
-    const base = scheduledTabLabel;
-    if (triggersListenerConnected) return base;
-    if (wsConnectionStatus === 'connecting') {
-      return `${base}, ${t('layout.triggers-connecting')}`;
-    }
-    return `${base}, ${t('layout.triggers-disconnected')}`;
-  }, [scheduledTabLabel, t, triggersListenerConnected, wsConnectionStatus]);
 
   const email = useAuthStore((s) => s.email);
   const userId = useAuthStore((s) => s.user_id);
@@ -722,81 +697,7 @@ export default function ProjectPageSidebar({
                   ariaLabel={t('layout.context-tab')}
                   ariaCurrentPage={activeWorkspaceTab === 'inbox'}
                 />
-                <NavTab
-                  layout="split"
-                  active={activeWorkspaceTab === 'triggers'}
-                  onClick={() => setActiveWorkspaceTab('triggers')}
-                  leading={
-                    triggersListenerConnected ? (
-                      <Zap
-                        className={cn(
-                          'h-4 w-4 shrink-0',
-                          triggerListenerLeadIconClass(wsConnectionStatus)
-                        )}
-                        aria-hidden
-                      />
-                    ) : (
-                      <ZapOff
-                        className={cn(
-                          'h-4 w-4 shrink-0',
-                          triggerListenerLeadIconClass(wsConnectionStatus)
-                        )}
-                        aria-hidden
-                      />
-                    )
-                  }
-                  label={scheduledTabLabel}
-                  showNotificationDot={unviewedTabs.has('triggers')}
-                  notificationDotTone="attention"
-                  notificationDotClassName="h-2 w-2"
-                  endAction={
-                    triggersListenerConnected ? (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        buttonContent="icon-only"
-                        className={cn(
-                          'no-drag mr-1 rounded-xl hover:bg-ds-bg-neutral-strong-default shrink-0',
-                          'focus-visible:ring-ds-border-neutral-default-default focus-visible:z-10 focus-visible:ring-2 focus-visible:outline-none'
-                        )}
-                        aria-label={t('triggers.add-trigger')}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          requestOpenTriggerAddDialog();
-                        }}
-                      >
-                        <Plus
-                          className="h-4 w-4 text-ds-icon-neutral-muted-default"
-                          aria-hidden
-                        />
-                      </Button>
-                    ) : (
-                      <NavTabReconnectSuffix
-                        wsConnectionStatus={wsConnectionStatus}
-                        onReconnect={triggerReconnect}
-                      />
-                    )
-                  }
-                  tooltip={triggersTabTooltip}
-                  tooltipEnabledWhenCollapsed={!projectSidebarFolded}
-                  folded={projectSidebarFolded}
-                  ariaLabel={triggersTabAriaLabel}
-                  ariaCurrentPage={activeWorkspaceTab === 'triggers'}
-                />
-                <NavTab
-                  active={activeWorkspaceTab === 'dispatch'}
-                  onClick={() => setActiveWorkspaceTab('dispatch')}
-                  leading={<Cast className="h-4 w-4 shrink-0" aria-hidden />}
-                  label={t('layout.dispatch-tab')}
-                  tooltip={t('layout.dispatch-tab')}
-                  tooltipEnabledWhenCollapsed={!projectSidebarFolded}
-                  folded={projectSidebarFolded}
-                  ariaLabel={t('layout.dispatch-tab')}
-                  ariaCurrentPage={activeWorkspaceTab === 'dispatch'}
-                />
-              </div>
+                                              </div>
             </div>
 
             <div className="px-3 my-2">

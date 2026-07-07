@@ -14,20 +14,17 @@
 
 import { AgentFolderSection } from '@/components/Session/SidePanelSections/AgentFolderSection';
 import { AgentPoolSection } from '@/components/Session/SidePanelSections/AgentPoolSection';
-import { buildContextItems } from '@/components/Session/SidePanelSections/buildContextItems';
+import { ProgressSection } from '@/components/Session/SidePanelSections/ProgressSection';
 import {
   collectSidePanelOutputFiles,
   mergeSidePanelOutputFiles,
 } from '@/components/Session/SidePanelSections/collectSidePanelOutputFiles';
-import { ExecutionContextSection } from '@/components/Session/SidePanelSections/ExecutionContextSection';
-import { ProgressSection } from '@/components/Session/SidePanelSections/ProgressSection';
 import { useProjectOutputFiles } from '@/components/Session/SidePanelSections/useProjectOutputFiles';
 import ExpandedOverlay from '@/components/Session/Workforce/ExpandedOverlay';
 import useChatStoreAdapter from '@/hooks/useChatStoreAdapter';
 import { useSelectedProjectTurn } from '@/hooks/useSelectedProjectTurn';
 import { cn } from '@/lib/utils';
 import { usePageTabStore } from '@/store/pageTabStore';
-import { useSkillsStore } from '@/store/skillsStore';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -94,34 +91,6 @@ export function WorkforceSidePanel({
       ),
     [selectedTask, projectFiles]
   );
-  const uploadedFiles = useMemo(() => {
-    if (!selectedTask) return [];
-    const all = [
-      ...(selectedTask.messages ?? [])
-        .filter((m) => m.role === 'user')
-        .flatMap((m) => m.attaches ?? []),
-      ...(selectedTask.attaches ?? []),
-    ];
-    const seen = new Set<string>();
-    return all.filter((file) => {
-      const key = file.filePath;
-      if (!key || seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }, [selectedTask]);
-  const skills = useSkillsStore((s) => s.skills);
-  const contextItems = useMemo(
-    () =>
-      buildContextItems(
-        agents,
-        selectedTask?.taskRunning,
-        uploadedFiles,
-        skills
-      ),
-    [agents, selectedTask?.taskRunning, uploadedFiles, skills]
-  );
-
   const handleOpenAgentFile = useCallback(
     (file: FileInfo) => {
       openFilePreview(file);
@@ -147,13 +116,7 @@ export function WorkforceSidePanel({
             projectId={projectStore.activeProjectId}
             taskId={selectedTaskId}
           />
-          <ExecutionContextSection
-            title={t('layout.execution-context', {
-              defaultValue: 'Execution Context',
-            })}
-            items={contextItems}
-          />
-          <AgentFolderSection
+                    <AgentFolderSection
             title={t('layout.workforce-agent-folder', {
               defaultValue: 'Agent Folder',
             })}
