@@ -12,13 +12,13 @@
 // limitations under the License.
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
-import { proxyFetchGet, proxyFetchPut } from '@/api/http';
+import { proxyFetchGet, proxyFetchPost, proxyFetchPut } from '@/api/http';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LocaleEnum, switchLanguage } from '@/i18n';
 import { useAuthStore } from '@/store/authStore';
 import { useInstallationStore } from '@/store/installationStore';
-import { Check, LogOut, Pencil, X } from 'lucide-react';
+import { Check, Eye, EyeOff, LogOut, Pencil, X } from 'lucide-react';
 import { createRef, RefObject, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -33,12 +33,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import useChatStoreAdapter from '@/hooks/useChatStoreAdapter';
-import { useHost } from '@/host';
 import { debug } from '@/lib/debug';
 
 export default function SettingGeneral() {
   const { t } = useTranslation();
-  const host = useHost();
   const authStore = useAuthStore();
 
   const resetInstallation = useInstallationStore((state) => state.reset);
@@ -60,12 +58,42 @@ export default function SettingGeneral() {
   const [proxyUrl, setProxyUrl] = useState('');
   const [isProxySaving, setIsProxySaving] = useState(false);
   const [proxyNeedsRestart, setProxyNeedsRestart] = useState(false);
+  const [isProxyTesting, setIsProxyTesting] = useState(false);
+  const [proxyTestResult, setProxyTestResult] = useState<{
+    is_valid: boolean;
+    message: string;
+    latency_ms?: number;
+  } | null>(null);
 
   // Profile editing state
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileNickname, setProfileNickname] = useState('');
   const [profileFullname, setProfileFullname] = useState('');
   const [profileSaving, setProfileSaving] = useState(false);
+
+  // Model provider config (inline in profile)
+  const [providerApiKey, setProviderApiKey] = useState('');
+  const [providerApiHost, setProviderApiHost] = useState('');
+  const [providerModel, setProviderModel] = useState('');
+  const [providerList, setProviderList] = useState<any[]>([]);
+  const [providerSaving, setProviderSaving] = useState(false);
+  const [providerKeyVisible, setProviderKeyVisible] = useState(false);
+
+  const loadProviders = useCallback(async () => {
+    try {
+      const res = await proxyFetchGet('/api/v1/providers');
+      const list = Array.isArray(res) ? res : res.items || [];
+      setProviderList(list);
+      const saved = list.find((p: any) => p.api_key);
+      if (saved) {
+        setProviderApiKey(saved.api_key || '');
+        setProviderApiHost(saved.endpoint_url || '');
+        setProviderModel(saved.model_type || '');
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const loadProfile = useCallback(async () => {
     try {
@@ -79,7 +107,8 @@ export default function SettingGeneral() {
 
   useEffect(() => {
     loadProfile();
-  }, [loadProfile]);
+    loadProviders();
+  }, [loadProfile, loadProviders]);
 
   const languageList = [
     {
@@ -129,21 +158,19 @@ export default function SettingGeneral() {
   ];
 
   useEffect(() => {
-    // Load proxy configuration from global env
+    // Load proxy configuration from backend
     const loadProxyConfig = async () => {
-      if (host?.electronAPI?.readGlobalEnv) {
-        try {
-          const result = await host.electronAPI.readGlobalEnv('HTTP_PROXY');
-          if (result?.value) {
-            setProxyUrl(result.value);
-          }
-        } catch (_error) {
-          debug('No proxy configured');
+      try {
+        const result = await proxyFetchGet('/api/v1/proxy/config');
+        if (result?.proxy_url) {
+          setProxyUrl(result.proxy_url);
         }
+      } catch (_error) {
+        debug('No proxy configured via backend');
       }
     };
     loadProxyConfig();
-  }, [host]);
+  }, []);
 
   // Save proxy configuration
   const handleSaveProxy = async () => {
@@ -170,33 +197,44 @@ export default function SettingGeneral() {
       }
     }
 
-    if (!host?.electronAPI?.envWrite || !host?.electronAPI?.envRemove) {
-      toast.error(t('setting.proxy-save-failed'));
-      return;
-    }
-
     setIsProxySaving(true);
     try {
-      if (trimmed) {
-        const result = await host.electronAPI.envWrite(authStore.email, {
-          key: 'HTTP_PROXY',
-          value: trimmed,
-        });
-        if (!result?.success) throw new Error('envWrite returned no success');
-      } else {
-        const result = await host.electronAPI.envRemove(
-          authStore.email,
-          'HTTP_PROXY'
-        );
-        if (!result?.success) throw new Error('envRemove returned no success');
-      }
-      setProxyNeedsRestart(true);
+      await proxyFetchPost('/api/v1/proxy/config', {
+        proxy_url: trimmed,
+      });
       toast.success(t('setting.proxy-saved-restart-required'));
     } catch (error) {
       console.error('Failed to save proxy:', error);
       toast.error(t('setting.proxy-save-failed'));
     } finally {
       setIsProxySaving(false);
+    }
+  };
+
+  // Test proxy connectivity
+  const handleTestProxy = async () => {
+    const trimmed = proxyUrl.trim();
+    if (!trimmed) {
+      toast.error('Enter a proxy URL first');
+      return;
+    }
+
+    setIsProxyTesting(true);
+    setProxyTestResult(null);
+    try {
+      const result = await proxyFetchPost('/api/v1/proxy/test', {
+        proxy_url: trimmed,
+      });
+      setProxyTestResult(result);
+      if (result?.is_valid) {
+        toast.success(`Proxy OK (${result.latency_ms}ms)`);
+      } else {
+        toast.error(result?.message || 'Proxy test failed');
+      }
+    } catch (error) {
+      toast.error('Failed to test proxy');
+    } finally {
+      setIsProxyTesting(false);
     }
   };
 
@@ -297,11 +335,67 @@ export default function SettingGeneral() {
                   className="h-9 max-w-sm"
                 />
               </div>
+              <div className="mt-2 border-t border-ds-border-neutral-subtle-default pt-3">
+                <div className="text-label-sm font-semibold text-ds-text-neutral-default-default">
+                  Model Configuration
+                </div>
+                <div className="mt-2 flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-label-xs text-ds-text-neutral-muted-default">
+                      API Key
+                    </label>
+                    <div className="relative max-w-sm">
+                      <Input
+                        type={providerKeyVisible ? 'text' : 'password'}
+                        value={providerApiKey}
+                        onChange={(e) => setProviderApiKey(e.target.value)}
+                        placeholder="sk-..."
+                        className="h-9 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setProviderKeyVisible(!providerKeyVisible)
+                        }
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-ds-text-neutral-muted-default hover:text-ds-text-neutral-default-default"
+                      >
+                        {providerKeyVisible ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-label-xs text-ds-text-neutral-muted-default">
+                      Base URL
+                    </label>
+                    <Input
+                      value={providerApiHost}
+                      onChange={(e) => setProviderApiHost(e.target.value)}
+                      placeholder="https://api.openai.com/v1"
+                      className="h-9 max-w-sm"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-label-xs text-ds-text-neutral-muted-default">
+                      Model
+                    </label>
+                    <Input
+                      value={providerModel}
+                      onChange={(e) => setProviderModel(e.target.value)}
+                      placeholder="e.g. gpt-4o, claude-sonnet-4"
+                      className="h-9 max-w-sm"
+                    />
+                  </div>
+                </div>
+              </div>
               <div className="flex gap-2">
                 <Button
                   variant="primary"
                   size="sm"
-                  disabled={profileSaving}
+                  disabled={profileSaving || providerSaving}
                   onClick={async () => {
                     setProfileSaving(true);
                     try {
@@ -309,8 +403,31 @@ export default function SettingGeneral() {
                         nickname: profileNickname,
                         fullname: profileFullname,
                       });
+
+                      // Save model provider config if API key is set
+                      if (providerApiKey && providerApiHost) {
+                        const existing = providerList.find(
+                          (p: any) => p.api_key
+                        );
+                        const data = {
+                          provider_name: 'openai-compatible-model',
+                          model_type: providerModel || null,
+                          api_key: providerApiKey,
+                          endpoint_url: providerApiHost,
+                        };
+                        if (existing?.id) {
+                          await proxyFetchPut(
+                            `/api/v1/provider/${existing.id}`,
+                            data
+                          );
+                        } else {
+                          await proxyFetchPost('/api/v1/provider', data);
+                        }
+                      }
+
                       toast.success('Profile updated');
                       setEditingProfile(false);
+                      await loadProviders();
                     } catch {
                       toast.error('Failed to update profile');
                     } finally {
@@ -370,37 +487,50 @@ export default function SettingGeneral() {
               {t('setting.network-proxy-description')}
             </div>
           </div>
-          <Input
-            placeholder={t('setting.proxy-placeholder')}
-            value={proxyUrl}
-            onChange={(e) => {
-              setProxyUrl(e.target.value);
-              setProxyNeedsRestart(false);
-            }}
-            className="flex-1"
-            size="default"
-            note={
-              proxyNeedsRestart ? t('setting.proxy-restart-hint') : undefined
-            }
-            trailingButton={
-              <Button
-                variant={proxyNeedsRestart ? 'outline' : 'primary'}
-                size="sm"
-                onClick={
-                  proxyNeedsRestart
-                    ? () => host?.electronAPI?.restartApp()
-                    : handleSaveProxy
-                }
-                disabled={!proxyNeedsRestart && isProxySaving}
-              >
-                {proxyNeedsRestart
-                  ? t('setting.restart-to-apply')
-                  : isProxySaving
-                    ? t('setting.saving')
-                    : t('setting.save')}
-              </Button>
-            }
-          />
+          <div className="flex gap-2">
+            <Input
+              placeholder={t('setting.proxy-placeholder')}
+              value={proxyUrl}
+              onChange={(e) => {
+                setProxyUrl(e.target.value);
+                setProxyTestResult(null);
+              }}
+              className="flex-1"
+              size="default"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleTestProxy}
+              disabled={isProxyTesting || !proxyUrl.trim()}
+            >
+              {isProxyTesting ? 'Testing...' : 'Test'}
+            </Button>
+          </div>
+          {proxyTestResult && (
+            <div
+              className={`text-sm ${
+                proxyTestResult.is_valid
+                  ? 'text-ds-text-success-default-default'
+                  : 'text-ds-text-error-default-default'
+              }`}
+            >
+              {proxyTestResult.is_valid ? '✓ ' : '✗ '}
+              {proxyTestResult.message}
+              {proxyTestResult.latency_ms != null &&
+                ` (${proxyTestResult.latency_ms}ms)`}
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleSaveProxy}
+              disabled={isProxySaving}
+            >
+              {isProxySaving ? t('setting.saving') : t('setting.save')}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

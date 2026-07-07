@@ -114,6 +114,34 @@ services:
       retries: 3
       start_period: 40s
 
+  # Brain Backend (Skills, Agents, Chat)
+  brain:
+    build:
+      context: ..
+      dockerfile: backend/Dockerfile
+    container_name: merci_brain
+    restart: unless-stopped
+    ports:
+      - '5001:5001'
+    env_file:
+      - .env
+    environment:
+      - MERCI_BRAIN_PORT=5001
+      - MERCI_BRAIN_HOST=0.0.0.0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - merci_network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:5001/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
   # Celery Beat Scheduler
   celery_beat:
     build:
