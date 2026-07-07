@@ -58,8 +58,6 @@ export default defineConfig(({ mode }) => {
         output: {
           manualChunks: {
             vendor: ['react', 'react-dom', 'react-router-dom'],
-            antd: ['antd'],
-            echarts: ['echarts', 'echarts-for-react'],
           },
         },
       },
