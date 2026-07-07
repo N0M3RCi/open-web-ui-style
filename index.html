@@ -53,50 +53,6 @@
 		/>
 		<script src="https://cdn.amplitude.com/libs/analytics-browser-2.11.1-min.js.gz"></script><script src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.8.0-min.js.gz"></script><script>if (window.amplitude) { window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1})); window.amplitude.init('87ce6adbb14b24ffe1703d18bf405e40', {"autocapture":{"elementInteractions":true}}); }</script>
 		<title>M3RCI - UniMind</title>
-		<script>
-			// E2E test bootstrap: set auth state for testing
-			(function() {
-				try {
-					const authKey = 'auth-storage';
-					var existing = localStorage.getItem(authKey);
-					if (!existing || !JSON.parse(existing).state?.token) {
-						var authState = {
-							state: {
-								token: 'e2e-test-token',
-								username: 'testuser',
-								email: 'test@unimind.ai',
-								user_id: 1,
-								appearance: 'light',
-								appearanceMode: 'light',
-								lightColorThemeId: 'neutral',
-								darkColorThemeId: 'neutral',
-								customThemeCatalog: { light: {}, dark: {} },
-								themeContrast: 50,
-								language: 'en',
-								isFirstLaunch: false,
-								onboardingCompleted: false,
-								modelType: 'custom',
-								cloud_model_type: 'gpt-5.5',
-								codex_model_type: 'gpt-5.5',
-								hasModelConfigured: false,
-								initState: 'done',
-								preferredIDE: 'system',
-								workspaceMainBackground: 'empty',
-								share_token: null,
-								localProxyValue: null,
-								authEnvironmentKey: 'default',
-								workerListData: {}
-							},
-							version: 10
-						};
-						localStorage.setItem(authKey, JSON.stringify(authState));
-						console.log('[E2E] Auth state injected');
-					}
-				} catch(e) {
-					console.warn('[E2E] Could not set auth state:', e);
-				}
-			})();
-		</script>
 	</head>
 	<body>
 		<div id="root"></div>

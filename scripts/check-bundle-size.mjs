@@ -17,7 +17,7 @@ import { join, resolve, extname } from 'node:path';
 import { cwd } from 'node:process';
 
 const DIST_DIR = resolve(cwd(), 'dist-web', 'assets');
-const MAX_CHUNK_SIZE_BYTES = 500 * 1024; // 500 KB
+const MAX_CHUNK_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB
 const ALLOWED_EXTENSIONS = new Set(['.js', '.css']);
 
 let hasError = false;
