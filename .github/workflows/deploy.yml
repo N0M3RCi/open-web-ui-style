@@ -20,7 +20,7 @@ jobs:
 
       - name: Build web app
         run: |
-          npm ci --ignore-scripts
+          npm install --ignore-scripts
           npm run build:web
 
       - name: Deploy frontend to VPS webroot (rsync --delete cleans stale files)
