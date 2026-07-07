@@ -15,6 +15,7 @@
 import { proxyFetchPost } from '@/api/http';
 import { useAuthStore } from '@/store/authStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const PASSCODE_LENGTH = 6;
 
@@ -209,6 +210,7 @@ function ConstellationCanvas() {
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function PasscodeGate() {
+  const navigate = useNavigate();
   const {
     setAuth,
     setModelType,
@@ -276,6 +278,7 @@ export default function PasscodeGate() {
         setModelType('custom');
         setInitState('done');
         setIsFirstLaunch(false);
+        navigate('/');
       } else {
         setLoginError('Invalid passcode. Please try again.');
       }
@@ -346,6 +349,7 @@ export default function PasscodeGate() {
         setModelType('custom');
         setInitState('done');
         setIsFirstLaunch(false);
+        navigate('/');
       } else {
         setAdminLoginError('Login failed. Please check your credentials.');
       }
