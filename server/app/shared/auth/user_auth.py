@@ -37,7 +37,7 @@ from app.shared.auth.token_blacklist import is_blacklisted
 from app.shared.exception import NoPermissionException, TokenException
 
 SECRET_KEY = env_not_empty("secret_key")
-TOKEN_EXPIRY = timedelta(weeks=1)  # 1 week
+TOKEN_EXPIRY = timedelta(days=30)  # 30 days (student classroom use)
 REFRESH_EXPIRY = timedelta(days=30)
 TOKEN_TYPE_USER = "user"
 TOKEN_TYPE_REFRESH = "refresh"
