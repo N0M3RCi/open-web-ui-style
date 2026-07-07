@@ -46,7 +46,6 @@ const IS_LOCAL_MODE = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
 const ENABLE_DESKTOP_REMOTE_CONTROL_FALLBACK = isDesktop();
 
 interface AuthState {
-  loading: boolean;
   isAuthenticated: boolean;
   initialized: boolean;
 }
@@ -59,13 +58,11 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case 'INITIALIZE':
       return {
-        loading: false,
         isAuthenticated: action.payload.isAuthenticated,
         initialized: true,
       };
     case 'LOGOUT':
       return {
-        loading: false,
         isAuthenticated: false,
         initialized: true,
       };
@@ -78,7 +75,6 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 const ProtectedRoute = () => {
   const location = useLocation();
   const [state, dispatch] = useReducer(authReducer, {
-    loading: false,
     isAuthenticated: false,
     initialized: false,
   });
@@ -125,7 +121,7 @@ const ProtectedRoute = () => {
     }
   }, [token, localProxyValue, logout]);
 
-  if (state.loading || !state.initialized) {
+  if (!state.initialized) {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
@@ -143,6 +139,21 @@ const ProtectedRoute = () => {
   return <Navigate to={loginPath} replace />;
 };
 
+/** AdminRoute: Only allow non-passcode (admin) users to access the route. */
+const AdminRoute = () => {
+  const { token, isPasscodeUser } = useAuthStore();
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (isPasscodeUser) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
+};
+
 // Main route configuration
 const AppRoutes = () => (
   <Routes>
@@ -156,7 +167,9 @@ const AppRoutes = () => (
       <Route element={<Layout />}>
         <Route path="/" element={<Workspace />} />
         <Route path="/history" element={<History />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
+        <Route element={<AdminRoute />}>
+          <Route path="/admin/users" element={<AdminUsers />} />
+        </Route>
         <Route path="/setting" element={<SettingsRedirect />} />
         <Route path="/setting/*" element={<SettingsRedirect />} />
       </Route>

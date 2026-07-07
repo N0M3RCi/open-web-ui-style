@@ -227,9 +227,10 @@ async function handleResponse(
     }
 
     if (code === 13) {
-      // const { logout } = getAuthStore()
-      // logout()
-      // window.location.href = '#/login'
+      // Code 13 indicates token expiration or auth failure — log out and redirect
+      const { logout } = getAuthStore();
+      logout();
+      window.location.href = '/login';
       throw new Error(text);
     }
 

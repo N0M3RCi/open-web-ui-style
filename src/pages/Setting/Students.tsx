@@ -118,18 +118,46 @@ export default function Students() {
             {newPasscode}
           </p>
           <p className="text-amber-200/60 mt-1 text-xs">
-            Share this passcode with the student. They will use it to log in.
+            This passcode will only be shown once. Copy it now and share it with
+            the student.
           </p>
-          <button
-            type="button"
-            onClick={() => {
-              setNewPasscode(null);
-              setNewPasscodeTarget(null);
-            }}
-            className="mt-2 rounded bg-amber-600/30 px-3 py-1 text-xs text-amber-300 hover:bg-amber-600/50"
-          >
-            Dismiss
-          </button>
+          <div className="mt-2 flex gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard
+                  .writeText(newPasscode)
+                  .then(() => {
+                    setNewPasscode(null);
+                    setNewPasscodeTarget(null);
+                  })
+                  .catch(() => {
+                    // Fallback: select the text manually
+                    const el = document.createElement('textarea');
+                    el.value = newPasscode;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                    setNewPasscode(null);
+                    setNewPasscodeTarget(null);
+                  });
+              }}
+              className="rounded bg-amber-600/30 px-3 py-1 text-xs text-amber-300 hover:bg-amber-600/50"
+            >
+              Copy & Dismiss
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setNewPasscode(null);
+                setNewPasscodeTarget(null);
+              }}
+              className="bg-white/10 text-white/60 hover:bg-white/20 rounded px-3 py-1 text-xs"
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
       )}
 
@@ -166,7 +194,7 @@ export default function Students() {
                   </td>
                   <td className="px-4 py-3">
                     <span className="font-mono tracking-wider text-purple-300">
-                      {student.passcode || '—'}
+                      {student.passcode ? '••••••' : '—'}
                     </span>
                   </td>
                   <td className="text-white/60 px-4 py-3">

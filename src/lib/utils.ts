@@ -26,15 +26,26 @@ export function cn(...inputs: ClassValue[]) {
  */
 
 /**
+ * Normalize a timestamp string to a format parseISO can handle.
+ * Appends 'Z' only if the string has no timezone indicator (Z, +, or - at the end).
+ * This prevents double-timezone issues like "2024-01-01T00:00:00+05:00Z".
+ */
+function normalizeTimestamp(utcString: string): string {
+  if (utcString.endsWith('Z')) return utcString;
+  // Check if the string already has a timezone offset (+HH:mm or -HH:mm at the end)
+  const hasTimezoneOffset = /[+-]\d{2}:\d{2}$/.test(utcString);
+  if (hasTimezoneOffset) return utcString;
+  return utcString + 'Z';
+}
+
+/**
  * Format UTC timestamp to local time (HH:mm:ss)
  * @param utcString - ISO 8601 UTC timestamp from API
  */
 export function formatTime(utcString: string | null | undefined): string {
   if (!utcString) return 'N/A';
   try {
-    const date = parseISO(
-      utcString.endsWith('Z') ? utcString : utcString + 'Z'
-    );
+    const date = parseISO(normalizeTimestamp(utcString));
     return format(date, 'HH:mm:ss');
   } catch {
     return 'Invalid time';
@@ -52,9 +63,7 @@ export function formatDateTime(
 ): string {
   if (!utcString) return 'N/A';
   try {
-    const date = parseISO(
-      utcString.endsWith('Z') ? utcString : utcString + 'Z'
-    );
+    const date = parseISO(normalizeTimestamp(utcString));
     return format(date, formatStr);
   } catch {
     return 'Invalid date';
@@ -68,9 +77,7 @@ export function formatDateTime(
 export function formatDate(utcString: string | null | undefined): string {
   if (!utcString) return 'N/A';
   try {
-    const date = parseISO(
-      utcString.endsWith('Z') ? utcString : utcString + 'Z'
-    );
+    const date = parseISO(normalizeTimestamp(utcString));
     return format(date, 'MMM dd, yyyy');
   } catch {
     return 'Invalid date';
@@ -86,9 +93,7 @@ export function formatRelativeTime(
 ): string {
   if (!utcString) return 'N/A';
   try {
-    const date = parseISO(
-      utcString.endsWith('Z') ? utcString : utcString + 'Z'
-    );
+    const date = parseISO(normalizeTimestamp(utcString));
     return formatDistanceToNow(date, { addSuffix: true });
   } catch {
     return 'Invalid date';

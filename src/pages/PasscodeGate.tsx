@@ -217,6 +217,9 @@ export default function PasscodeGate() {
   const [passcode, setPasscode] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
+  // Rate limiting: block after 5 failed attempts for 30 seconds
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [blockedUntil, setBlockedUntil] = useState(0);
   // Register state
   const [name, setName] = useState('');
   const [registerStep, setRegisterStep] = useState<'form' | 'done'>('form');
@@ -257,8 +260,20 @@ export default function PasscodeGate() {
     }
   }, [tab]);
 
+  const BLOCK_DURATION_MS = 30000; // 30-second block after 5 failed attempts
+  const MAX_LOGIN_ATTEMPTS = 5;
+
   const handleLogin = async (code: string) => {
     if (code.length !== PASSCODE_LENGTH) return;
+
+    // Rate limiting check
+    const now = Date.now();
+    if (now < blockedUntil) {
+      const remaining = Math.ceil((blockedUntil - now) / 1000);
+      setLoginError(`Too many attempts. Try again in ${remaining}s.`);
+      return;
+    }
+
     setLoggingIn(true);
     setLoginError('');
     try {
@@ -266,6 +281,9 @@ export default function PasscodeGate() {
         passcode: code,
       });
       if (data && data.token) {
+        // Reset rate limiting on success
+        setLoginAttempts(0);
+        setBlockedUntil(0);
         setAuth({ email: data.email, ...data });
         setIsPasscodeUser(true);
         setLocalProxyValue(import.meta.env.VITE_USE_LOCAL_PROXY || null);
@@ -274,7 +292,15 @@ export default function PasscodeGate() {
         setIsFirstLaunch(false);
         navigate('/');
       } else {
-        setLoginError('Invalid passcode. Please try again.');
+        setLoginAttempts((prev) => prev + 1);
+        if (loginAttempts + 1 >= MAX_LOGIN_ATTEMPTS) {
+          setBlockedUntil(Date.now() + BLOCK_DURATION_MS);
+          setLoginError(
+            `Too many failed attempts. Try again in ${BLOCK_DURATION_MS / 1000}s.`
+          );
+        } else {
+          setLoginError('Invalid passcode. Please try again.');
+        }
       }
     } catch {
       setLoginError('Invalid passcode. Please try again.');
@@ -603,7 +629,7 @@ export default function PasscodeGate() {
                       }
                     }}
                     placeholder="admin@example.com"
-                    className="border-yellow-500/20 bg-white placeholder:text-black/30 focus:ring-yellow-500/30 mb-3 w-full rounded-lg border px-4 py-3 text-sm text-black outline-none transition-colors focus:border-yellow-500 focus:ring-2"
+                    className="border-yellow-500/20 bg-white placeholder:text-black/30 focus:ring-yellow-500/30 text-black mb-3 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                   />
                   <label className="text-yellow-400/80 mb-2 block text-sm font-medium">
                     Password
@@ -618,7 +644,7 @@ export default function PasscodeGate() {
                       }
                     }}
                     placeholder="Enter your password"
-                    className="border-yellow-500/20 bg-white placeholder:text-black/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm text-black outline-none transition-colors focus:border-yellow-500 focus:ring-2"
+                    className="border-yellow-500/20 bg-white placeholder:text-black/30 focus:ring-yellow-500/30 text-black mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                   />
                   {adminLoginError && (
                     <p className="mb-4 text-sm font-medium text-red-400">

@@ -1079,7 +1079,12 @@ const updateTriggerExecutionStatus = async (
   }
 };
 
-const chatStore = (initial?: Partial<ChatStore>) =>
+/**
+ * Factory function that creates a new chat store instance.
+ * Used internally to create the singleton and externally by projectStore
+ * for per-project isolated chat stores.
+ */
+const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
   createStore<ChatStore>()((set, get) => ({
     activeTaskId: null,
     nextTaskId: null,
@@ -4900,12 +4905,25 @@ const filterMessage = (message: AgentMessage) => {
   return message;
 };
 
-export const useChatStore = chatStore;
+// Singleton store instance for React components
+const chatStoreSingleton = createChatStoreFactory();
 
-/** Create a new chat store instance. Use this in non-React code (e.g. projectStore). */
-export const createChatStoreInstance = chatStore;
+/**
+ * React hook that returns the singleton chat store.
+ * Components that use this hook will share the same store instance.
+ */
+export const useChatStore = chatStoreSingleton;
 
-export const getToolStore = () => chatStore().getState();
+/**
+ * Create a new isolated chat store instance.
+ * Used by projectStore for per-project chat state.
+ * Do NOT use in React components — use useChatStore instead.
+ */
+export const createChatStoreInstance = (initial?: Partial<ChatStore>) =>
+  createChatStoreFactory(initial);
+
+/** Returns the singleton store's current state. */
+export const getToolStore = () => chatStoreSingleton.getState();
 
 /** Returns true if any task has an active SSE connection. */
 export function hasActiveSSEConnection(taskIds: string[]): boolean {

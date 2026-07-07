@@ -68,7 +68,7 @@ const Layout = () => {
 
     host.ipcRenderer.on('before-close', handleBeforeClose);
     return () => {
-      host.ipcRenderer?.removeAllListeners('before-close');
+      host.ipcRenderer?.off('before-close', handleBeforeClose);
     };
   }, [chatStore, host]);
 
