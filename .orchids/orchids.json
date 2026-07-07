@@ -1,6 +1,6 @@
 {
   "startupCommands": [
-    "service postgresql start; service redis-server start; cd /home/user/app/server && sleep 2 && uv run alembic upgrade head && uv run uvicorn main:app --port 3001 --host 0.0.0.0 &",
+    "nohup bash /home/user/app/server/start-backend.sh > /tmp/backend-startup.log 2>&1 &",
     "npm install; VITE_PROXY_URL=http://localhost:3001 npm run dev:web -- --port 3000 --host"
   ],
   "projectId": "632594cf-dcbd-4a3a-a6f6-8c7e1dc176b8",
