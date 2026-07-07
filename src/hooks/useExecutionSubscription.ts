@@ -109,6 +109,16 @@ type WebSocketMessage =
   | ErrorMessage
   | PongMessage;
 
+function generateSessionId(): string {
+  if (typeof crypto?.randomUUID === 'function') return crypto.randomUUID();
+  // Fallback: use crypto.getRandomValues (supported in all modern browsers)
+  const arr = new Uint8Array(16);
+  crypto.getRandomValues(arr);
+  arr[6] = (arr[6] & 0x0f) | 0x40; // version 4
+  arr[8] = (arr[8] & 0x3f) | 0x80; // variant 1
+  return Array.from(arr, (b) => b.toString(16).padStart(2, '0')).join('');
+}
+
 /**
  * Hook for subscribing to trigger execution events via WebSocket
  */
@@ -116,7 +126,7 @@ export function useExecutionSubscription(enabled: boolean = true) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttemptsRef = useRef(0);
-  const sessionIdRef = useRef<string>(crypto.randomUUID());
+  const sessionIdRef = useRef<string>(generateSessionId());
   const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const pongTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
