@@ -20,7 +20,6 @@ import { isBaseWorkflowAgent } from '@/components/Workspace/FoldedAgentCard';
 import { SingleAgentList } from '@/components/Workspace/SingleAgentList';
 import { WorkforceAgentList } from '@/components/Workspace/WorkforceAgentList';
 import { WorkspaceAllSessions } from '@/components/Workspace/WorkspaceAllSessions';
-import { WorkspaceExamplePrompts } from '@/components/Workspace/WorkspaceExamplePrompts';
 import { WorkspaceInstructionMd } from '@/components/Workspace/WorkspaceInstructionMd';
 import { WorkspaceProjectPicker } from '@/components/Workspace/WorkspaceProjectPicker';
 import { WorkspaceRecentSessions } from '@/components/Workspace/WorkspaceRecentSessions';
@@ -99,25 +98,11 @@ export default function Workspace({
   );
   const activeProjectMetadata =
     activeProjectMeta?.metadata ?? activeProject?.metadata;
-  const isEmptyProject = useProjectRuntimeStore((s) => s.isEmptyProject);
   const customAgentFolderPath = usePageTabStore((s) =>
     activeProjectId
       ? s.customAgentFolderPathByProjectId[activeProjectId]
       : undefined
   );
-  const showWorkspaceExamplePrompts = useMemo(() => {
-    if (!activeProject) return false;
-    if (customAgentFolderPath) return false;
-    if (!isEmptyProject(activeProject)) return false;
-    if (activeProjectMetadata?.historyId) return false;
-    if (activeProjectMetadata?.tags?.includes('replay')) return false;
-    return true;
-  }, [
-    activeProject,
-    activeProjectMetadata,
-    customAgentFolderPath,
-    isEmptyProject,
-  ]);
   /**
    * True when the home workspace has no explicitly selected project (default
    * "new project" shell). New Project keeps the interactive project picker in
@@ -527,12 +512,6 @@ export default function Workspace({
     </div>
   );
 
-  const showBottomExamplePrompts =
-    !embedded &&
-    (isNewProjectVariant ||
-      !chatStore?.activeTaskId ||
-      showWorkspaceExamplePrompts);
-
   if (embedded && isNewProjectVariant) {
     return (
       <div className="relative z-[1] flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden px-3">
@@ -638,12 +617,7 @@ export default function Workspace({
                   className="flex min-h-0 w-full flex-1 flex-col overflow-y-auto pt-6"
                   id="workspace-bottom-group"
                 >
-                  {showBottomExamplePrompts ? (
-                    <WorkspaceExamplePrompts
-                      onSelectPrompt={setMessage}
-                      disabled={!hasModel}
-                    />
-                  ) : navProjects.length > 0 ? (
+                  {navProjects.length > 0 ? (
                     <WorkspaceRecentSessions
                       projects={navProjects}
                       activeProjectId={activeProjectId}
