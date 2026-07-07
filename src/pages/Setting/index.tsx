@@ -134,7 +134,7 @@ export default function Setting() {
             type="button"
             onClick={() => {
               logout();
-              navigate('/passcode', { replace: true });
+              navigate('/enter', { replace: true });
             }}
             className="hover:bg-red-500/10 flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-400 transition-colors"
           >
