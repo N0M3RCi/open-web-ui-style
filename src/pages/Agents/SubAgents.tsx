@@ -18,7 +18,6 @@ import {
   proxyFetchPost,
   proxyFetchPut,
 } from '@/api/http';
-import geminiImage from '@/assets/model/gemini.svg';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -28,11 +27,11 @@ import {
   normalizeRemoteSubAgentProvider,
   REMOTE_SUB_AGENT_DEFAULT_AGENT,
   REMOTE_SUB_AGENT_PROVIDER,
-  REMOTE_SUB_AGENT_PROVIDER_ID,
+  SUB_AGENT_PROVIDERS,
   toRemoteSubAgentProviderPayload,
   type RemoteSubAgentFormState,
 } from '@/lib/remoteSubAgent';
-import { Eye, EyeOff } from 'lucide-react';
+import { Bot, Eye, EyeOff } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -219,48 +218,60 @@ export default function SubAgents() {
 
   const isConfigured = isRemoteSubAgentConfigured(remoteSubAgentForm);
 
-  const renderProviderItem = () => {
-    const isActive = selectedProvider === REMOTE_SUB_AGENT_PROVIDER;
-
-    return (
-      <button
-        key={REMOTE_SUB_AGENT_PROVIDER}
-        onClick={() => setSelectedProvider(REMOTE_SUB_AGENT_PROVIDER)}
-        className={`flex w-full items-center justify-between rounded-xl px-3 py-2 transition-all duration-200 ${
-          isActive
-            ? 'bg-fill-fill-transparent-active'
-            : 'bg-fill-fill-transparent hover:bg-fill-fill-transparent-hover'
-        }`}
-      >
-        <div className="flex min-w-0 items-center justify-center gap-3">
-          <img
-            src={geminiImage}
-            alt={t('setting.gemini-agent')}
-            className="h-5 w-5 shrink-0"
-          />
-          <span
-            className={`truncate text-body-sm font-medium ${
-              isActive ? 'text-text-body' : 'text-text-label'
-            }`}
-          >
-            {t('setting.gemini-agent')}
-          </span>
-        </div>
-        {isConfigured ? (
-          <div className="m-1 h-2 w-2 shrink-0 rounded-full bg-text-success" />
-        ) : (
-          <div className="m-1 h-2 w-2 shrink-0 rounded-full bg-text-label opacity-10" />
-        )}
-      </button>
-    );
+  const switchProvider = (providerId: string) => {
+    const provider = SUB_AGENT_PROVIDERS.find((p) => p.id === providerId);
+    setSelectedProvider(providerId);
+    setRemoteSubAgentForm((prev) => ({
+      ...prev,
+      provider: providerId as any,
+      baseUrl: provider?.defaultBaseUrl || prev.baseUrl,
+    }));
+    setRemoteSubAgentError(null);
   };
 
-  const renderGeminiProviderContent = () => (
+  const renderProviderItems = () => {
+    return SUB_AGENT_PROVIDERS.map((provider) => {
+      const isActive = selectedProvider === provider.id;
+      return (
+        <button
+          key={provider.id}
+          onClick={() => switchProvider(provider.id)}
+          className={`flex w-full items-center justify-between rounded-xl px-3 py-2 transition-all duration-200 ${
+            isActive
+              ? 'bg-fill-fill-transparent-active'
+              : 'bg-fill-fill-transparent hover:bg-fill-fill-transparent-hover'
+          }`}
+        >
+          <div className="flex min-w-0 items-center justify-center gap-3">
+            <Bot className="h-5 w-5 shrink-0 text-ds-text-neutral-muted-default" />
+            <span
+              className={`truncate text-body-sm font-medium ${
+                isActive ? 'text-text-body' : 'text-text-label'
+              }`}
+            >
+              {provider.name}
+            </span>
+          </div>
+          {isConfigured && selectedProvider === provider.id ? (
+            <div className="m-1 h-2 w-2 shrink-0 rounded-full bg-text-success" />
+          ) : (
+            <div className="m-1 h-2 w-2 shrink-0 rounded-full bg-text-label opacity-10" />
+          )}
+        </button>
+      );
+    });
+  };
+
+  const currentProvider = SUB_AGENT_PROVIDERS.find(
+    (p) => p.id === selectedProvider
+  );
+
+  const renderProviderContent = () => (
     <div className="flex w-full flex-col rounded-2xl bg-surface-tertiary">
       <div className="mx-6 mb-4 flex flex-col items-start justify-between border-x-0 border-b-[0.5px] border-t-0 border-solid border-border-secondary pb-4 pt-2">
         <div className="inline-flex items-center justify-between gap-2 self-stretch">
           <div className="text-body-base my-2 font-bold text-text-heading">
-            {t('setting.gemini-remote-sub-agent')}
+            {currentProvider?.name || 'Remote Sub Agent'}
           </div>
           <div className="flex items-center gap-3">
             {isConfigured ? (
@@ -313,7 +324,9 @@ export default function SubAgents() {
           size="default"
           title={t('setting.api-host-setting')}
           value={remoteSubAgentForm.baseUrl}
-          placeholder="https://generativelanguage.googleapis.com/v1beta"
+          placeholder={
+            currentProvider?.defaultBaseUrl || 'https://api.example.com/v1'
+          }
           state={remoteSubAgentError ? 'error' : 'default'}
           onChange={(e) => {
             setRemoteSubAgentForm((prev) => ({
@@ -421,12 +434,12 @@ export default function SubAgents() {
                   <div className="px-3 py-2 text-body-sm font-bold text-text-heading">
                     {t('setting.agent-provider')}
                   </div>
-                  {renderProviderItem()}
+                  {renderProviderItems()}
                 </div>
               </div>
             </div>
             <div className="sticky top-[136px] z-10 min-w-0 flex-1">
-              {renderGeminiProviderContent()}
+              {renderProviderContent()}
             </div>
           </div>
         </div>

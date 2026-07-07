@@ -101,6 +101,7 @@ def list_users(
     page_size: int = Query(default=20, ge=1, le=100),
     search: str = Query(default="", max_length=255),
     status: int | None = Query(default=None),
+    role: str | None = Query(default=None, max_length=16),
     db_session: Session = Depends(session),
     auth: V1UserAuth = Depends(auth_must),
 ):
@@ -116,6 +117,9 @@ def list_users(
 
     if status is not None:
         conditions.append(User.status == status)
+
+    if role:
+        conditions.append(User.role == role)
 
     total = User.count(*conditions, s=db_session)
     offset = (page - 1) * page_size

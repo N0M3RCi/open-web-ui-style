@@ -57,6 +57,10 @@ class User(AbstractModel, DefaultTimes, table=True):
         default=Role.User.value, sa_column=Column(String(16), server_default=text("'user'"), nullable=False)
     )
 
+    @property
+    def is_active(self) -> bool:
+        return self.status == Status.Normal
+
 
 class UserProfile(BaseModel):
     fullname: str = ""

@@ -159,3 +159,5 @@ if public_dir and os.path.isdir(public_dir):
     api.mount("/public", StaticFiles(directory=public_dir), name="public")
 else:
     loguru_logger.warning("Skipping /public mount because public directory is unavailable")
+
+app = api
