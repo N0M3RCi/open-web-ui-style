@@ -22,8 +22,6 @@ import WindowControls from '@/components/WindowControls';
 import { useTranslation } from 'react-i18next';
 
 import background from '@/assets/custom/background.png';
-import merciLogo from '@/assets/logo/merci_icon.png';
-
 export default function Login() {
   const {
     setAuth,
@@ -156,10 +154,9 @@ export default function Login() {
           }}
         >
           <div className="relative flex w-80 flex-1 flex-col items-center justify-center pt-8">
-            <img
-              src={merciLogo}
-              className="absolute left-1/2 top-10 h-16 w-16 -translate-x-1/2"
-            />
+            <div className="bg-black shadow-yellow-500/20 absolute left-1/2 top-10 flex h-16 w-16 -translate-x-1/2 items-center justify-center rounded-2xl border-2 border-yellow-500 shadow-lg">
+              <span className="text-2xl">🤖</span>
+            </div>
             <div className="mb-8 text-heading-lg font-bold text-ds-text-neutral-default-default">
               M3RCI - UniMind
             </div>
