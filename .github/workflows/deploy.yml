@@ -1,0 +1,58 @@
+name: Deploy to VPS
+
+'on':
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to fastvps.hosting
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build web app
+        run: |
+          npm install --ignore-scripts
+          npm run build:web
+
+      - name: Deploy frontend to VPS webroot (rsync --delete cleans stale files)
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
+          ARGS: '-rlgoDzvc -i --delete'
+          SOURCE: 'dist-web/'
+          REMOTE_HOST: ${{ secrets.VPS_HOST }}
+          REMOTE_USER: ${{ secrets.VPS_USER }}
+          TARGET: /var/www/merci/
+
+      - name: Sync to secondary webroot and restart services
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            echo "=== Syncing to secondary webroot ==="
+            rsync -a --delete /var/www/merci/ /var/www/html/
+
+            echo "=== Pulling latest code ==="
+            cd /opt/open-web-ui-style
+            git pull origin main
+
+            echo "=== Installing dependencies ==="
+            npm ci --ignore-scripts
+
+            echo "=== Restarting Docker services (if needed) ==="
+            cd /opt/open-web-ui-style/server
+            docker compose restart merci_api merci_celery_worker merci_celery_beat 2>/dev/null || true
+
+            echo "Deploy finished at $(date)"
