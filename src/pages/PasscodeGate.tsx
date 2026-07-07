@@ -525,7 +525,7 @@ export default function PasscodeGate() {
                         }
                       }}
                       placeholder="e.g. Prince"
-                      className="border-yellow-500/20 bg-black placeholder:text-yellow-400/30 focus:ring-yellow-500/30 mb-4 w-full rounded-lg border px-4 py-3 text-sm text-yellow-400 outline-none transition-colors focus:border-yellow-500 focus:ring-2"
+                      className="border-yellow-500/20 bg-white placeholder:text-black/30 focus:ring-yellow-500/30 text-black mb-4 w-full rounded-lg border px-4 py-3 text-sm outline-none transition-colors focus:border-yellow-500 focus:ring-2"
                     />
                     {registerError && (
                       <p className="mb-4 text-sm text-red-400">
