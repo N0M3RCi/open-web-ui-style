@@ -530,7 +530,21 @@ export async function checkBackendHealth(): Promise<boolean> {
     });
 
     clearTimeout(timeoutId);
-    return res.ok;
+
+    if (!res.ok) return false;
+
+    // Verify the response is actually from the Brain service and not a
+    // SPA fallback (index.html). The Brain /health endpoint returns JSON
+    // with a "status" field; a plain 200 from the static SPA would be HTML.
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('text/html')) {
+      debug(
+        '[Backend Health Check] Got HTML response — Brain is not reachable'
+      );
+      return false;
+    }
+
+    return true;
   } catch (error) {
     debug('[Backend Health Check] Not ready:', error);
     return false;

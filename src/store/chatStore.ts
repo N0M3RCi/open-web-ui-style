@@ -1815,6 +1815,9 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
           }
         : undefined;
 
+      let sseRetryCount = 0;
+      const MAX_SSE_RETRIES = 5;
+
       const ssePromise = sseTransport({
         url: api,
         method: !type ? 'POST' : 'GET',
@@ -3826,10 +3829,18 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
             err?.message?.includes('ERR_NETWORK_CHANGED') ||
             err?.message?.includes('ERR_INTERNET_DISCONNECTED');
           if (isConnectionError) {
-            console.warn(
-              '[fetchEventSource] Connection error detected, will retry automatically...'
-            );
-            return;
+            sseRetryCount++;
+            if (sseRetryCount > MAX_SSE_RETRIES) {
+              console.error(
+                `[fetchEventSource] Connection error (${sseRetryCount}/${MAX_SSE_RETRIES}), stopping retry for task ${newTaskId}`
+              );
+              // Fall through to the cleanup + throw below instead of returning
+            } else {
+              console.warn(
+                `[fetchEventSource] Connection error detected (${sseRetryCount}/${MAX_SSE_RETRIES}), will retry automatically...`
+              );
+              return;
+            }
           }
 
           const currentTaskId = getCurrentTaskId();
@@ -3868,16 +3879,14 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
         // Server closes connection
         onclose() {
           debug('SSE connection closed');
-          if (type) {
-            const currentStore = getCurrentChatStore();
-            const currentTaskId = getCurrentTaskId();
-            const currentTask = currentStore.tasks[currentTaskId];
-            if (currentTask?.isPending) {
-              currentStore.setIsPending(currentTaskId, false);
-            }
-            if (currentTask && currentTask.status !== ChatTaskStatus.FINISHED) {
-              currentStore.setStatus(currentTaskId, ChatTaskStatus.FINISHED);
-            }
+          const currentStore = getCurrentChatStore();
+          const currentTaskId = getCurrentTaskId();
+          const currentTask = currentStore.tasks[currentTaskId];
+          if (currentTask?.isPending) {
+            currentStore.setIsPending(currentTaskId, false);
+          }
+          if (currentTask && currentTask.status !== ChatTaskStatus.FINISHED) {
+            currentStore.setStatus(currentTaskId, ChatTaskStatus.FINISHED);
           }
           // Abort to resolve fetchEventSource promise (for replay/load - allows awaiting completion)
           try {
