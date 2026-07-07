@@ -20,6 +20,39 @@ export const REMOTE_SUB_AGENT_DEFAULT_AGENT = '';
 export const REMOTE_SUB_AGENT_DEFAULT_MAX_WALL_TIME_SECONDS = '900';
 export const REMOTE_SUB_AGENT_DEFAULT_POLL_INTERVAL_SECONDS = '5';
 
+export const SUB_AGENT_PROVIDERS = [
+  {
+    id: 'gemini_agents',
+    name: 'Gemini Agents',
+    defaultBaseUrl: 'https://generativelanguage.googleapis.com/v1beta',
+  },
+  {
+    id: 'claude_code',
+    name: 'Claude Code',
+    defaultBaseUrl: 'https://api.anthropic.com/v1',
+  },
+  {
+    id: 'github_copilot',
+    name: 'GitHub Copilot',
+    defaultBaseUrl: 'https://api.githubcopilot.com',
+  },
+  {
+    id: 'cursor',
+    name: 'Cursor',
+    defaultBaseUrl: 'https://api.cursor.com',
+  },
+  {
+    id: 'opencode',
+    name: 'OpenCode',
+    defaultBaseUrl: 'https://api.opencode.ai/v1',
+  },
+  {
+    id: 'kilo_code',
+    name: 'Kilo Code',
+    defaultBaseUrl: 'https://api.kilocode.ai/v1',
+  },
+];
+
 export type GeminiRemoteSubAgentSettings = {
   api_key: string;
   base_url: string;
