@@ -25,7 +25,7 @@ from sqlmodel import Session, select
 
 from app.core import code
 from app.core.database import session
-from app.model.user.user import Status, User
+from app.model.user.user import Role, Status, User
 from app.shared.auth import auth_must
 from app.shared.auth.user_auth import V1UserAuth, create_access_token
 from app.shared.exception import UserException
@@ -120,6 +120,7 @@ async def passcode_register(
         fullname=name,
         passcode=passcode,
         status=Status.Normal,
+        role=Role.Student.value,
     )
     user.save(db_session)
     db_session.refresh(user)

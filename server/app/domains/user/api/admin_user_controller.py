@@ -24,13 +24,19 @@ from sqlmodel import Session, col, func, select
 from app.core import code
 from app.core.database import session
 from app.core.encrypt import password_hash
-from app.model.user.user import Status, User
+from app.model.user.user import Role, Status, User
 from app.model.user.user_stat import UserStat, UserStatOut
 from app.shared.auth import auth_must
 from app.shared.auth.user_auth import V1UserAuth
-from app.shared.exception import UserException
+from app.shared.exception import NoPermissionException, UserException
 
 router = APIRouter(prefix="/admin/users", tags=["Admin - Users"])
+
+
+def _require_admin(auth: V1UserAuth):
+    """Check that the authenticated user has admin role."""
+    if auth.user.role != Role.Admin.value:
+        raise NoPermissionException(_("Admin access required"))
 
 
 class UserListItem(BaseModel):
@@ -41,6 +47,7 @@ class UserListItem(BaseModel):
     fullname: str | None = None
     credits: int = 0
     status: int
+    role: str = "user"
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
@@ -59,6 +66,7 @@ class CreateUserIn(BaseModel):
     nickname: str | None = None
     fullname: str | None = None
     credits: int = 0
+    role: str = "user"
 
 
 class UpdateUserIn(BaseModel):
@@ -69,6 +77,7 @@ class UpdateUserIn(BaseModel):
     work_desc: str | None = None
     credits: int | None = None
     status: int | None = None
+    role: str | None = None
 
 
 class AdminUserDetail(BaseModel):
@@ -80,6 +89,7 @@ class AdminUserDetail(BaseModel):
     work_desc: str = ""
     credits: int = 0
     status: int
+    role: str = "user"
     created_at: datetime | None = None
     updated_at: datetime | None = None
     stats: UserStatOut | None = None
@@ -95,6 +105,7 @@ def list_users(
     auth: V1UserAuth = Depends(auth_must),
 ):
     """List all users with pagination and optional search/filter."""
+    _require_admin(auth)
     conditions = [User.deleted_at.is_(None)]
 
     if search:
@@ -128,6 +139,7 @@ def list_users(
             fullname=u.fullname,
             credits=u.credits,
             status=u.status.value if hasattr(u.status, "value") else u.status,
+            role=u.role or "user",
             created_at=u.created_at,
             updated_at=u.updated_at,
         )
@@ -144,9 +156,16 @@ def create_user(
     auth: V1UserAuth = Depends(auth_must),
 ):
     """Create a new user account."""
+    _require_admin(auth)
     existing = User.by(User.email == data.email, s=db_session).one_or_none()
     if existing:
         raise UserException(code.error, _("Email already registered"))
+
+    # Validate role value
+    role_value = data.role
+    valid_roles = {r.value for r in Role}
+    if role_value not in valid_roles:
+        raise UserException(code.error, _("Invalid role. Must be one of: admin, user, student"))
 
     user = User(
         email=data.email,
@@ -155,6 +174,7 @@ def create_user(
         nickname=data.nickname,
         fullname=data.fullname,
         credits=data.credits,
+        role=role_value,
         status=Status.Normal,
     )
     user.save(db_session)
@@ -168,6 +188,7 @@ def create_user(
         fullname=user.fullname,
         credits=user.credits,
         status=user.status.value if hasattr(user.status, "value") else user.status,
+        role=user.role or "user",
         created_at=user.created_at,
         updated_at=user.updated_at,
     )
@@ -180,6 +201,7 @@ def get_user(
     auth: V1UserAuth = Depends(auth_must),
 ):
     """Get detailed user info including stats."""
+    _require_admin(auth)
     user = db_session.get(User, user_id)
     if not user or user.deleted_at is not None:
         raise UserException(code.not_found, _("User not found"))
@@ -198,6 +220,7 @@ def get_user(
         work_desc=user.work_desc,
         credits=user.credits,
         status=user.status.value if hasattr(user.status, "value") else user.status,
+        role=user.role or "user",
         created_at=user.created_at,
         updated_at=user.updated_at,
         stats=stats,
@@ -211,16 +234,27 @@ def update_user(
     db_session: Session = Depends(session),
     auth: V1UserAuth = Depends(auth_must),
 ):
-    """Update user fields (email, username, nickname, credits, status, etc.)."""
+    """Update user fields (email, username, nickname, credits, status, role, etc.)."""
+    _require_admin(auth)
     user = db_session.get(User, user_id)
     if not user or user.deleted_at is not None:
         raise UserException(code.not_found, _("User not found"))
+
+    # Prevent admin from removing their own admin role
+    if data.role is not None and user.id == auth.id and data.role != Role.Admin.value:
+        raise UserException(code.error, _("You cannot remove your own admin role"))
 
     update_dict = data.model_dump(exclude_unset=True, exclude_none=True)
     if "email" in update_dict and update_dict["email"] != user.email:
         existing = User.by(User.email == update_dict["email"], s=db_session).one_or_none()
         if existing:
             raise UserException(code.error, _("Email already in use"))
+
+    # Validate role if provided
+    if "role" in update_dict:
+        valid_roles = {r.value for r in Role}
+        if update_dict["role"] not in valid_roles:
+            raise UserException(code.error, _("Invalid role. Must be one of: admin, user, student"))
 
     user.update_fields(update_dict)
     user.save(db_session)
@@ -234,6 +268,7 @@ def update_user(
         fullname=user.fullname,
         credits=user.credits,
         status=user.status.value if hasattr(user.status, "value") else user.status,
+        role=user.role or "user",
         created_at=user.created_at,
         updated_at=user.updated_at,
     )
@@ -246,6 +281,10 @@ def delete_user(
     auth: V1UserAuth = Depends(auth_must),
 ):
     """Soft-delete a user account."""
+    _require_admin(auth)
+    # Prevent deleting yourself
+    if user_id == auth.id:
+        raise UserException(code.error, _("You cannot delete your own account"))
     user = db_session.get(User, user_id)
     if not user or user.deleted_at is not None:
         raise UserException(code.not_found, _("User not found"))

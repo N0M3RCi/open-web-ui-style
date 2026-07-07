@@ -13,10 +13,10 @@
 # ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 from datetime import date, datetime
-from enum import IntEnum
+from enum import Enum, IntEnum
 
 from pydantic import BaseModel, EmailStr, field_validator
-from sqlalchemy import Integer, SmallInteger, text
+from sqlalchemy import Integer, SmallInteger, String, text
 from sqlalchemy_utils import ChoiceType
 from sqlmodel import Column, Field
 
@@ -27,6 +27,12 @@ from app.model.abstract.model import AbstractModel, DefaultTimes
 class Status(IntEnum):
     Normal = 1
     Block = -1
+
+
+class Role(str, Enum):
+    Admin = "admin"
+    User = "user"
+    Student = "student"
 
 
 class User(AbstractModel, DefaultTimes, table=True):
@@ -45,6 +51,7 @@ class User(AbstractModel, DefaultTimes, table=True):
     inviter_user_id: int | None = Field(default=None, foreign_key="user.id", description="Inviter user ID")
     status: Status = Field(default=Status.Normal.value, sa_column=Column(ChoiceType(Status, SmallInteger())))
     passcode: str | None = Field(default=None, unique=True, max_length=16, description="Student passcode for auto-login")
+    role: str = Field(default=Role.User.value, sa_column=Column(String(16), server_default=text("'user'"), nullable=False))
 
 
 class UserProfile(BaseModel):
@@ -81,6 +88,7 @@ class UserOut(BaseModel):
     work_desc: str | None = ""
     credits: int
     status: Status
+    role: str = "user"
     created_at: datetime
 
 

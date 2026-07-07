@@ -13,7 +13,6 @@
 // ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 import {
-  fetchPost,
   proxyFetchDelete,
   proxyFetchGet,
   proxyFetchPost,
@@ -100,7 +99,7 @@ export default function SubAgents() {
   const validateRemoteSubAgentConfig = async (
     form: RemoteSubAgentFormState
   ) => {
-    const res = await fetchPost('/remote-sub-agent/validate', {
+    const res = await proxyFetchPost('/api/v1/remote-sub-agent/validate', {
       provider: form.provider,
       api_key: form.apiKey.trim(),
       base_url: form.baseUrl.trim(),
