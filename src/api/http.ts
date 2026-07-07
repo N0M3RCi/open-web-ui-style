@@ -198,18 +198,11 @@ async function handleResponse(
     }
     const { code, text } = resData;
 
-    // ── Proxy (server) API: code 1 / 300 = error ──────────────────────────────
+    // ── Proxy (server) API: any non-zero code = error ─────────────────────────
     // The backend always returns HTTP 200 even for errors, using the `code` field
-    // to distinguish: code=0 or no-code means success, code=1 means error,
-    // code=300 means permission denied.
+    // to distinguish: code=0 or no-code means success, any other code means error.
     if (isProxyApi) {
-      if (code === 300) {
-        const err: any = new Error(text || 'Permission denied');
-        err.status = res.status;
-        err.response = { data: resData, status: res.status };
-        throw err;
-      }
-      if (code === 1) {
+      if (code && code !== 0) {
         const err: any = new Error(text || 'Request failed');
         err.status = res.status;
         err.response = { data: resData, status: res.status };
