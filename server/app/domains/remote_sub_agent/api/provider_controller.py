@@ -96,7 +96,7 @@ async def validate_remote_sub_agent(data: RemoteSubAgentValidateIn):
 )
 async def list_remote_sub_agent_providers(
     provider_name: str | None = None,
-    enabled: Optional[bool] = Query(None),
+    enabled: bool | None = Query(None),
     auth: V1UserAuth = Depends(auth_must),
 ) -> list[RemoteSubAgentProviderOut]:
     return RemoteSubAgentProviderService.list_for_user(

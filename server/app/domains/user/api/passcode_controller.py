@@ -20,7 +20,7 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends, Query
 from fastapi_babel import _
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from sqlmodel import Session, select
 
 from app.core import code
@@ -34,6 +34,7 @@ router = APIRouter(tags=["Passcode Auth"])
 
 
 # ─── Request / Response models ────────────────────────────────────────────────
+
 
 class PasscodeRegisterIn(BaseModel):
     name: str
@@ -74,6 +75,7 @@ class StudentListResponse(BaseModel):
 
 # ─── Helper ───────────────────────────────────────────────────────────────────
 
+
 def _generate_passcode() -> str:
     """Generate a random 6-digit numeric passcode, ensuring it's unique."""
     while True:
@@ -91,6 +93,7 @@ def _generate_email_from_name(name: str) -> str:
 
 # ─── Public endpoints (no auth required) ──────────────────────────────────────
 
+
 @router.post("/auth/passcode-register", name="register with passcode")
 async def passcode_register(
     data: PasscodeRegisterIn,
@@ -105,9 +108,7 @@ async def passcode_register(
     # Generate unique passcode
     while True:
         passcode = _generate_passcode()
-        existing = db_session.exec(
-            select(User).where(User.passcode == passcode)
-        ).first()
+        existing = db_session.exec(select(User).where(User.passcode == passcode)).first()
         if not existing:
             break
 
@@ -168,6 +169,7 @@ async def passcode_login(
 
 # ─── Admin endpoints (auth required) ─────────────────────────────────────────
 
+
 @router.get("/admin/students", name="list student accounts")
 async def list_students(
     search: str = Query(default="", max_length=255),
@@ -182,11 +184,7 @@ async def list_students(
 
     if search:
         like = f"%{search}%"
-        conditions.append(
-            User.email.ilike(like)
-            | User.username.ilike(like)
-            | User.nickname.ilike(like)
-        )
+        conditions.append(User.email.ilike(like) | User.username.ilike(like) | User.nickname.ilike(like))
 
     users = User.by(
         *conditions,
@@ -227,9 +225,7 @@ async def reset_student_passcode(
     # Generate unique passcode
     while True:
         new_passcode = _generate_passcode()
-        existing = db_session.exec(
-            select(User).where(User.passcode == new_passcode)
-        ).first()
+        existing = db_session.exec(select(User).where(User.passcode == new_passcode)).first()
         if not existing:
             break
 

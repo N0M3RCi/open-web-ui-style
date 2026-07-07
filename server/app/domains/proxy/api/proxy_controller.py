@@ -91,9 +91,7 @@ async def save_proxy_config(
     """Save proxy URL to user config."""
     proxy_url = data.proxy_url.strip()
 
-    stmt = select(Config).where(
-        Config.user_id == auth.id, Config.config_name == "proxy_url"
-    )
+    stmt = select(Config).where(Config.user_id == auth.id, Config.config_name == "proxy_url")
     existing = db_session.exec(stmt).first()
     if existing:
         existing.config_value = proxy_url
@@ -116,9 +114,7 @@ async def get_proxy_config(
     auth: V1UserAuth = Depends(auth_must),
 ):
     """Get saved proxy URL from user config."""
-    stmt = select(Config).where(
-        Config.user_id == auth.id, Config.config_name == "proxy_url"
-    )
+    stmt = select(Config).where(Config.user_id == auth.id, Config.config_name == "proxy_url")
     existing = db_session.exec(stmt).first()
     if existing and existing.config_value:
         return ProxyConfigOut(proxy_url=existing.config_value)

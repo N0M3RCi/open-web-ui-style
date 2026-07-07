@@ -19,7 +19,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, Query
 from fastapi_babel import _
 from pydantic import BaseModel, EmailStr
-from sqlmodel import Session, col, func, select
+from sqlmodel import Session, select
 
 from app.core import code
 from app.core.database import session
@@ -111,10 +111,7 @@ def list_users(
     if search:
         like = f"%{search}%"
         conditions.append(
-            User.email.ilike(like)
-            | User.username.ilike(like)
-            | User.nickname.ilike(like)
-            | User.fullname.ilike(like)
+            User.email.ilike(like) | User.username.ilike(like) | User.nickname.ilike(like) | User.fullname.ilike(like)
         )
 
     if status is not None:
