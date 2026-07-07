@@ -209,7 +209,7 @@ export default function AdminUsers() {
         toast.success('User created');
       }
       setShowForm(false);
-      fetchUsers(page, search);
+      fetchUsers(page, search, roleFilter);
     } catch (err: any) {
       toast.error(err?.message || 'Operation failed');
     } finally {
@@ -222,7 +222,7 @@ export default function AdminUsers() {
     try {
       await proxyFetchDelete(`/api/v1/admin/users/${user.id}`);
       toast.success('User deleted');
-      fetchUsers(page, search);
+      fetchUsers(page, search, roleFilter);
       setSelectedUser(null);
     } catch (err: any) {
       toast.error(err?.message || 'Delete failed');
@@ -347,7 +347,10 @@ export default function AdminUsers() {
                                     : 'bg-ds-bg-neutral-default-hover text-ds-text-neutral-muted-default'
                               }`}
                             >
-                              {user.role || 'user'}
+                              {user.role
+                                ? user.role.charAt(0).toUpperCase() +
+                                  user.role.slice(1)
+                                : 'User'}
                             </span>
                           </td>
                           <td className="px-6 py-3">
@@ -494,7 +497,10 @@ export default function AdminUsers() {
                               : 'text-ds-text-neutral-muted-default'
                           }
                         >
-                          {selectedUser.role || 'user'}
+                          {selectedUser.role
+                            ? selectedUser.role.charAt(0).toUpperCase() +
+                              selectedUser.role.slice(1)
+                            : 'User'}
                         </p>
                       </div>
                       <div>

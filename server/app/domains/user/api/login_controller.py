@@ -46,13 +46,28 @@ async def dev_login(username: str | None = Form(default=None), password: str | N
 
 @router.post("/auto-login", name="auto login for local mode")
 async def auto_login(db_session: Session = Depends(session)) -> LoginResponse:
-    """Auto login for fully local mode. Returns most recently active user or creates default."""
+    """Auto login for fully local mode. Prefers an admin user, otherwise returns the most recently active user, or creates a default admin."""
+    from app.model.user.user import Role
+
+    # Prefer the most recently active admin user (not soft-deleted)
     user = User.by(
+        User.deleted_at.is_(None),
         User.status == Status.Normal,
+        User.role == Role.Admin.value,
         order_by=User.updated_at.desc(),
         limit=1,
         s=db_session,
     ).one_or_none()
+
+    # Fallback to any active user (not soft-deleted)
+    if not user:
+        user = User.by(
+            User.deleted_at.is_(None),
+            User.status == Status.Normal,
+            order_by=User.updated_at.desc(),
+            limit=1,
+            s=db_session,
+        ).one_or_none()
 
     if not user:
         with db_session as s:
