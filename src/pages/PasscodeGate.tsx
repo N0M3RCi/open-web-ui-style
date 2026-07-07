@@ -16,7 +16,6 @@ import { proxyFetchPost } from '@/api/http';
 import { useAuthStore } from '@/store/authStore';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import merciLogo from '@/assets/logo/merci_icon.png';
 
 const PASSCODE_LENGTH = 6;
 
@@ -39,8 +38,8 @@ function ConstellationCanvas() {
     canvas.width = w;
     canvas.height = h;
 
-    const PARTICLE_COUNT = 180;
-    const CONNECTION_DIST = 160;
+    const PARTICLE_COUNT = 100;
+    const CONNECTION_DIST = 180;
     const particles: {
       x: number;
       y: number;
@@ -52,7 +51,7 @@ function ConstellationCanvas() {
     }[] = [];
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const baseSize = Math.random() * 3 + 1.5;
+      const baseSize = Math.random() * 2 + 0.8;
       particles.push({
         x: Math.random() * w,
         y: Math.random() * h,
@@ -129,9 +128,9 @@ function ConstellationCanvas() {
           p.y,
           p.size * 4
         );
-        glow.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
-        glow.addColorStop(0.4, 'rgba(255, 215, 0, 0.2)');
-        glow.addColorStop(1, 'rgba(255, 215, 0, 0)');
+        glow.addColorStop(0, 'rgba(200, 170, 50, 0.3)');
+        glow.addColorStop(0.5, 'rgba(200, 170, 50, 0.08)');
+        glow.addColorStop(1, 'rgba(200, 170, 50, 0)');
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
         ctx.fillStyle = glow;
@@ -140,14 +139,14 @@ function ConstellationCanvas() {
         // Core particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = '#e6a800';
+        ctx.fillStyle = 'rgba(180, 155, 50, 0.5)';
         ctx.fill();
 
         // Yellow highlight on larger particles
-        if (p.baseSize > 2.5) {
+        if (p.baseSize > 1.8) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255, 230, 100, 0.9)';
+          ctx.fillStyle = 'rgba(220, 190, 60, 0.6)';
           ctx.fill();
         }
       }
@@ -161,13 +160,13 @@ function ConstellationCanvas() {
 
           if (dist < CONNECTION_DIST) {
             const ratio = dist / CONNECTION_DIST;
-            const alpha = (1 - ratio) * 0.4;
+            const alpha = (1 - ratio) * 0.2;
             // Yellow lines
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(230, 168, 0, ${alpha * 0.6})`;
-            ctx.lineWidth = (1 - ratio) * 1.2 + 0.2;
+            ctx.strokeStyle = `rgba(180, 155, 50, ${alpha * 0.4})`;
+            ctx.lineWidth = (1 - ratio) * 0.8 + 0.2;
             ctx.stroke();
           }
         }
@@ -365,8 +364,8 @@ export default function PasscodeGate() {
         <div className="relative z-10 w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 text-center">
-            <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center">
-              <img src={merciLogo} alt="M3RCI" className="h-full w-full object-contain" />
+            <div className="bg-black shadow-yellow-500/20 mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-yellow-500 shadow-lg">
+              <span className="text-3xl">🤖</span>
             </div>
             <h1 className="text-black text-2xl font-bold">M3RCI-UniMind</h1>
             <p className="text-black/60 mt-1 text-sm">
@@ -413,24 +412,22 @@ export default function PasscodeGate() {
             {tab === 'login' && (
               <div>
                 <div className="mb-6">
-                  <label className="text-black/80 mb-2 block text-sm font-medium">
-                    
-                  </label>
+                  <label className="text-black/80 mb-2 block text-sm font-medium"></label>
                   <div className="flex justify-center gap-2.5">
                     {Array.from({ length: PASSCODE_LENGTH }).map((_, i) => (
                       <div
                         key={i}
                         className={`flex h-14 w-11 items-center justify-center rounded-xl border-2 text-xl font-bold transition-all duration-150 ${
                           passcode[i]
-                            ? 'border-yellow-400 bg-black text-yellow-400 shadow-lg shadow-yellow-500/30'
+                            ? 'bg-black text-white shadow-yellow-500/30 border-yellow-400 shadow-lg'
                             : passcode.length === i && !loggingIn
-                              ? 'border-yellow-500 bg-black text-yellow-500 shadow-md shadow-yellow-500/20'
+                              ? 'bg-black text-white shadow-yellow-500/20 border-yellow-500 shadow-md'
                               : 'border-yellow-500/30 bg-black text-yellow-500/20'
                         }`}
                       >
                         {passcode[i] ||
                           (passcode.length === i && !loggingIn ? (
-                            <span className="animate-pulse text-yellow-500">|</span>
+                            <span className="text-white animate-pulse">|</span>
                           ) : (
                             ''
                           ))}
@@ -529,7 +526,7 @@ export default function PasscodeGate() {
                         {generatedPasscode.split('').map((digit, i) => (
                           <div
                             key={i}
-                            className="flex h-14 w-11 items-center justify-center rounded-xl border-2 border-yellow-400 bg-black text-xl font-bold text-yellow-400 shadow-lg shadow-yellow-500/30"
+                            className="bg-black shadow-yellow-500/30 flex h-14 w-11 items-center justify-center rounded-xl border-2 border-yellow-400 text-xl font-bold text-yellow-400 shadow-lg"
                           >
                             {digit}
                           </div>
