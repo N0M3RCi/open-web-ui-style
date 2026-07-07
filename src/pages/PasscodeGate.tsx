@@ -373,9 +373,9 @@ export default function PasscodeGate() {
           {/* Logo */}
           <div className="mb-8 text-center">
             <div className="border-black bg-white shadow-yellow-500/20 mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-2xl border-2 shadow-lg">
-              <span className="text-black text-3xl font-bold">M</span>
+              <span className="text-black text-3xl font-bold">AI Chatbot</span>
             </div>
-            <h1 className="text-black text-2xl font-bold">M3RCI Classroom</h1>
+            <h1 className="text-black text-2xl font-bold">M3RCI-UniMind</h1>
             <p className="text-black/60 mt-1 text-sm">
               Enter your passcode to begin
             </p>
