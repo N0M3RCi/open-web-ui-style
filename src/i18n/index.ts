@@ -32,21 +32,29 @@ export enum LocaleEnum {
   Spanish = 'es',
 }
 
-const { language } = getAuthStore();
-
-const savedLanguage = language?.toLowerCase();
-const systemLanguage = navigator.language.toLowerCase();
-const availableLanguages = Object.values(LocaleEnum);
-
+// Use a lazy getter to avoid TDZ / circular-dependency issues in production builds.
+// Calling getAuthStore() at module top level can fail when authStore hasn't
+// finished initializing due to minified bundle ordering.
 let initialLanguage: string;
+try {
+  const { language } = getAuthStore();
+  const savedLanguage = language?.toLowerCase();
+  const systemLanguage = navigator.language.toLowerCase();
+  const availableLanguages = Object.values(LocaleEnum);
 
-if (savedLanguage && availableLanguages.includes(savedLanguage as LocaleEnum)) {
-  initialLanguage = savedLanguage;
-} else {
-  const matched = availableLanguages.find((lang) =>
-    systemLanguage.startsWith(lang)
-  );
-  initialLanguage = matched || LocaleEnum.English;
+  if (
+    savedLanguage &&
+    availableLanguages.includes(savedLanguage as LocaleEnum)
+  ) {
+    initialLanguage = savedLanguage;
+  } else {
+    const matched = availableLanguages.find((lang) =>
+      systemLanguage.startsWith(lang)
+    );
+    initialLanguage = matched || LocaleEnum.English;
+  }
+} catch {
+  initialLanguage = LocaleEnum.English;
 }
 
 i18n.use(initReactI18next).init({
