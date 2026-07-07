@@ -290,5 +290,16 @@ def delete_user(
     if not user or user.deleted_at is not None:
         raise UserException(code.not_found, _("User not found"))
 
+    # Prevent deleting the last admin
+    if user.role == Role.Admin.value:
+        remaining = User.count(
+            User.deleted_at.is_(None),
+            User.role == Role.Admin.value,
+            User.id != user_id,
+            s=db_session,
+        )
+        if remaining == 0:
+            raise UserException(code.error, _("Cannot delete the last admin user"))
+
     user.delete(db_session)
     return {"success": True}
