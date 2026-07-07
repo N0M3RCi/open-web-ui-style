@@ -129,8 +129,8 @@ function ConstellationCanvas() {
           p.y,
           p.size * 4
         );
-        glow.addColorStop(0, 'rgba(255, 215, 0, 0.6)');
-        glow.addColorStop(0.4, 'rgba(255, 215, 0, 0.15)');
+        glow.addColorStop(0, 'rgba(255, 215, 0, 0.8)');
+        glow.addColorStop(0.4, 'rgba(255, 215, 0, 0.2)');
         glow.addColorStop(1, 'rgba(255, 215, 0, 0)');
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * 4, 0, Math.PI * 2);
@@ -140,14 +140,14 @@ function ConstellationCanvas() {
         // Core particle
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = '#1a1a1a';
+        ctx.fillStyle = '#e6a800';
         ctx.fill();
 
         // Yellow highlight on larger particles
-        if (p.baseSize > 3) {
+        if (p.baseSize > 2.5) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(255, 215, 0, 0.8)';
+          ctx.fillStyle = 'rgba(255, 230, 100, 0.9)';
           ctx.fill();
         }
       }
@@ -161,21 +161,13 @@ function ConstellationCanvas() {
 
           if (dist < CONNECTION_DIST) {
             const ratio = dist / CONNECTION_DIST;
-            const alpha = (1 - ratio) * 0.55;
+            const alpha = (1 - ratio) * 0.4;
             // Yellow lines
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(255, 215, 0, ${alpha * 0.7})`;
+            ctx.strokeStyle = `rgba(230, 168, 0, ${alpha * 0.6})`;
             ctx.lineWidth = (1 - ratio) * 1.2 + 0.2;
-            ctx.stroke();
-
-            // Black accent lines (thinner, offset)
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 0, 0, ${alpha * 0.25})`;
-            ctx.lineWidth = (1 - ratio) * 0.5 + 0.1;
             ctx.stroke();
           }
         }
@@ -204,7 +196,7 @@ function ConstellationCanvas() {
   }, []);
 
   return (
-    <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 z-0" />
+    <canvas ref={canvasRef} className="pointer-events-none absolute inset-0" />
   );
 }
 
@@ -365,12 +357,12 @@ export default function PasscodeGate() {
 
   return (
     <>
-      <ConstellationCanvas />
       <div
         className="bg-white relative z-10 flex min-h-screen items-center justify-center p-4"
         onClick={handleLoginAreaClick}
       >
-        <div className="w-full max-w-md">
+        <ConstellationCanvas />
+        <div className="relative z-10 w-full max-w-md">
           {/* Logo */}
           <div className="mb-8 text-center">
             <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center">
@@ -430,15 +422,15 @@ export default function PasscodeGate() {
                         key={i}
                         className={`flex h-14 w-11 items-center justify-center rounded-xl border-2 text-xl font-bold transition-all duration-150 ${
                           passcode[i]
-                            ? 'text-black shadow-yellow-500/20 border-yellow-500 bg-yellow-50 shadow-sm'
+                            ? 'border-yellow-400 bg-black text-yellow-400 shadow-lg shadow-yellow-500/30'
                             : passcode.length === i && !loggingIn
-                              ? 'border-black/40 bg-black/[0.04] text-black'
-                              : 'border-black/10 bg-black/[0.02] text-black/20'
+                              ? 'border-yellow-500 bg-black text-yellow-500 shadow-md shadow-yellow-500/20'
+                              : 'border-yellow-500/30 bg-black text-yellow-500/20'
                         }`}
                       >
                         {passcode[i] ||
                           (passcode.length === i && !loggingIn ? (
-                            <span className="animate-pulse">|</span>
+                            <span className="animate-pulse text-yellow-500">|</span>
                           ) : (
                             ''
                           ))}
@@ -537,7 +529,7 @@ export default function PasscodeGate() {
                         {generatedPasscode.split('').map((digit, i) => (
                           <div
                             key={i}
-                            className="text-black shadow-yellow-500/20 flex h-14 w-11 items-center justify-center rounded-xl border-2 border-yellow-500 bg-yellow-50 text-xl font-bold shadow-sm"
+                            className="flex h-14 w-11 items-center justify-center rounded-xl border-2 border-yellow-400 bg-black text-xl font-bold text-yellow-400 shadow-lg shadow-yellow-500/30"
                           >
                             {digit}
                           </div>
