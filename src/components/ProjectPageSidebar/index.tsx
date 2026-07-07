@@ -49,7 +49,7 @@ import {
   useSpaceStore,
 } from '@/store/spaceStore';
 import { ChatTaskStatus } from '@/types/constants';
-import { Inbox, LayoutGrid } from 'lucide-react';
+import { Inbox, LayoutGrid, LogOut } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -616,14 +616,14 @@ export default function ProjectPageSidebar({
 
       <aside
         className={cn(
-          'min-h-0 min-w-0 p-1 bg-ds-bg-neutral-default-default rounded-2xl box-border flex h-full w-full shrink-0 flex-col items-start overflow-hidden',
+          'box-border flex h-full min-h-0 w-full min-w-0 shrink-0 flex-col items-start overflow-hidden rounded-2xl bg-ds-bg-neutral-default-default p-1',
           className
         )}
       >
-        <div className="min-h-0 min-w-0 flex h-full w-full max-w-full flex-col overflow-x-hidden">
-          <div className="min-h-0 min-w-0 flex flex-1 flex-col overflow-hidden">
-            <div className="gap-1 flex w-full shrink-0 flex-col">
-              <div className="min-w-0 gap-1 flex w-full flex-col">
+        <div className="flex h-full min-h-0 w-full min-w-0 max-w-full flex-col overflow-x-hidden">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+            <div className="flex w-full shrink-0 flex-col gap-1">
+              <div className="flex w-full min-w-0 flex-col gap-1">
                 <NavTab
                   active={activeWorkspaceTab === 'workforce'}
                   onClick={() => setActiveWorkspaceTab('workforce')}
@@ -642,11 +642,11 @@ export default function ProjectPageSidebar({
                   onClick={openInboxTab}
                   disabled={isActiveSpaceUnbound}
                   leading={
-                    <span className="h-4 w-4 relative inline-flex shrink-0">
+                    <span className="relative inline-flex h-4 w-4 shrink-0">
                       <Inbox className="h-4 w-4 shrink-0" aria-hidden />
                       {folderTabHasUnviewedFiles && !isActiveSpaceUnbound ? (
                         <span
-                          className="-right-1 -top-1 h-2 w-2 bg-ds-text-error-default-default ease-in-out absolute shrink-0 rounded-full"
+                          className="absolute -right-1 -top-1 h-2 w-2 shrink-0 rounded-full bg-ds-text-error-default-default ease-in-out"
                           aria-hidden
                         />
                       ) : null}
@@ -657,7 +657,7 @@ export default function ProjectPageSidebar({
                     contextTabBinding ? (
                       <div
                         className={cn(
-                          'rounded-xl bg-ds-bg-neutral-muted-default px-1.5 flex shrink-0 flex-col items-center',
+                          'flex shrink-0 flex-col items-center rounded-xl bg-ds-bg-neutral-muted-default px-1.5',
                           contextTabBinding.tooltip && 'pointer-events-auto'
                         )}
                         onClick={
@@ -697,16 +697,16 @@ export default function ProjectPageSidebar({
                   ariaLabel={t('layout.context-tab')}
                   ariaCurrentPage={activeWorkspaceTab === 'inbox'}
                 />
-                                              </div>
+              </div>
             </div>
 
-            <div className="px-3 my-2">
-              <div className="bg-ds-border-neutral-default-default h-px w-full" />
+            <div className="my-2 px-3">
+              <div className="h-px w-full bg-ds-border-neutral-default-default" />
             </div>
 
-            <div className="min-h-0 min-w-0 flex flex-1 flex-col overflow-hidden">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
               <ProjectNavList
-                className="min-h-0 flex flex-1 flex-col"
+                className="flex min-h-0 flex-1 flex-col"
                 projects={navProjects}
                 activeProjectId={
                   isProjectNavSelectionActive ? activeProjectId : null
@@ -719,6 +719,22 @@ export default function ProjectPageSidebar({
                 newProjectActive={activeWorkspaceTab === 'new-project'}
                 folded={projectSidebarFolded}
               />
+            </div>
+
+            {/* Logout button at the bottom of the sidebar */}
+            <div className="flex-shrink-0 border-t border-ds-border-neutral-default-default px-2 py-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const { logout } = useAuthStore.getState();
+                  logout();
+                  window.location.href = '/enter';
+                }}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ds-text-neutral-muted-default transition-colors hover:bg-ds-bg-neutral-subtle-hover hover:text-ds-text-neutral-default-default"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Sign out</span>
+              </button>
             </div>
           </div>
         </div>

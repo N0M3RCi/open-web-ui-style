@@ -501,8 +501,6 @@ export default function ChatBox(): JSX.Element {
     // If ask human is active, allow input
     if (task.activeAsk) return false;
 
-    if (isTaskBusy) return true;
-
     // Standard checks - check model
     if (isCloudUsageLimited) return true;
     if (!hasModel) return true;
@@ -516,7 +514,6 @@ export default function ChatBox(): JSX.Element {
     isCloudUsageLimited,
     hasModel,
     useCloudModelInDev,
-    isTaskBusy,
   ]);
 
   const handleSendShare = useCallback(

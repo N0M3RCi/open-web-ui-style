@@ -447,6 +447,8 @@ export default function SettingGeneral() {
                         }
                       }
 
+                      // Set modelType to 'custom' so startTask uses the custom provider
+                      authStore.setModelType('custom');
                       toast.success('Profile updated');
                       setEditingProfile(false);
                       await loadProviders();
