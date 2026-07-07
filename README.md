@@ -75,7 +75,7 @@ Built on [CAMEL-AI][camel-site]'s acclaimed open-source project, our system intr
 - [📄 Open Source License](#-open-source-license)
 - [🌐 Community & contact](#-community--contact)
 
-####
+#### 
 
 <br/>
 
@@ -386,9 +386,6 @@ For more information please contact info@merci-unimind.ai
 [discord-url]: https://discord.com/invite/CNcNpquyDc
 [docs-site]: https://docs.merci-unimind.ai
 [download-shield]: https://img.shields.io/badge/Download%20M3RCI-363AF5?style=plastic
-[merci-unimind-download]: https://www.merci-unimind.ai/download
-[merci-unimind-github]: https://github.com/N0M3RCi/open-web-ui-style
-[merci-unimind-site]: https://www.merci-unimind.ai
 [github-issue-link]: https://github.com/N0M3RCi/open-web-ui-style/issues
 [github-star]: https://img.shields.io/github/stars/N0M3RCi/open-web-ui-style?color=F5F4F0&labelColor=gray&style=plastic&logo=github
 [image-head]: https://merci-unimind.github.io/.github/assets/head.png
@@ -399,6 +396,9 @@ For more information please contact info@merci-unimind.ai
 [image-star-us]: https://merci-unimind.github.io/.github/assets/star-us.gif
 [join-us]: https://merci-unimind.notion.site/merci-unimind-careers
 [join-us-image]: https://img.shields.io/badge/Join%20Us-yellow?style=plastic
+[merci-unimind-download]: https://www.merci-unimind.ai/download
+[merci-unimind-github]: https://github.com/N0M3RCi/open-web-ui-style
+[merci-unimind-site]: https://www.merci-unimind.ai
 [reddit-image]: https://img.shields.io/reddit/subreddit-subscribers/CamelAI?style=plastic&logo=reddit&label=r%2FCAMEL&labelColor=white
 [reddit-url]: https://www.reddit.com/r/CamelAI/
 [social-x-link]: https://x.com/N0M3RCi

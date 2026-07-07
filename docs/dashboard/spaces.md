@@ -23,20 +23,20 @@ A legacy Space contains work created before the current Space system. Nova keeps
 ## Create a blank Space
 
 1. In the Home dashboard, select **Spaces**.
-2. Open the create menu.
-3. Select **Start from scratch**.
-4. Nova creates a Space and opens its Workspace.
-5. Optional: Rename the Space from the Space switcher.
+1. Open the create menu.
+1. Select **Start from scratch**.
+1. Nova creates a Space and opens its Workspace.
+1. Optional: Rename the Space from the Space switcher.
 
 Blank Spaces use artifact-only storage. Agents create outputs in Nova-managed project storage rather than writing directly to a user-selected folder.
 
 ## Create a Space from a local folder
 
 1. In the Home dashboard, select **Spaces**.
-2. Open the create menu.
-3. Select **Use local folder**.
-4. In the folder picker, select the directory that Nova can access.
-5. Confirm the selection.
+1. Open the create menu.
+1. Select **Use local folder**.
+1. In the folder picker, select the directory that Nova can access.
+1. Confirm the selection.
 
 The Space name initially follows the selected folder name. The **Context** tab shows the folder binding.
 
@@ -45,16 +45,16 @@ The Space name initially follows the selected folder name. The **Context** tab s
 ## Switch Spaces
 
 1. In the project sidebar, select the current Space name.
-2. Select another Space.
+1. Select another Space.
 
 Nova loads that Space's projects and restores its most recently visited project when possible.
 
 ## Rename a Space
 
 1. Open the Space switcher.
-2. Open the actions for the active Space.
-3. Select **Rename**.
-4. Enter a non-empty name and select **Save**.
+1. Open the actions for the active Space.
+1. Select **Rename**.
+1. Enter a non-empty name and select **Save**.
 
 Legacy Spaces and some system-managed Spaces cannot be renamed.
 

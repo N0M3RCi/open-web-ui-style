@@ -1,22 +1,22 @@
 <div align="center"><a name="readme-top"></a>
 
-[![][image-head]][nova-site]
+\[![][image-head]\][nova-site]
 
-[![][image-seperator]][nova-site]
+\[![][image-seperator]\][nova-site]
 
 ### M3RCI - UniMind：全球首个多智能体工作流，释放卓越生产力
 
 <!-- SHIELD GROUP -->
 
-[![][download-shield]][nova-download]
-[![][github-star]][nova-github]
-[![][social-x-shield]][social-x-link]
+\[![][download-shield]\][nova-download]
+\[![][github-star]\][nova-github]
+\[![][social-x-shield]\][social-x-link]
 [![][discord-image]][discord-url]<br>
-[![Reddit][reddit-image]][reddit-url]
-[![Wechat][wechat-image]][wechat-url]
-[![][sponsor-shield]][sponsor-link]
+\[![Reddit][reddit-image]\][reddit-url]
+\[![Wechat][wechat-image]\][wechat-url]
+\[![][sponsor-shield]\][sponsor-link]
 [![][built-with-camel]][camel-github]
-[![][join-us-image]][join-us]
+\[![][join-us-image]\][join-us]
 
 </div>
 
@@ -44,7 +44,7 @@
 
 <br/>
 
-[![][image-join-us]][join-us]
+\[![][image-join-us]\][join-us]
 
 <details>
 <summary><kbd>目录</kbd></summary>
@@ -74,7 +74,7 @@
 - [📄 开源许可证](#-%E5%BC%80%E6%BA%90%E8%AE%B8%E5%8F%AF%E8%AF%81)
 - [🌐 社区与联系](#-%E7%A4%BE%E5%8C%BA%E4%B8%8E%E8%81%94%E7%B3%BB)
 
-####
+#### 
 
 <br/>
 
@@ -94,7 +94,7 @@
 
 <br/>
 
-[![image-public-beta]][nova-download]
+\[![image-public-beta]\][nova-download]
 
 <div align="right">
 <a href="https://www.merci-unimind.ai">Get started at merci-unimind.ai →</a>
@@ -365,6 +365,29 @@ M3RCI - UniMind 基于 [CAMEL-AI.org][camel-ai-org-github] 的研究和基础设
 
 <!-- feature -->
 
+\[download-shield\]: https://img.shields.io/badge/Download%20M3RCI - UniMind-363AF5?style=plastic
+\[nova-download\]: https://www.merci-unimind.ai/download
+\[nova-github\]: https://github.com/N0M3RCi/open-web-ui-style
+\[nova-site\]: https://www.merci-unimind.ai
+\[github-issue-link\]: https://github.com/N0M3RCi/open-web-ui-style/issues
+\[github-star\]: https://img.shields.io/github/stars/N0M3RCi/open-web-ui-style?color=F5F4F0&labelColor=gray&style=plastic&logo=github
+\[image-head\]: https://merci-unimind.github.io/.github/assets/head.png
+\[image-join-us\]: https://camel-ai.github.io/camel_asset/graphics/join_us.png
+\[image-opensource\]: https://merci-unimind.github.io/.github/assets/opensource.png
+\[image-public-beta\]: https://merci-unimind.github.io/.github/assets/banner.png
+\[image-seperator\]: https://merci-unimind.github.io/.github/assets/seperator.png
+\[image-star-us\]: https://merci-unimind.github.io/.github/assets/star-us.gif
+\[join-us\]: https://merci-unimind.notion.site/merci-unimind-careers
+\[join-us-image\]: https://img.shields.io/badge/Join%20Us-yellow?style=plastic
+\[reddit-image\]: https://img.shields.io/reddit/subreddit-subscribers/CamelAI?style=plastic&logo=reddit&label=r%2FCAMEL&labelColor=white
+\[reddit-url\]: https://www.reddit.com/r/CamelAI/
+\[social-x-link\]: https://x.com/N0M3RCi
+\[social-x-shield\]: https://img.shields.io/badge/-%40N0M3RCi-white?labelColor=gray&logo=x&logoColor=white&style=plastic
+\[sponsor-link\]: https://github.com/sponsors/camel-ai
+\[sponsor-shield\]: https://img.shields.io/badge/-Sponsor%20CAMEL--AI-1d1d1d?logo=github&logoColor=white&style=plastic
+\[wechat-image\]: https://img.shields.io/badge/WeChat-CamelAIOrg-brightgreen?logo=wechat&logoColor=white
+\[wechat-url\]: https://ghli.org/camel/wechat.png
+
 [built-with-camel]: https://img.shields.io/badge/-Built--with--CAMEL-4C19E8.svg?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQ4IiBoZWlnaHQ9IjI3MiIgdmlld0JveD0iMCAwIDI0OCAyNzIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik04LjgzMTE3IDE4LjU4NjVMMCAzMC44MjY3QzUuNDY2OTIgMzUuMDQzMiAxNS4xMzkxIDM4LjgyNTggMjQuODExNCAzNi4yOTU5QzMwLjY5ODggNDAuOTM0MSAzOS42NzAyIDQwLjIzMTMgNDQuMTU1OSA0MC4wOTA4QzQzLjQ1NSA0Ny4zOTk0IDQyLjQ3MzcgNzAuOTU1OCA0NC4xNTU5IDEwNi43MTJDNDUuODM4IDE0Mi40NjggNzEuNzcwOCAxNjYuODY4IDg0LjUyNjkgMTc0LjU5OEw3Ni4wMDAyIDIyMEw4NC41MjY5IDI3MkgxMDguOTE4TDk4LjAwMDIgMjIwTDEwOC45MTggMTc0LjU5OEwxMjkuOTQ0IDI3MkgxNTQuNzU2TDEzNC4xNSAxNzQuNTk4SDE4Ny4xMzdMMTY2LjUzMSAyNzJIMTkxLjc2M0wyMTIuMzY5IDE3NC41OThMMjI2IDIyMEwyMTIuMzY5IDI3MkgyMzcuNjAxTDI0OC4wMDEgMjIwTDIzNy4xOCAxNzQuNTk4QzIzOS4yODMgMTY5LjExNyAyNDAuNDAxIDE2Ni45NzYgMjQxLjgwNiAxNjEuMTA1QzI0OS4zNzUgMTI5LjQ4MSAyMzUuMDc3IDEwMy45MDEgMjI2LjY2NyA5NC40ODRMMjA2LjQ4MSA3My44MjNDMTk3LjY1IDY0Ljk2ODMgMTgyLjUxMSA2NC41NDY3IDE3Mi44MzkgNzIuNTU4MUMxNjUuNzI4IDc4LjQ0NzcgMTYxLjcwMSA3OC43NzI3IDE1NC43NTYgNzIuNTU4MUMxNTEuODEyIDcwLjAyODEgMTQ0LjUzNSA2MS40ODg5IDEzNC45OTEgNTMuNTgzN0MxMjUuMzE5IDQ1LjU3MjMgMTA4LjQ5NyA0OC45NDU1IDEwMi4xODkgNTUuNjkxOUw3My41OTMxIDg0LjM2NDRWNy42MjM0OUw3OS4xMjczIDBDNjAuOTA0MiAzLjY1NDMzIDIzLjgwMjEgOS41NjMwOSAxOS43NjUgMTAuNTc1MUMxNS43Mjc5IDExLjU4NyAxMC43OTM3IDE2LjMzNzcgOC44MzExNyAxOC41ODY1WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQzLjIwMzggMTguNzE4N0w0OS4wOTEyIDEzLjA0OTNMNTQuOTc4NyAxOC43MTg3TDQ5LjA5MTIgMjQuODI0Mkw0My4yMDM4IDE4LjcxODdaIiBmaWxsPSIjNEMxOUU4Ii8+Cjwvc3ZnPgo=
 [camel-ai-org-github]: https://github.com/camel-ai
 [camel-github]: https://github.com/camel-ai/camel
@@ -373,25 +396,3 @@ M3RCI - UniMind 基于 [CAMEL-AI.org][camel-ai-org-github] 的研究和基础设
 [discord-image]: https://img.shields.io/discord/1082486657678311454?logo=discord&labelColor=%20%235462eb&logoColor=%20%23f5f5f5&color=%20%235462eb
 [discord-url]: https://discord.com/invite/CNcNpquyDc
 [docs-site]: https://docs.merci-unimind.ai
-[download-shield]: https://img.shields.io/badge/Download%20M3RCI - UniMind-363AF5?style=plastic
-[nova-download]: https://www.merci-unimind.ai/download
-[nova-github]: https://github.com/N0M3RCi/open-web-ui-style
-[nova-site]: https://www.merci-unimind.ai
-[github-issue-link]: https://github.com/N0M3RCi/open-web-ui-style/issues
-[github-star]: https://img.shields.io/github/stars/N0M3RCi/open-web-ui-style?color=F5F4F0&labelColor=gray&style=plastic&logo=github
-[image-head]: https://merci-unimind.github.io/.github/assets/head.png
-[image-join-us]: https://camel-ai.github.io/camel_asset/graphics/join_us.png
-[image-opensource]: https://merci-unimind.github.io/.github/assets/opensource.png
-[image-public-beta]: https://merci-unimind.github.io/.github/assets/banner.png
-[image-seperator]: https://merci-unimind.github.io/.github/assets/seperator.png
-[image-star-us]: https://merci-unimind.github.io/.github/assets/star-us.gif
-[join-us]: https://merci-unimind.notion.site/merci-unimind-careers
-[join-us-image]: https://img.shields.io/badge/Join%20Us-yellow?style=plastic
-[reddit-image]: https://img.shields.io/reddit/subreddit-subscribers/CamelAI?style=plastic&logo=reddit&label=r%2FCAMEL&labelColor=white
-[reddit-url]: https://www.reddit.com/r/CamelAI/
-[social-x-link]: https://x.com/N0M3RCi
-[social-x-shield]: https://img.shields.io/badge/-%40N0M3RCi-white?labelColor=gray&logo=x&logoColor=white&style=plastic
-[sponsor-link]: https://github.com/sponsors/camel-ai
-[sponsor-shield]: https://img.shields.io/badge/-Sponsor%20CAMEL--AI-1d1d1d?logo=github&logoColor=white&style=plastic
-[wechat-image]: https://img.shields.io/badge/WeChat-CamelAIOrg-brightgreen?logo=wechat&logoColor=white
-[wechat-url]: https://ghli.org/camel/wechat.png

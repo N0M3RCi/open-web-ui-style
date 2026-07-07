@@ -50,8 +50,12 @@ class User(AbstractModel, DefaultTimes, table=True):
     last_monthly_credit_date: date | None = Field(default=None, description="Last month monthly credits were granted")
     inviter_user_id: int | None = Field(default=None, foreign_key="user.id", description="Inviter user ID")
     status: Status = Field(default=Status.Normal.value, sa_column=Column(ChoiceType(Status, SmallInteger())))
-    passcode: str | None = Field(default=None, unique=True, max_length=16, description="Student passcode for auto-login")
-    role: str = Field(default=Role.User.value, sa_column=Column(String(16), server_default=text("'user'"), nullable=False))
+    passcode: str | None = Field(
+        default=None, unique=True, max_length=16, description="Student passcode for auto-login"
+    )
+    role: str = Field(
+        default=Role.User.value, sa_column=Column(String(16), server_default=text("'user'"), nullable=False)
+    )
 
 
 class UserProfile(BaseModel):

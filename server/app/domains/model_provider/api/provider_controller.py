@@ -13,19 +13,19 @@
 # ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
 # STATUS: full-rewrite (uses ProviderService, self-managed session)
-from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi_babel import _
 from fastapi_pagination import Page
 from fastapi_pagination.ext.sqlmodel import paginate
 from pydantic import BaseModel
-from sqlmodel import Session, select, col
+from sqlmodel import Session, col, select
 
 from app.core.database import session
+from app.domains.model_provider.service.provider_service import ProviderService
 from app.model.provider.provider import Provider, ProviderIn, ProviderOut, ProviderPreferIn
 from app.shared.auth import auth_must
 from app.shared.auth.user_auth import V1UserAuth
-from app.domains.model_provider.service.provider_service import ProviderService
 
 router = APIRouter(tags=["Provider Management"])
 
@@ -33,7 +33,7 @@ router = APIRouter(tags=["Provider Management"])
 @router.get("/providers", name="list providers", response_model=Page[ProviderOut])
 async def gets(
     keyword: str | None = None,
-    prefer: Optional[bool] = Query(None, description="Filter by prefer status"),
+    prefer: bool | None = Query(None, description="Filter by prefer status"),
     db_session: Session = Depends(session),
     auth: V1UserAuth = Depends(auth_must),
 ) -> Page[ProviderOut]:

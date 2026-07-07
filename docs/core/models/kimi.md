@@ -42,4 +42,4 @@ Click on the Moonshot card and fill in the following fields:
   selected/active.
 - **You are ready to go.** Your Nova agents can now utilize the Kimi model.
 
----
+______________________________________________________________________

@@ -9,8 +9,8 @@ Appearance settings control color mode, theme palette, contrast, and Workspace b
 ## Open Appearance
 
 1. Open the M3RCI - UniMind dashboard.
-2. Select **Settings**.
-3. Select **Appearance**.
+1. Select **Settings**.
+1. Select **Appearance**.
 
 > **Screenshot placeholder:** Add a screenshot of Appearance settings with color mode, theme selection, color controls, contrast, and Workspace background visible.
 

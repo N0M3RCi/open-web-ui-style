@@ -9,8 +9,8 @@ Nova can launch or connect to Chrome DevTools Protocol browsers for research and
 ## Open Browser settings
 
 1. Open the Nova dashboard.
-2. Select **Browser**.
-3. Choose **Connections**, **Plugins**, or **Cookies**.
+1. Select **Browser**.
+1. Choose **Connections**, **Plugins**, or **Cookies**.
 
 > **Screenshot placeholder:** Add a screenshot of the Browser settings page with the three navigation items and an active browser pool.
 
