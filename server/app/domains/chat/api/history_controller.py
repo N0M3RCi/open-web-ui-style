@@ -15,7 +15,6 @@
 """Chat History controller. Uses ChatService for grouping."""
 
 from datetime import datetime
-from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from fastapi_pagination import Page
@@ -23,19 +22,17 @@ from fastapi_pagination.ext.sqlmodel import paginate
 from loguru import logger
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, case, delete, desc, func, select
-from fastapi_babel import _
 
 from app.core.database import session
+from app.domains.chat.service.chat_service import ChatService
 from app.domains.space.service import SpaceService
-from app.model.chat.chat_history import ChatHistory, ChatHistoryIn, ChatHistoryOut, ChatHistoryUpdate, ChatStatus
-from app.model.project import Project
+from app.model.chat.chat_history import ChatHistory, ChatHistoryIn, ChatHistoryOut, ChatHistoryUpdate
 from app.model.chat.chat_history_grouped import GroupedHistoryResponse, ProjectGroup
+from app.model.project import Project
 from app.model.trigger.trigger import Trigger
 from app.model.trigger.trigger_execution import TriggerExecution
-from app.model.user.key import Key
 from app.shared.auth import auth_must
 from app.shared.auth.user_auth import V1UserAuth
-from app.domains.chat.service.chat_service import ChatService
 
 router = APIRouter(prefix="/chat", tags=["Chat History"])
 
@@ -65,7 +62,9 @@ def _sync_project_display_name(
 
 
 @router.post("/history", name="save chat history", response_model=ChatHistoryOut)
-def create_chat_history(data: ChatHistoryIn, db_session: Session = Depends(session), auth: V1UserAuth = Depends(auth_must)):
+def create_chat_history(
+    data: ChatHistoryIn, db_session: Session = Depends(session), auth: V1UserAuth = Depends(auth_must)
+):
     data.user_id = auth.id
     data.project_id = data.project_id or data.task_id
     data.run_id = data.run_id or data.task_id
@@ -97,7 +96,9 @@ def create_chat_history(data: ChatHistoryIn, db_session: Session = Depends(sessi
 
 
 @router.get("/histories", name="get chat history")
-def list_chat_history(db_session: Session = Depends(session), auth: V1UserAuth = Depends(auth_must)) -> Page[ChatHistoryOut]:
+def list_chat_history(
+    db_session: Session = Depends(session), auth: V1UserAuth = Depends(auth_must)
+) -> Page[ChatHistoryOut]:
     stmt = (
         select(ChatHistory)
         .where(ChatHistory.user_id == auth.id)
@@ -112,8 +113,8 @@ def list_chat_history(db_session: Session = Depends(session), auth: V1UserAuth =
 
 @router.get("/histories/grouped", name="get grouped chat history")
 def list_grouped_chat_history(
-    include_tasks: Optional[bool] = Query(True, description="Whether to include individual tasks in groups"),
-    space_id: Optional[str] = Query(None, description="Optional Space ID filter"),
+    include_tasks: bool | None = Query(True, description="Whether to include individual tasks in groups"),
+    space_id: str | None = Query(None, description="Optional Space ID filter"),
     db_session: Session = Depends(session),
     auth: V1UserAuth = Depends(auth_must),
 ) -> GroupedHistoryResponse:
@@ -123,7 +124,7 @@ def list_grouped_chat_history(
 @router.get("/histories/grouped/{project_id}", name="get single grouped project")
 def get_grouped_project(
     project_id: str,
-    include_tasks: Optional[bool] = Query(True, description="Whether to include individual tasks in the project"),
+    include_tasks: bool | None = Query(True, description="Whether to include individual tasks in the project"),
     db_session: Session = Depends(session),
     auth: V1UserAuth = Depends(auth_must),
 ) -> ProjectGroup:
@@ -170,7 +171,10 @@ def delete_chat_history(history_id: int, db_session: Session = Depends(session),
 
 @router.put("/history/{history_id}", name="update chat history", response_model=ChatHistoryOut)
 async def update_chat_history(
-    history_id: int, data: ChatHistoryUpdate, db_session: Session = Depends(session), auth: V1UserAuth = Depends(auth_must)
+    history_id: int,
+    data: ChatHistoryUpdate,
+    db_session: Session = Depends(session),
+    auth: V1UserAuth = Depends(auth_must),
 ):
     history = db_session.exec(select(ChatHistory).where(ChatHistory.id == history_id)).first()
     if not history:
@@ -218,5 +222,7 @@ def update_project_name(
         return Response(status_code=200)
     except Exception as e:
         db_session.rollback()
-        logger.error("Project name update failed", extra={"user_id": user_id, "project_id": project_id, "error": str(e)})
+        logger.error(
+            "Project name update failed", extra={"user_id": user_id, "project_id": project_id, "error": str(e)}
+        )
         raise HTTPException(status_code=500, detail="Internal server error")

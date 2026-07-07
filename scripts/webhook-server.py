@@ -24,21 +24,21 @@ import subprocess
 import sys
 import threading
 
-SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', '').encode()
-APP_DIR = os.environ.get('APP_DIR', '/opt/open-web-ui-style')
-BRANCH = os.environ.get('BRANCH', 'main')
-PORT = int(os.environ.get('WEBHOOK_PORT', '9000'))
+SECRET = os.environ.get("GITHUB_WEBHOOK_SECRET", "").encode()
+APP_DIR = os.environ.get("APP_DIR", "/opt/open-web-ui-style")
+BRANCH = os.environ.get("BRANCH", "main")
+PORT = int(os.environ.get("WEBHOOK_PORT", "9000"))
 
 
 def get_deploy_status():
     """Return last deploy info from log."""
     try:
-        with open('/var/log/open-web-ui-deploy.log') as f:
+        with open("/var/log/open-web-ui-deploy.log") as f:
             lines = f.readlines()
-            last = lines[-1].strip() if lines else 'No deployments yet'
+            last = lines[-1].strip() if lines else "No deployments yet"
             return last
     except Exception:
-        return 'Status unavailable'
+        return "Status unavailable"
 
 
 _STATUS_HTML = """<!DOCTYPE html>
@@ -61,9 +61,9 @@ class WebhookHandler(http.server.BaseHTTPRequestHandler):
     """Handle GET /webhook for status, POST /webhook for GitHub push events."""
 
     def do_GET(self):
-        if self.path == '/webhook':
+        if self.path == "/webhook":
             self.send_response(200)
-            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
             status = get_deploy_status()
             self.wfile.write(_STATUS_HTML.format(status=status).encode())
@@ -71,64 +71,66 @@ class WebhookHandler(http.server.BaseHTTPRequestHandler):
         self.send_error(404)
 
     def do_POST(self):
-        if self.path != '/webhook':
+        if self.path != "/webhook":
             self.send_error(404)
             return
 
-        content_length = int(self.headers.get('Content-Length', 0))
+        content_length = int(self.headers.get("Content-Length", 0))
         body = self.rfile.read(content_length)
 
-        signature = self.headers.get('X-Hub-Signature-256', '')
+        signature = self.headers.get("X-Hub-Signature-256", "")
         if SECRET:
-            expected = 'sha256=' + hmac.new(SECRET, body, hashlib.sha256).hexdigest()
+            expected = "sha256=" + hmac.new(SECRET, body, hashlib.sha256).hexdigest()
             if not hmac.compare_digest(signature, expected):
-                self.send_error(401, 'Invalid signature')
+                self.send_error(401, "Invalid signature")
                 return
 
-        event = self.headers.get('X-GitHub-Event', '')
-        if event != 'push':
+        event = self.headers.get("X-GitHub-Event", "")
+        if event != "push":
             self.send_response(200)
             self.end_headers()
-            self.wfile.write('Ignored event: {}'.format(event).encode())
+            self.wfile.write("Ignored event: {}".format(event).encode())
             return
 
         try:
             data = json.loads(body)
-            ref = data.get('ref', '')
-            if not ref.endswith('/{}'.format(BRANCH)):
+            ref = data.get("ref", "")
+            if not ref.endswith("/{}".format(BRANCH)):
                 self.send_response(200)
                 self.end_headers()
-                self.wfile.write('Ignored push to {}'.format(ref).encode())
+                self.wfile.write("Ignored push to {}".format(ref).encode())
                 return
         except json.JSONDecodeError:
-            self.send_error(400, 'Invalid JSON')
+            self.send_error(400, "Invalid JSON")
             return
 
         threading.Thread(target=run_deploy, daemon=True).start()
 
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(b'Deploy started')
+        self.wfile.write(b"Deploy started")
 
     def log_message(self, format, *args):
-        sys.stderr.write('[webhook] {}\n'.format(format % args))
+        sys.stderr.write("[webhook] {}\n".format(format % args))
 
 
 def run_deploy():
     """Run the deploy script in background."""
     try:
         result = subprocess.run(
-            ['bash', '/opt/open-web-ui-style/deploy.sh'],
-            capture_output=True, text=True, timeout=300,
+            ["bash", "/opt/open-web-ui-style/deploy.sh"],
+            capture_output=True,
+            text=True,
+            timeout=300,
         )
         print(result.stdout)
         if result.returncode != 0:
             print(result.stderr, file=sys.stderr)
     except Exception as e:
-        print('Deploy error: {}'.format(e), file=sys.stderr)
+        print("Deploy error: {}".format(e), file=sys.stderr)
 
 
-if __name__ == '__main__':
-    server = http.server.HTTPServer(('127.0.0.1', PORT), WebhookHandler)
-    print('Webhook server listening on 127.0.0.1:{}'.format(PORT))
+if __name__ == "__main__":
+    server = http.server.HTTPServer(("127.0.0.1", PORT), WebhookHandler)
+    print("Webhook server listening on 127.0.0.1:{}".format(PORT))
     server.serve_forever()

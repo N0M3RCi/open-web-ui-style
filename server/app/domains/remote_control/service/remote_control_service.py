@@ -400,10 +400,7 @@ class RemoteControlService:
         return (
             normalized["target_project_id"] == session.project_id
             and normalized["target_brain_session_id"] == session.brain_session_id
-            and (
-                normalized["target_task_id"] is None
-                or normalized["target_task_id"] == session.active_task_id
-            )
+            and (normalized["target_task_id"] is None or normalized["target_task_id"] == session.active_task_id)
         )
 
     @staticmethod
@@ -480,8 +477,7 @@ class RemoteControlService:
         else:
             session = RemoteControlService._owned_session(session_id, user_id, db)
         link = db.exec(
-            select(RemoteControlLink)
-            .where(
+            select(RemoteControlLink).where(
                 RemoteControlLink.session_id == session_id,
                 RemoteControlLink.token_hash == _token_hash(token),
             )
@@ -511,10 +507,11 @@ class RemoteControlService:
         if not RemoteControlRedis.is_bridge_online(data.desktop_instance_id, user_id):
             raise HTTPException(status_code=409, detail={"code": "BRIDGE_OFFLINE"})
 
-        is_v2_request = any(
-            value is not None
-            for value in (data.initial_project_id, data.initial_task_id, data.initial_history_id)
-        ) or data.space_id is not None or not (data.project_id and data.active_task_id)
+        is_v2_request = (
+            any(value is not None for value in (data.initial_project_id, data.initial_task_id, data.initial_history_id))
+            or data.space_id is not None
+            or not (data.project_id and data.active_task_id)
+        )
         target_project_id = data.initial_project_id if data.initial_project_id is not None else data.project_id
         target_task_id = data.initial_task_id if data.initial_task_id is not None else data.active_task_id
         target_history_id = data.initial_history_id if is_v2_request else None
@@ -610,9 +607,7 @@ class RemoteControlService:
             session.last_target_task_id = target_task_id or session.last_target_task_id
             session.last_target_history_id = target_history_id or session.last_target_history_id
             session.last_target_brain_session_id = (
-                current_brain_session_id
-                or legacy_brain_session_id
-                or session.last_target_brain_session_id
+                current_brain_session_id or legacy_brain_session_id or session.last_target_brain_session_id
             )
 
         token = secrets.token_urlsafe(32)
@@ -783,9 +778,7 @@ class RemoteControlService:
                 "current_project_id": session.current_project_id or data.project_id,
                 "current_task_id": session.current_task_id,
                 "current_history_id": session.current_history_id,
-                "current_brain_session_id": (
-                    session.current_brain_session_id or current_brain_session_id
-                ),
+                "current_brain_session_id": (session.current_brain_session_id or current_brain_session_id),
                 "previous_project_id": previous_project_id,
                 "previous_task_id": previous_task_id,
             },
@@ -1176,9 +1169,7 @@ class RemoteControlService:
                 "project_id": project_id,
                 "run_id": data.run_id,
                 "paths": data.paths,
-                "force_resolutions": [
-                    item.model_dump(mode="json") for item in (data.force_resolutions or [])
-                ],
+                "force_resolutions": [item.model_dump(mode="json") for item in (data.force_resolutions or [])],
             },
             db,
             target_project_id=project_id,
@@ -1361,7 +1352,9 @@ class RemoteControlService:
     def command_payload(session: RemoteControlSession, command: RemoteControlCommand) -> dict[str, Any]:
         project_id = command.target_project_id or session.current_project_id or session.project_id
         task_id = command.target_task_id or session.current_task_id or session.active_task_id
-        brain_session_id = command.target_brain_session_id or session.current_brain_session_id or session.brain_session_id
+        brain_session_id = (
+            command.target_brain_session_id or session.current_brain_session_id or session.brain_session_id
+        )
         payload: dict[str, Any] = {
             "type": "remote_command",
             "command": {
@@ -1556,7 +1549,8 @@ class RemoteControlService:
         RemoteControlService._ensure_project_in_session_space(session, user_id, target_project_id, db)
         limit = min(max(limit, 1), 1000)
         histories = db.exec(
-            select(ChatHistory).where(
+            select(ChatHistory)
+            .where(
                 ChatHistory.user_id == user_id,
                 ChatHistory.project_id == target_project_id,
             )
