@@ -142,19 +142,26 @@ async function fetchRequest(
           )
           .join('&')
       : '';
-    return handleResponse(fetch(fullUrl + query, options), data);
+    return handleResponse(fetch(fullUrl + query, options), data, false);
   }
 
   if (data) {
     options.body = JSON.stringify(data);
   }
 
-  return handleResponse(fetch(fullUrl, options), data);
+  return handleResponse(fetch(fullUrl, options), data, false);
 }
 
+/**
+ * Process HTTP response. For the proxy API (server API), error responses use
+ * `code` field — anything other than undefined/0 is an error. For the Brain
+ * API, `code === 1` means success. The `isProxyApi` flag tells us which
+ * convention to follow.
+ */
 async function handleResponse(
   responsePromise: Promise<Response>,
-  requestData?: Record<string, any>
+  requestData?: Record<string, any>,
+  isProxyApi = false
 ): Promise<any> {
   try {
     const res = await responsePromise;
@@ -190,9 +197,30 @@ async function handleResponse(
       return null;
     }
     const { code, text } = resData;
-    // showCreditsToast()
-    if (code === 1 || code === 300) {
-      return resData;
+
+    // ── Proxy (server) API: code 1 / 300 = error ──────────────────────────────
+    // The backend always returns HTTP 200 even for errors, using the `code` field
+    // to distinguish: code=0 or no-code means success, code=1 means error,
+    // code=300 means permission denied.
+    if (isProxyApi) {
+      if (code === 300) {
+        const err: any = new Error(text || 'Permission denied');
+        err.status = res.status;
+        err.response = { data: resData, status: res.status };
+        throw err;
+      }
+      if (code === 1) {
+        const err: any = new Error(text || 'Request failed');
+        err.status = res.status;
+        err.response = { data: resData, status: res.status };
+        throw err;
+      }
+      // code=0 or no-code — success, fall through to return resData
+    } else {
+      // ── Brain API: code 1 = success ─────────────────────────────────────────
+      if (code === 1) {
+        return resData;
+      }
     }
 
     if (code === 20) {
@@ -290,7 +318,9 @@ export async function fetchPostForm(
   const fullUrl = `${baseURL}${url}`;
   const headers = buildBrainHeaders(url, customHeaders, false);
   return handleResponse(
-    fetch(fullUrl, { method: 'POST', headers, body: formData })
+    fetch(fullUrl, { method: 'POST', headers, body: formData }),
+    undefined,
+    false
   );
 }
 
@@ -424,14 +454,14 @@ async function proxyFetchRequest(
           )
           .join('&')
       : '';
-    return handleResponse(fetch(fullUrl + query, options));
+    return handleResponse(fetch(fullUrl + query, options), undefined, true);
   }
 
   if (data) {
     options.body = JSON.stringify(data);
   }
 
-  return handleResponse(fetch(fullUrl, options));
+  return handleResponse(fetch(fullUrl, options), undefined, true);
 }
 
 export const proxyFetchGet = (url: string, params?: any, headers?: any) =>
@@ -485,7 +515,7 @@ export async function uploadFile(
     body: formData,
   };
 
-  return handleResponse(fetch(fullUrl, options));
+  return handleResponse(fetch(fullUrl, options), undefined, true);
 }
 
 // =============== Backend Health Check ===============
