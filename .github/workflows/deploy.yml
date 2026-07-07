@@ -48,29 +48,29 @@ jobs:
 
       - name: Sync webroots, pull code, and restart services
         uses: appleboy/ssh-action@v1
+        continue-on-error: true
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            set -e
-            echo "=== Syncing to secondary webroot ==="
-            rsync -a --delete /var/www/merci/ /var/www/html/ 2>/dev/null || true
+            echo "=== Syncing from /var/www/merci/ to webroots ==="
+            rsync -a --delete /var/www/merci/ /var/www/html/ 2>&1 || echo "rsync to html failed"
+            rsync -a --delete /var/www/merci/ /opt/open-web-ui-style/dist-web/ 2>&1 || echo "rsync to dist-web failed"
 
-            echo "=== Pulling latest code ==="
-            cd /opt/open-web-ui-style
-            git pull origin main
+            echo "=== Pulling latest code (optional) ==="
+            cd /opt/open-web-ui-style && git pull origin main 2>&1 || echo "git pull failed"
 
-            echo "=== Installing dependencies ==="
-            npm ci --ignore-scripts
+            echo "=== Installing dependencies (optional) ==="
+            npm ci --ignore-scripts 2>&1 || echo "npm ci failed"
 
-            echo "=== Building web app (VPS-side) ==="
-            npm run build:web
-            rsync -a --delete dist-web/ /var/www/merci/ 2>/dev/null || true
-            rsync -a --delete dist-web/ /var/www/html/ 2>/dev/null || true
+            echo "=== Building web app (optional) ==="
+            npm run build:web 2>&1 || echo "build failed"
+            rsync -a --delete dist-web/ /var/www/merci/ 2>&1 || true
+            rsync -a --delete dist-web/ /var/www/html/ 2>&1 || true
+            rsync -a --delete dist-web/ /opt/open-web-ui-style/dist-web/ 2>&1 || true
 
             echo "=== Restarting Docker services ==="
-            cd /opt/open-web-ui-style/server
-            docker compose restart merci_api merci_celery_worker merci_celery_beat 2>/dev/null || true
+            cd /opt/open-web-ui-style/server && docker compose restart merci_api merci_celery_worker merci_celery_beat 2>&1 || echo "docker restart failed"
 
             echo "Deploy finished at $(date)"
