@@ -17,12 +17,13 @@
  * Configured models switch inline; unconfigured options open Settings → Models.
  */
 
-import { proxyFetchGet } from '@/api/http';
+import { proxyFetchGet, proxyFetchPatch } from '@/api/http';
 import folderIcon from '@/assets/logo/merci_icon_rich.svg';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -37,6 +38,7 @@ import {
 } from '@/lib/applyDefaultModelSelection';
 import { INIT_PROVODERS } from '@/lib/llm';
 import { getProviderValid } from '@/lib/providerStatus';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import {
   getLocalPlatformName,
@@ -56,6 +58,7 @@ import {
   HardDrive,
   Key,
   Layers,
+  Loader2,
   Server,
   Sparkles,
 } from 'lucide-react';
@@ -141,6 +144,17 @@ export function ChatInputModelDropdown({
     connected: boolean;
     status: string;
   }>({ connected: false, status: 'not_connected' });
+
+  /** Per-provider model lists fetched from the API for inline model switching. */
+  const [providerModels, setProviderModels] = useState<
+    Record<string, Array<{ id: string }>>
+  >({});
+  const [fetchingModels, setFetchingModels] = useState<
+    Record<string, boolean>
+  >({});
+  const [customModelInputs, setCustomModelInputs] = useState<
+    Record<string, string>
+  >({});
 
   useEffect(() => {
     if (import.meta.env.VITE_USE_LOCAL_PROXY === 'true') return;
@@ -281,6 +295,70 @@ export function ChatInputModelDropdown({
     setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
     setModelType('codex_subscription');
   }, [setModelType]);
+
+  /** Fetch models from a provider's API endpoint via the backend proxy. */
+  const fetchModelsForProvider = useCallback(
+    async (providerId: string, apiHost: string, apiKey: string) => {
+      if (!apiHost || !apiKey) return;
+      setFetchingModels((prev) => ({ ...prev, [providerId]: true }));
+      try {
+        const baseHost = apiHost.replace(/\/+$/, '');
+        const modelsUrl = `${baseHost}/models`;
+        const payload = await proxyFetchGet(
+          `/api/v1/providers/models/fetch?url=${encodeURIComponent(modelsUrl)}&api_key=${encodeURIComponent(apiKey)}`
+        );
+        const list = Array.isArray(payload?.data)
+          ? payload.data
+          : Array.isArray(payload)
+            ? payload
+            : [];
+        setProviderModels((prev) => ({ ...prev, [providerId]: list }));
+      } catch {
+        // Silent — models simply won't show
+      } finally {
+        setFetchingModels((prev) => ({ ...prev, [providerId]: false }));
+      }
+    },
+    []
+  );
+
+  /** Update model_type on the backend and set as preferred. */
+  const handleModelTypeChange = useCallback(
+    async (
+      providerBackendId: number,
+      providerItemId: string,
+      newModelType: string
+    ) => {
+      try {
+        await proxyFetchPatch(
+          `/api/v1/provider/${providerBackendId}/model-type`,
+          { model_type: newModelType }
+        );
+        // Also set as preferred
+        await proxyFetchPost('/api/v1/provider/prefer', {
+          provider_id: providerBackendId,
+        });
+        // Update local form state
+        setForm((f) =>
+          f.map((fi, i) => {
+            const item = items[i];
+            if (item?.id === providerItemId) {
+              return { ...fi, model_type: newModelType, prefer: true };
+            }
+            return { ...fi, prefer: false };
+          })
+        );
+        setCloudPrefer(false);
+        setLocalPrefer(false);
+        setModelType('custom');
+        return true;
+      } catch {
+        console.error('Failed to update model type');
+        return false;
+      }
+    },
+    [items, setModelType, setCloudPrefer, setLocalPrefer]
+  );
 
   /** Model name only in the trigger (e.g. "Gemini 3.1 Pro Preview", no cloud/source prefix). */
   const triggerModelName = useMemo(() => {
@@ -528,6 +606,161 @@ export function ChatInputModelDropdown({
                   ? modelType === 'codex_subscription'
                   : form[idx]?.prefer;
                 const modelImage = getModelImage(item.id);
+                const currentModel = form[idx]?.model_type || '';
+                const fetchedModels = providerModels[item.id] || [];
+                const isFetching = fetchingModels[item.id] || false;
+                const customInput = customModelInputs[item.id] || '';
+
+                // Configured, non-subscription providers get a nested sub-menu
+                // for inline model type switching.
+                if (isConfigured && !isSubscriptionAuth) {
+                  return (
+                    <DropdownMenuSub key={item.id}>
+                      <DropdownMenuSubTrigger
+                        className="flex w-full min-w-0 items-center justify-start gap-2 [&>svg:first-child]:!h-4 [&>svg:first-child]:!min-h-4 [&>svg:first-child]:!w-4 [&>svg:first-child]:!min-w-4"
+                        onPointerEnter={(e) => {
+                          activeSubTriggerRef.current = e.currentTarget;
+                        }}
+                      >
+                        <div className="flex items-center gap-2">
+                          {modelImage ? (
+                            <img
+                              src={modelImage}
+                              alt={item.name}
+                              className="h-4 w-4"
+                              style={
+                                needsInvert(item.id)
+                                  ? { filter: 'invert(1)' }
+                                  : undefined
+                              }
+                            />
+                          ) : (
+                            <Key className="h-3 w-3 text-ds-icon-neutral-muted-default" />
+                          )}
+                          <span className="min-w-0 flex-1 text-left text-body-sm">
+                            {item.name}
+                          </span>
+                        </div>
+                        <div className="ml-2 flex items-center gap-1">
+                          {isPreferred && (
+                            <Check className="h-4 w-4 text-ds-text-success-default-default" />
+                          )}
+                          {!isPreferred && (
+                            <div className="h-2 w-2 rounded-full bg-ds-text-success-default-default" />
+                          )}
+                        </div>
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuSubContent className="max-h-[320px] w-[240px] overflow-y-auto">
+                        {/* Current model indicator */}
+                        <div className="px-2 py-1.5 text-body-xs text-ds-text-neutral-muted-default">
+                          {currentModel
+                            ? `Current: ${currentModel}`
+                            : 'No model selected'}
+                        </div>
+
+                        <DropdownMenuSeparator />
+
+                        {/* Fetched model list */}
+                        {fetchedModels.map((m) => (
+                          <DropdownMenuItem
+                            key={m.id}
+                            onSelect={() => {
+                              if (form[idx]?.provider_id) {
+                                void handleModelTypeChange(
+                                  form[idx].provider_id!,
+                                  item.id,
+                                  m.id
+                                );
+                              }
+                            }}
+                            className="flex items-center justify-between"
+                          >
+                            <span className="text-body-sm">{m.id}</span>
+                            {m.id === currentModel && (
+                              <Check className="h-4 w-4 text-ds-text-success-default-default" />
+                            )}
+                          </DropdownMenuItem>
+                        ))}
+
+                        {/* Fetch models button */}
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            void fetchModelsForProvider(
+                              item.id,
+                              form[idx]?.apiHost || item.apiHost,
+                              form[idx]?.apiKey || item.apiKey
+                            );
+                          }}
+                          disabled={isFetching}
+                          className="flex items-center gap-2"
+                        >
+                          {isFetching ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span className="text-body-sm">Fetching...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="text-body-sm">
+                                {fetchedModels.length > 0
+                                  ? 'Refresh models'
+                                  : 'Fetch models'}
+                              </span>
+                            </>
+                          )}
+                        </DropdownMenuItem>
+
+                        <DropdownMenuSeparator />
+
+                        {/* Custom model name input */}
+                        <div className="flex items-center gap-1 px-2 py-1">
+                          <Input
+                            type="text"
+                            value={customInput}
+                            onChange={(e) => {
+                              setCustomModelInputs((prev) => ({
+                                ...prev,
+                                [item.id]: e.target.value,
+                              }));
+                            }}
+                            placeholder="Type model name..."
+                            className="h-7 text-body-xs"
+                            onKeyDown={(e) => {
+                              if (
+                                e.key === 'Enter' &&
+                                customInput.trim() &&
+                                form[idx]?.provider_id
+                              ) {
+                                void handleModelTypeChange(
+                                  form[idx].provider_id!,
+                                  item.id,
+                                  customInput.trim()
+                                );
+                              }
+                            }}
+                          />
+                          {customInput.trim() && (
+                            <button
+                              type="button"
+                              className="shrink-0 rounded px-1.5 py-1 text-body-xs font-medium text-ds-text-accent-blue-default hover:bg-ds-bg-neutral-subtle-hover"
+                              onClick={() => {
+                                if (form[idx]?.provider_id) {
+                                  void handleModelTypeChange(
+                                    form[idx].provider_id!,
+                                    item.id,
+                                    customInput.trim()
+                                  );
+                                }
+                              }}
+                            >
+                              Set
+                            </button>
+                          )}
+                        </div>
+                      </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                  );
+                }
 
                 return (
                   <DropdownMenuItem

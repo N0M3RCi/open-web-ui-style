@@ -251,9 +251,9 @@ async function handleResponse(
     console.error('[fetch error]:', err);
 
     if (err?.response?.status === 401) {
-      // const { logout } = getAuthStore()
-      // logout()
-      // window.location.href = '#/login'
+      const { logout } = getAuthStore();
+      logout();
+      window.location.href = '/passcode';
     }
 
     throw err;
@@ -343,6 +343,13 @@ export async function sseTransport(
     onmessage: options.onmessage,
     async onopen(response) {
       persistSessionIdFromResponse(response);
+      // If the SSE endpoint returns 401, the token is expired — redirect to login
+      if (response.status === 401) {
+        const { logout } = getAuthStore();
+        logout();
+        window.location.href = '/passcode';
+        return;
+      }
       if (options.onopen) {
         await options.onopen(response);
       }
