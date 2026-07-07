@@ -23,7 +23,7 @@ jobs:
           npm ci --ignore-scripts
           npm run build:web
 
-      - name: Deploy via rsync over SSH
+      - name: Deploy frontend to VPS webroot
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_KEY }}
@@ -31,9 +31,9 @@ jobs:
           SOURCE: 'dist-web/'
           REMOTE_HOST: ${{ secrets.VPS_HOST }}
           REMOTE_USER: ${{ secrets.VPS_USER }}
-          TARGET: ${{ secrets.VPS_TARGET_DIR }}
+          TARGET: /var/www/merci/
 
-      - name: Restart app on VPS
+      - name: Pull code and rebuild on VPS
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -41,10 +41,22 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -e
-            echo "=== Post-deploy steps ==="
+            echo "=== Pulling latest code ==="
+            cd /opt/open-web-ui-style
+            git pull origin main
 
-            # Install deps if package.json changed
-            cd ${{ secrets.VPS_TARGET_DIR }}
+            echo "=== Installing dependencies ==="
             npm ci --ignore-scripts
+
+            echo "=== Building frontend ==="
+            npm run build
+
+            echo "=== Deploying to webroots ==="
+            cp -r dist/* /var/www/merci/
+            cp -r dist/* /var/www/html/
+
+            echo "=== Restarting Docker services (if needed) ==="
+            cd /opt/open-web-ui-style/server
+            docker compose restart merci_api merci_celery_worker merci_celery_beat 2>/dev/null || true
 
             echo "Deploy finished at $(date)"
