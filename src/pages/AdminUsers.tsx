@@ -87,6 +87,7 @@ export default function AdminUsers() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -106,7 +107,7 @@ export default function AdminUsers() {
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  const fetchUsers = async (p: number, q: string) => {
+  const fetchUsers = async (p: number, q: string, role: string) => {
     setLoading(true);
     try {
       const params = new URLSearchParams({
@@ -114,6 +115,7 @@ export default function AdminUsers() {
         page_size: String(PAGE_SIZE),
       });
       if (q) params.set('search', q);
+      if (role) params.set('role', role);
       const data = await proxyFetchGet(
         `/api/v1/admin/users?${params.toString()}`
       );
@@ -128,8 +130,8 @@ export default function AdminUsers() {
   };
 
   useEffect(() => {
-    fetchUsers(page, search);
-  }, [page, search]);
+    fetchUsers(page, search, roleFilter);
+  }, [page, search, roleFilter]);
 
   const handleSearch = () => {
     setSearch(searchInput);
@@ -268,6 +270,25 @@ export default function AdminUsers() {
           >
             Search
           </Button>
+          <div className="ml-auto">
+            <Select
+              value={roleFilter}
+              onValueChange={(v) => {
+                setRoleFilter(v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="h-9 w-36">
+                <SelectValue placeholder="All Roles" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">All Roles</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="user">User</SelectItem>
+                <SelectItem value="student">Student</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="flex flex-1 flex-col overflow-hidden">
