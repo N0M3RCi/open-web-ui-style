@@ -114,16 +114,7 @@ jobs:
             echo "Services status:"
             systemctl is-active merci-api merci-brain 2>&1 || true
 
-            echo "=== Running diagnostics ==="
-            systemctl show merci-brain -p User 2>&1
-            echo "--- run-brain.py ---"
-            head -30 /opt/open-web-ui-style/backend/run-brain.py 2>&1 || echo "not found"
-            echo "--- iptables ---"
-            iptables -L -n 2>&1 | head -20 || echo "iptables failed"
-            echo "--- selinux ---"
-            getenforce 2>&1 || echo "not available"
-            echo "--- python ssl ---"
-            /opt/open-web-ui-style/server/.venv/bin/python -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>&1 || echo "python ssl failed"
-            echo "--- brain curl ---"
-            curl -sk --max-time 15 -H "Authorization: Bearer sk-980e0cfe660f4bceb051c75962ca56f3" "https://cloud-api.near.ai/v1/models" 2>&1 | head -1 || echo "curl failed"
+            echo "=== Brain log (tail 50) ==="
+            tail -100 /var/log/merci_brain.log 2>&1 || echo "log not found"
+            echo "=== END brain log ==="
             echo "Deploy finished at $(date)"
