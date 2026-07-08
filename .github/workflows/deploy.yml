@@ -114,8 +114,12 @@ jobs:
             echo "Services status:"
             systemctl is-active merci-api merci-brain 2>&1 || true
 
-            echo "=== Brain log (tail 50) ==="
-            tail -100 /var/log/merci_brain.log 2>&1 || echo "log not found"
+            echo "=== Brain log (tail 100) ==="
+            tail -200 /var/log/merci_brain.log 2>&1 || echo "log not found"
             echo "=== END brain log ==="
+
+            echo "=== API log (tail 50) ==="
+            tail -100 /var/log/merci_api.log 2>&1 || echo "api log not found"
+            echo "=== END API log ==="
 
             echo "Deploy finished at $(date)"
