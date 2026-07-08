@@ -76,38 +76,28 @@ jobs:
             sudo nginx -s reload 2>&1
             echo "nginx configured"
 
-            echo "=== Installing Docker if missing ==="
-            if ! command -v docker &> /dev/null; then
-              echo "Docker not found — installing..."
-              curl -fsSL https://get.docker.com | sh 2>&1 || echo "Docker install failed"
-              systemctl enable docker 2>&1 || true
-              systemctl start docker 2>&1 || true
-            else
-              echo "Docker already installed"
+            echo "=== Installing/deploying Brain service on host ==="
+            cd /opt/open-web-ui-style/backend
+            if ! command -v uv &> /dev/null; then
+              pip install uv 2>&1 || echo "uv install failed"
             fi
+            uv sync --no-dev 2>&1 || echo "uv sync failed"
 
-            echo "=== Rebuilding Docker images ==="
-            cd /opt/open-web-ui-style/server
-            docker compose build brain 2>&1 || echo "docker compose build brain failed"
-            docker compose build api 2>&1 || echo "docker compose build api failed"
-
-            echo "=== Starting Brain container with restart policy ==="
-            cd /opt/open-web-ui-style/server
-            docker compose up -d brain 2>&1 || echo "docker compose up brain failed"
-            docker compose up -d api 2>&1 || echo "docker compose up api failed"
-
-            echo "=== Creating systemd service for Docker containers on boot ==="
+            echo "=== Creating systemd service for Brain service ==="
             cat > /etc/systemd/system/merci-brain.service << 'SERVICEEOF'
 [Unit]
-Description=Merci Brain Container
-Requires=docker.service
-After=docker.service
+Description=Merci Brain Service
+After=network.target
 
 [Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/open-web-ui-style/backend
+ExecStart=/opt/open-web-ui-style/backend/.venv/bin/uvicorn main:api --host 0.0.0.0 --port 5001
 Restart=always
-ExecStart=/usr/bin/docker compose -f /opt/open-web-ui-style/server/docker-compose.yml up brain
-ExecStop=/usr/bin/docker compose -f /opt/open-web-ui-style/server/docker-compose.yml stop brain
-ExecStartPre=-/usr/bin/docker compose -f /opt/open-web-ui-style/server/docker-compose.yml rm -f brain
+RestartSec=5
+StandardOutput=append:/var/log/merci_brain.log
+StandardError=append:/var/log/merci_brain.log
 
 [Install]
 WantedBy=multi-user.target
