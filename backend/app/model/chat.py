@@ -156,9 +156,13 @@ class Chat(BaseModel):
     def is_cloud(self):
         if self.api_url is None:
             return False
+        # 'cloud' as a standalone marker value — not a substring match so that
+        # real URLs such as "https://cloud-api.near.ai/v1" are not mistaken.
+        if self.api_url.strip() == "cloud":
+            return True
         return any(
             marker in self.api_url
-            for marker in ("nova-proxy", "proxy.merci-unimind.ai", "cloud")
+            for marker in ("nova-proxy", "proxy.merci-unimind.ai")
         )
 
     def file_save_path(self, path: str | None = None):
