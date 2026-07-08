@@ -244,6 +244,10 @@ async def single_agent_solve(
             observable_todo.emit_todo_state()
         return agent
 
+    # Maximum time to wait for a single LLM response before timing out
+    # and reporting an error to the user instead of hanging indefinitely.
+    _ASTEP_TIMEOUT_SECONDS = 300  # 5 minutes
+
     async def run_turn(
         question: str,
         attaches: list[str],
@@ -258,7 +262,30 @@ async def single_agent_solve(
             attaches,
             project_context,
         )
-        response = await turn_agent.astep(prompt)
+        try:
+            response = await asyncio.wait_for(
+                turn_agent.astep(prompt),
+                timeout=_ASTEP_TIMEOUT_SECONDS,
+            )
+        except asyncio.TimeoutError:
+            logger.error(
+                "Single Agent turn timed out after %d seconds",
+                _ASTEP_TIMEOUT_SECONDS,
+                extra={
+                    "project_id": options.project_id,
+                    "task_id": task_id,
+                },
+            )
+            # Cancel the underlying agent step to free resources
+            if turn_agent is not None:
+                stop = getattr(turn_agent, "stop_event", None)
+                if stop is not None:
+                    stop.set()
+            raise TimeoutError(
+                f"The model did not respond within {_ASTEP_TIMEOUT_SECONDS} "
+                "seconds. Please check your model configuration and try "
+                "again."
+            )
         content, total_tokens = await _response_content(response)
         record_agent_memory_snapshot(
             task_lock,
