@@ -114,4 +114,27 @@ jobs:
             echo "Services status:"
             systemctl is-active merci-api merci-brain 2>&1 || true
 
+            echo "=== Running diagnostics ==="
+            echo "--- Testing brain outbound HTTPS ---"
+            curl -sk --max-time 15 "https://cloud-api.near.ai/v1/models" \
+              -H "Authorization: Bearer sk-980e0cfe660f4bceb051c75962ca56f3" 2>&1 | head -5 || echo "curl failed with exit code $?"
+            echo ""
+            echo "--- Testing basic HTTPS ---"
+            curl -sk --max-time 10 "https://httpbin.org/get" 2>&1 | head -3 || echo "httpbin failed with exit code $?"
+            echo ""
+            echo "--- DNS resolution ---"
+            nslookup cloud-api.near.ai 2>&1 || echo "nslookup failed"
+            echo ""
+            echo "--- Checking brain process ---"
+            ps aux | grep -E "python.*main|run-brain" | grep -v grep || echo "brain process not found"
+            echo ""
+            echo "--- Checking run-brain.sh ---"
+            cat /opt/open-web-ui-style/backend/run-brain.sh 2>&1 || echo "run-brain.sh not found"
+            echo ""
+            echo "--- Checking Python env ---"
+            which python3 2>&1
+            python3 --version 2>&1
+            echo "--- Checking env vars ---"
+            env | grep -i proxy 2>&1 || echo "no proxy vars"
+            echo ""
             echo "Deploy finished at $(date)"
