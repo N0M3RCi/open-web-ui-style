@@ -1450,7 +1450,7 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
           ? `${serverBaseUrl}/api/v1/chat/share/playback/${shareToken}?delay_time=${delayTime}`
           : type == 'replay'
             ? `${serverBaseUrl}/api/v1/chat/steps/playback/${newTaskId}?delay_time=${delayTime}`
-            : '/api/chat';
+            : '/chat';
 
       const { tasks: _tasks } = get();
       let historyId: string | null =
