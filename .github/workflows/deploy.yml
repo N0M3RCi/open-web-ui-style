@@ -76,43 +76,47 @@ jobs:
             sudo nginx -s reload 2>&1
             echo "nginx configured"
 
+            echo "=== Installing Docker if missing ==="
+            if ! command -v docker &> /dev/null; then
+              echo "Docker not found — installing..."
+              curl -fsSL https://get.docker.com | sh 2>&1 || echo "Docker install failed"
+              systemctl enable docker 2>&1 || true
+              systemctl start docker 2>&1 || true
+            else
+              echo "Docker already installed"
+            fi
+
             echo "=== Rebuilding Docker images ==="
             cd /opt/open-web-ui-style/server
-            if command -v docker-compose &> /dev/null; then
-              docker-compose build brain 2>&1 || echo "docker-compose build failed"
-              docker-compose build api 2>&1 || echo "docker-compose build api failed"
-            elif docker compose version &> /dev/null; then
-              docker compose build brain 2>&1 || echo "docker compose build failed"
-              docker compose build api 2>&1 || echo "docker compose build api failed"
-            else
-              echo "Docker Compose not found — building images manually"
-              cd /opt/open-web-ui-style
-              docker build -t merci_brain:latest -f backend/Dockerfile . 2>&1 || echo "docker build brain failed"
-              docker build -t merci_api:latest -f server/Dockerfile . 2>&1 || echo "docker build api failed"
-            fi
+            docker compose build brain 2>&1 || echo "docker compose build brain failed"
+            docker compose build api 2>&1 || echo "docker compose build api failed"
 
-            echo "=== Checking merci-brain service network ==="
-            systemctl cat merci-brain 2>&1 || echo "cat failed"
-            echo "--- PrivateNetwork check ---"
-            systemctl show merci-brain -p PrivateNetwork 2>&1 || echo "show failed"
-            PRIV_NET=$(systemctl show merci-brain -p PrivateNetwork 2>/dev/null | cut -d= -f2)
-            if [ "$PRIV_NET" = "yes" ]; then
-              echo "!!! PrivateNetwork=yes detected — creating override to disable it"
-              mkdir -p /etc/systemd/system/merci-brain.service.d
-              printf '[Service]\nPrivateNetwork=no\n' > /etc/systemd/system/merci-brain.service.d/override.conf
-              systemctl daemon-reload 2>&1
-              echo "Override applied. PrivateNetwork=no"
-            else
-              echo "PrivateNetwork is not set to yes — OK"
-            fi
+            echo "=== Starting Brain container with restart policy ==="
+            cd /opt/open-web-ui-style/server
+            docker compose up -d brain 2>&1 || echo "docker compose up brain failed"
+            docker compose up -d api 2>&1 || echo "docker compose up api failed"
 
-            echo "=== Restarting services ==="
-            systemctl restart merci-api 2>&1 || echo "api restart failed (may already be running)"
-            systemctl restart merci-brain 2>&1 || echo "brain restart failed, attempting to start..."
-            systemctl enable merci-brain 2>&1 || true
-            systemctl start merci-brain 2>&1 || echo "brain start failed"
+            echo "=== Creating systemd service for Docker containers on boot ==="
+            cat > /etc/systemd/system/merci-brain.service << 'SERVICEEOF'
+[Unit]
+Description=Merci Brain Container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker compose -f /opt/open-web-ui-style/server/docker-compose.yml up brain
+ExecStop=/usr/bin/docker compose -f /opt/open-web-ui-style/server/docker-compose.yml stop brain
+ExecStartPre=-/usr/bin/docker compose -f /opt/open-web-ui-style/server/docker-compose.yml rm -f brain
+
+[Install]
+WantedBy=multi-user.target
+SERVICEEOF
+            systemctl daemon-reload 2>&1
+            systemctl enable merci-brain 2>&1
+            systemctl restart merci-brain 2>&1 || echo "brain service restart failed"
             echo "Services status:"
-            systemctl is-active merci-api merci-brain 2>&1 || true
+            systemctl is-active merci-brain 2>&1 || true
 
             echo "=== Brain log (tail 100) ==="
             tail -200 /var/log/merci_brain.log 2>&1 || echo "log not found"
