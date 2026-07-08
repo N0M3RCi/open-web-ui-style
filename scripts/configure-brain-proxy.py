@@ -25,13 +25,32 @@ from pathlib import Path
 
 def find_nginx_config() -> Path | None:
     """Find the nginx config file that contains the SPA try_files directive."""
+    # Check common paths first (these are the most likely locations)
+    common_paths = [
+        Path("/etc/nginx/sites-enabled/default"),
+        Path("/etc/nginx/conf.d/default.conf"),
+        Path("/etc/nginx/nginx.conf"),
+    ]
+    for path in common_paths:
+        if path.exists():
+            try:
+                text = path.read_text()
+                if "try_files" in text and "index.html" in text:
+                    print(f"Found nginx config at {path}")
+                    return path
+            except (PermissionError, OSError):
+                continue
+
+    # Fallback: search for any .conf file containing try_files + index.html
     nginx_dirs = [Path("/etc/nginx")]
     for d in nginx_dirs:
         if not d.exists():
             continue
         for conf in d.rglob("*.conf"):
             try:
-                if "try_files" in conf.read_text() and "index.html" in conf.read_text():
+                text = conf.read_text()
+                if "try_files" in text and "index.html" in text:
+                    print(f"Found nginx config at {conf}")
                     return conf
             except (PermissionError, OSError):
                 continue
@@ -56,40 +75,61 @@ NGINX_LOCATION_BLOCK = """    location /brain/ {
 
 
 def main() -> int:
+    print("=== Configuring nginx proxy for Brain service ===")
+
     conf_path = find_nginx_config()
     if conf_path is None:
-        # Fallback
         conf_path = Path("/etc/nginx/sites-enabled/default")
+        print(f"Falling back to {conf_path}")
 
     if not conf_path.exists():
-        print(f"nginx config not found at {conf_path}", file=sys.stderr)
+        print(f"ERROR: nginx config not found at {conf_path}", file=sys.stderr)
         return 1
 
+    print(f"Using nginx config: {conf_path}")
     content = conf_path.read_text()
 
     # Remove existing /brain/ location block (idempotent)
+    # Uses flexible whitespace matching for the closing brace
+    original_len = len(content)
     content = re.sub(
-        r'location /brain/ \{.*?\n    \}', '', content, flags=re.DOTALL
+        r'location\s+/brain/\s*\{.*?\n\s*\}', '', content, flags=re.DOTALL
     )
+    removed_len = original_len - len(content)
+    if removed_len > 0:
+        print(f"Removed existing /brain/ location block ({removed_len} chars)")
 
-    # Add brain location block before the first location / block
-    content = content.replace('location / {', NGINX_LOCATION_BLOCK + 'location / {')
-
-    conf_path.write_text(content)
-    print(f"Added brain proxy location to {conf_path}")
-
-    # Reload nginx
-    result = subprocess.run(["sudo", "nginx", "-t"], capture_output=True, text=True)
-    if result.returncode != 0:
-        print(f"nginx config test failed: {result.stderr}", file=sys.stderr)
+    # Add brain location block before the first location / { block
+    # Uses regex for flexible spacing matching
+    match = re.search(r'location\s+/\s*\{', content)
+    if not match:
+        print("ERROR: could not find 'location / {' in nginx config", file=sys.stderr)
+        print("Config content (first 500 chars):", content[:500], file=sys.stderr)
         return 1
 
+    insert_pos = match.start()
+    content = content[:insert_pos] + NGINX_LOCATION_BLOCK + content[insert_pos:]
+    print(f"Added brain proxy location to {conf_path}")
+
+    conf_path.write_text(content)
+
+    # Test nginx config
+    print("Testing nginx config...")
+    result = subprocess.run(["sudo", "nginx", "-t"], capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"ERROR: nginx config test failed:\n{result.stderr}", file=sys.stderr)
+        return 1
+    print("nginx config test passed")
+
+    # Reload nginx
+    print("Reloading nginx...")
     result = subprocess.run(["sudo", "nginx", "-s", "reload"], capture_output=True, text=True)
     if result.returncode != 0:
-        print(f"nginx reload failed: {result.stderr}", file=sys.stderr)
+        print(f"ERROR: nginx reload failed:\n{result.stderr}", file=sys.stderr)
         return 1
 
     print("nginx reloaded successfully")
+    print("=== Brain proxy configuration complete ===")
     return 0
 
 
