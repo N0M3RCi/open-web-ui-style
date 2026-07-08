@@ -136,7 +136,10 @@ function getDirectServerApiBaseUrl(): string | undefined {
     );
   }
 
-  return normalizeServerApiBaseUrl(import.meta.env.VITE_BASE_URL);
+  // Production: use VITE_SERVER_URL (absolute URL the brain can reach the API server at)
+  const serverUrl =
+    import.meta.env.VITE_SERVER_URL || import.meta.env.VITE_BASE_URL;
+  return normalizeServerApiBaseUrl(serverUrl);
 }
 
 function getHostElectronAPI() {
@@ -1447,7 +1450,7 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
           ? `${serverBaseUrl}/api/v1/chat/share/playback/${shareToken}?delay_time=${delayTime}`
           : type == 'replay'
             ? `${serverBaseUrl}/api/v1/chat/steps/playback/${newTaskId}?delay_time=${delayTime}`
-            : '/api/chat';
+            : '/chat';
 
       const { tasks: _tasks } = get();
       let historyId: string | null =
