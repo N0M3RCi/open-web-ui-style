@@ -117,4 +117,89 @@ jobs:
             echo "=== Brain log (tail 50) ==="
             tail -100 /var/log/merci_brain.log 2>&1 || echo "log not found"
             echo "=== END brain log ==="
+
+            echo "=== DEEP DIAGNOSTICS: Brain HTTPS connectivity ==="
+            echo "--- Brain service user ---"
+            systemctl show merci-brain -p User 2>&1 || echo "show User failed"
+            BRAIN_USER=$(systemctl show merci-brain -p User 2>/dev/null | cut -d= -f2)
+            echo "Brain runs as user: $BRAIN_USER"
+
+            echo "--- nftables rules ---"
+            sudo nft list ruleset 2>&1 | head -50 || echo "nftables not available"
+
+            echo "--- Network namespace of brain process ---"
+            BRAIN_PID=$(systemctl show merci-brain -p MainPID 2>/dev/null | cut -d= -f2)
+            echo "Brain PID: $BRAIN_PID"
+            if [ -n "$BRAIN_PID" ] && [ "$BRAIN_PID" -gt 1 ]; then
+              ls -la /proc/$BRAIN_PID/ns/net 2>&1 || echo "cannot read net ns"
+              ls -la /proc/1/ns/net 2>&1 || echo "cannot read init net ns"
+              if diff -q /proc/$BRAIN_PID/ns/net /proc/1/ns/net 2>&1; then
+                echo "Network namespace: SAME as init (good)"
+              else
+                echo "!!! Network namespace: DIFFERENT from init !!!"
+              fi
+              echo "--- Brain process capabilities ---"
+              cat /proc/$BRAIN_PID/status 2>&1 | grep -i cap || echo "cannot read caps"
+              echo "--- Brain process environment ---"
+              cat /proc/$BRAIN_PID/environ 2>&1 | tr '\0' '\n' | head -30 || echo "cannot read environ"
+            else
+              echo "Brain PID not available (service may not be running)"
+            fi
+
+            echo "--- Python HTTPS test from brain venv ---"
+            BRAIN_VENV_PYTHON="/opt/open-web-ui-style/server/.venv/bin/python"
+            if [ -f "$BRAIN_VENV_PYTHON" ]; then
+              timeout 30 $BRAIN_VENV_PYTHON -c "
+import sys, socket, ssl, json, urllib.request, urllib.error
+print('Python version:', sys.version)
+print('SSL version:', ssl.OPENSSL_VERSION)
+
+# Test 1: DNS resolution
+try:
+    addr = socket.getaddrinfo('cloud-api.near.ai', 443)
+    print('DNS resolved cloud-api.near.ai:', addr[0][4])
+except Exception as e:
+    print('DNS FAILED:', e)
+
+# Test 2: Socket connection
+try:
+    sock = socket.create_connection(('cloud-api.near.ai', 443), timeout=10)
+    print('TCP connection to cloud-api.near.ai:443: SUCCESS')
+    sock.close()
+except Exception as e:
+    print('TCP connection FAILED:', e)
+
+# Test 3: SSL connection
+try:
+    ctx = ssl.create_default_context()
+    sock = socket.create_connection(('cloud-api.near.ai', 443), timeout=10)
+    ssock = ctx.wrap_socket(sock, server_hostname='cloud-api.near.ai')
+    print('SSL handshake: SUCCESS, cipher:', ssock.cipher())
+    ssock.close()
+except Exception as e:
+    print('SSL handshake FAILED:', e)
+
+# Test 4: HTTPS request
+try:
+    req = urllib.request.Request(
+        'https://cloud-api.near.ai/v1/models',
+        headers={'User-Agent': 'Mozilla/5.0'},
+    )
+    with urllib.request.urlopen(req, timeout=15) as resp:
+        print('HTTPS request SUCCESS, status:', resp.status)
+except Exception as e:
+    print('HTTPS request FAILED:', e)
+" 2>&1 || echo "Python test failed with exit code $?"
+            else
+              echo "Brain venv Python not found at $BRAIN_VENV_PYTHON"
+            fi
+
+            echo "--- Test curl as brain user ---"
+            if [ -n "$BRAIN_USER" ]; then
+              timeout 15 sudo -u "$BRAIN_USER" curl -sk --max-time 10 "https://cloud-api.near.ai/v1/models" -H "Authorization: Bearer test" 2>&1 | head -3 || echo "curl as brain user failed"
+            else
+              echo "Cannot determine brain user"
+            fi
+
+            echo "=== END DEEP DIAGNOSTICS ==="
             echo "Deploy finished at $(date)"
