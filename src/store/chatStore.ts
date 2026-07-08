@@ -1337,7 +1337,9 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
         debug('Creating a new Chat Instance for current project on end');
         const newChatResult = projectStore.appendInitChatStore(
           project_id,
-          startOptions.preserveTaskId ? taskId : undefined
+          startOptions.preserveTaskId ? taskId : undefined,
+          undefined,
+          sessionModeForRequest
         );
 
         if (newChatResult) {

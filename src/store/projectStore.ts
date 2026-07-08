@@ -883,7 +883,8 @@ const projectStore = create<ProjectStore>()((set, get) => ({
   appendInitChatStore: (
     projectId: string,
     customTaskId?: string,
-    chatName?: string
+    chatName?: string,
+    sessionMode?: string
   ) => {
     const {
       projects,
@@ -924,6 +925,15 @@ const projectStore = create<ProjectStore>()((set, get) => ({
 
     //Set the initTask as the active taskId
     newChatStore.getState().setActiveTaskId(newTaskId);
+
+    // Set session mode immediately at task creation to prevent
+    // the "splitting task" popup flash in UserQueryGroup
+    if (sessionMode) {
+      const chatState = newChatStore.getState() as any;
+      if (chatState.setTaskSessionMode) {
+        chatState.setTaskSessionMode(newTaskId, sessionMode);
+      }
+    }
 
     return { taskId: newTaskId, chatStore: newChatStore };
   },
