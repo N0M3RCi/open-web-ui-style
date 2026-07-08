@@ -131,6 +131,14 @@ def agent_model(
             and options.is_cloud()
         ):
             extra_params = patch_azure_cloud_config(extra_params)
+
+        # When the frontend sends api_url='cloud' (cloud mode), the value is
+        # not a real URL — it is a marker.  Strip it so ModelFactory uses the
+        # default provider URL instead of trying to connect to a host named
+        # "cloud".
+        api_url = effective_config.get("api_url")
+        if api_url and api_url.strip() in ("cloud", ""):
+            effective_config["api_url"] = None
         init_param_keys = {
             "api_version",
             "azure_ad_token",
