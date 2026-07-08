@@ -85,7 +85,7 @@ jobs:
             uv sync --no-dev 2>&1 || echo "uv sync failed"
 
             echo "=== Creating systemd service for Brain service ==="
-            cat > /etc/systemd/system/merci-brain.service << 'SERVICEEOF'
+            cat > /etc/systemd/system/merci-brain.service << 'SERVICEEOF' 2>&1 || echo "writing service file failed"
 [Unit]
 Description=Merci Brain Service
 After=network.target
@@ -103,8 +103,8 @@ StandardError=append:/var/log/merci_brain.log
 [Install]
 WantedBy=multi-user.target
 SERVICEEOF
-            systemctl daemon-reload 2>&1
-            systemctl enable merci-brain 2>&1
+            systemctl daemon-reload 2>&1 || echo "daemon-reload failed"
+            systemctl enable merci-brain 2>&1 || echo "enable failed"
             systemctl restart merci-brain 2>&1 || echo "brain service restart failed"
             echo "Services status:"
             systemctl is-active merci-brain 2>&1 || true
