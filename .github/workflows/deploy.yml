@@ -150,46 +150,35 @@ jobs:
             BRAIN_VENV_PYTHON="/opt/open-web-ui-style/server/.venv/bin/python"
             if [ -f "$BRAIN_VENV_PYTHON" ]; then
               timeout 30 $BRAIN_VENV_PYTHON -c "
-import sys, socket, ssl, json, urllib.request, urllib.error
-print('Python version:', sys.version)
-print('SSL version:', ssl.OPENSSL_VERSION)
-
-# Test 1: DNS resolution
-try:
-    addr = socket.getaddrinfo('cloud-api.near.ai', 443)
-    print('DNS resolved cloud-api.near.ai:', addr[0][4])
-except Exception as e:
-    print('DNS FAILED:', e)
-
-# Test 2: Socket connection
-try:
-    sock = socket.create_connection(('cloud-api.near.ai', 443), timeout=10)
-    print('TCP connection to cloud-api.near.ai:443: SUCCESS')
-    sock.close()
-except Exception as e:
-    print('TCP connection FAILED:', e)
-
-# Test 3: SSL connection
-try:
-    ctx = ssl.create_default_context()
-    sock = socket.create_connection(('cloud-api.near.ai', 443), timeout=10)
-    ssock = ctx.wrap_socket(sock, server_hostname='cloud-api.near.ai')
-    print('SSL handshake: SUCCESS, cipher:', ssock.cipher())
-    ssock.close()
-except Exception as e:
-    print('SSL handshake FAILED:', e)
-
-# Test 4: HTTPS request
-try:
-    req = urllib.request.Request(
-        'https://cloud-api.near.ai/v1/models',
-        headers={'User-Agent': 'Mozilla/5.0'},
-    )
-    with urllib.request.urlopen(req, timeout=15) as resp:
-        print('HTTPS request SUCCESS, status:', resp.status)
-except Exception as e:
-    print('HTTPS request FAILED:', e)
-" 2>&1 || echo "Python test failed with exit code $?"
+              import sys, socket, ssl, json, urllib.request, urllib.error
+              print('Python version:', sys.version)
+              print('SSL version:', ssl.OPENSSL_VERSION)
+              try:
+                  addr = socket.getaddrinfo('cloud-api.near.ai', 443)
+                  print('DNS resolved:', addr[0][4])
+              except Exception as e:
+                  print('DNS FAILED:', e)
+              try:
+                  sock = socket.create_connection(('cloud-api.near.ai', 443), timeout=10)
+                  print('TCP connection: SUCCESS')
+                  sock.close()
+              except Exception as e:
+                  print('TCP connection FAILED:', e)
+              try:
+                  ctx = ssl.create_default_context()
+                  sock = socket.create_connection(('cloud-api.near.ai', 443), timeout=10)
+                  ssock = ctx.wrap_socket(sock, server_hostname='cloud-api.near.ai')
+                  print('SSL handshake: SUCCESS, cipher:', ssock.cipher()[0])
+                  ssock.close()
+              except Exception as e:
+                  print('SSL handshake FAILED:', e)
+              try:
+                  req = urllib.request.Request('https://cloud-api.near.ai/v1/models', headers={'User-Agent': 'Mozilla/5.0'})
+                  with urllib.request.urlopen(req, timeout=15) as resp:
+                      print('HTTPS request SUCCESS, status:', resp.status)
+              except Exception as e:
+                  print('HTTPS request FAILED:', e)
+              " 2>&1 || echo "Python test failed with exit code $?"
             else
               echo "Brain venv Python not found at $BRAIN_VENV_PYTHON"
             fi
