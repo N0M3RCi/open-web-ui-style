@@ -85,22 +85,7 @@ jobs:
               # Remove existing /brain/ location block (idempotent)
               sudo sed -i '/^[[:space:]]*location \/brain\/ {/,/^[[:space:]]*}/d' "$NGINX_CONF" 2>&1 || true
               # Insert brain location block before the first "location / {"
-              sudo sed -i '0,/^[[:space:]]*location \/ {/{
-              /^[[:space:]]*location \/ {/i\
-                  location /brain/ {\
-                      proxy_pass http://localhost:5001/;\
-                      proxy_http_version 1.1;\
-                      proxy_set_header Upgrade \$http_upgrade;\
-                      proxy_set_header Connection "upgrade";\
-                      proxy_set_header Host \$host;\
-                      proxy_set_header X-Real-IP \$remote_addr;\
-                      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\
-                      proxy_set_header X-Forwarded-Proto \$scheme;\
-                      proxy_cache_bypass \$http_upgrade;\
-                      proxy_read_timeout 86400s;\
-                      proxy_send_timeout 86400s;\
-                  }
-              }' "$NGINX_CONF" 2>&1 || echo "sed insert failed"
+              sudo sed -i 's|^[[:space:]]*location / {|    location /brain/ {\n        proxy_pass http://localhost:5001/;\n        proxy_http_version 1.1;\n        proxy_set_header Upgrade $http_upgrade;\n        proxy_set_header Connection "upgrade";\n        proxy_set_header Host $host;\n        proxy_set_header X-Real-IP $remote_addr;\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n        proxy_set_header X-Forwarded-Proto $scheme;\n        proxy_cache_bypass $http_upgrade;\n        proxy_read_timeout 86400s;\n        proxy_send_timeout 86400s;\n    }\n\n&|' "$NGINX_CONF" 2>&1 || echo "sed insert failed"
               # Test and reload nginx
               sudo nginx -t 2>&1 && sudo nginx -s reload 2>&1 && echo "nginx reloaded successfully" || echo "nginx reload failed"
             else
