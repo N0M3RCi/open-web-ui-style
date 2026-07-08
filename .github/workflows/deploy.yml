@@ -71,56 +71,40 @@ jobs:
             rsync -a --delete dist-web/ /opt/open-web-ui-style/dist-web/ 2>&1 || true
 
             echo "=== Configuring nginx proxy for Brain service ==="
-            # Also try the Python script if available (from git pull)
-            if [ -f /opt/open-web-ui-style/scripts/configure-brain-proxy.py ]; then
-              python3 /opt/open-web-ui-style/scripts/configure-brain-proxy.py 2>&1 || echo "script failed, using inline fallback"
-            fi
             # Find the nginx config file
             NGINX_CONF=""
             if [ -f "/etc/nginx/sites-enabled/default" ]; then
               NGINX_CONF="/etc/nginx/sites-enabled/default"
+            elif [ -f "/etc/nginx/conf.d/default.conf" ]; then
+              NGINX_CONF="/etc/nginx/conf.d/default.conf"
             else
               NGINX_CONF=$(grep -rl "try_files.*index.html" /etc/nginx/ 2>/dev/null | head -1)
             fi
-            if [ -n "$NGINX_CONF" ]; then
+            if [ -n "$NGINX_CONF" ] && [ -f "$NGINX_CONF" ]; then
               echo "Using nginx config: $NGINX_CONF"
-              python3 -c "
-            import re, subprocess, sys
-            with open('$NGINX_CONF') as f:
-                content = f.read()
-            # Remove existing /brain/ location block (idempotent)
-            content = re.sub(r'location\s+/brain/\s*\{.*?\n\s*\}', '', content, flags=re.DOTALL)
-            # Find first location / { block
-            m = re.search(r'location\s+/\s*\{', content)
-            if not m:
-                print('ERROR: could not find location / {', file=sys.stderr)
-                sys.exit(1)
-            brain_block = '''    location /brain/ {
-                proxy_pass http://localhost:5001/;
-                proxy_http_version 1.1;
-                proxy_set_header Upgrade \$http_upgrade;
-                proxy_set_header Connection \"upgrade\";
-                proxy_set_header Host \$host;
-                proxy_set_header X-Real-IP \$remote_addr;
-                proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto \$scheme;
-                proxy_cache_bypass \$http_upgrade;
-                proxy_read_timeout 86400s;
-                proxy_send_timeout 86400s;
-            }
-
-            '''
-            content = content[:m.start()] + brain_block + content[m.start():]
-            with open('$NGINX_CONF', 'w') as f:
-                f.write(content)
-            print('Added brain proxy location to $NGINX_CONF')
-            subprocess.run(['sudo', 'nginx', '-t'], check=True)
-            print('nginx config test passed')
-            subprocess.run(['sudo', 'nginx', '-s', 'reload'], check=True)
-            print('nginx reloaded successfully')
-            " 2>&1 || echo "brain proxy config failed"
+              # Remove existing /brain/ location block (idempotent)
+              sudo sed -i '/^[[:space:]]*location \/brain\/ {/,/^[[:space:]]*}/d' "$NGINX_CONF" 2>&1 || true
+              # Insert brain location block before the first "location / {"
+              sudo sed -i '0,/^[[:space:]]*location \/ {/{
+              /^[[:space:]]*location \/ {/i\
+                  location /brain/ {\
+                      proxy_pass http://localhost:5001/;\
+                      proxy_http_version 1.1;\
+                      proxy_set_header Upgrade \$http_upgrade;\
+                      proxy_set_header Connection "upgrade";\
+                      proxy_set_header Host \$host;\
+                      proxy_set_header X-Real-IP \$remote_addr;\
+                      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;\
+                      proxy_set_header X-Forwarded-Proto \$scheme;\
+                      proxy_cache_bypass \$http_upgrade;\
+                      proxy_read_timeout 86400s;\
+                      proxy_send_timeout 86400s;\
+                  }
+              }' "$NGINX_CONF" 2>&1 || echo "sed insert failed"
+              # Test and reload nginx
+              sudo nginx -t 2>&1 && sudo nginx -s reload 2>&1 && echo "nginx reloaded successfully" || echo "nginx reload failed"
             else
-              echo "nginx config not found"
+              echo "nginx config not found at $NGINX_CONF"
             fi
 
             echo "=== Restarting Docker services ==="
