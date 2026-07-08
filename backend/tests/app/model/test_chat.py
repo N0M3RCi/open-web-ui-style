@@ -236,6 +236,11 @@ class TestIsCloud:
         assert not self._chat_with_url(
             "https://bedrock-runtime.us-west-2.amazonaws.com"
         ).is_cloud()
+        # The marker 'cloud' must not match as a substring of real URLs
+        # such as https://cloud-api.near.ai/v1
+        assert not self._chat_with_url(
+            "https://cloud-api.near.ai/v1"
+        ).is_cloud()
 
     def test_is_cloud_false_when_url_missing(self):
         assert not self._chat_with_url(None).is_cloud()
