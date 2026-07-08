@@ -76,7 +76,7 @@ def main() -> int:
     # Insert brain location block before the first "location / {"
     brain = (
         "    location /brain/ {\n"
-        "        proxy_pass http://localhost:5001/;\n"
+        "        proxy_pass http://localhost:3001/;\n"
         "        proxy_http_version 1.1;\n"
         "        proxy_set_header Upgrade $http_upgrade;\n"
         '        proxy_set_header Connection "upgrade";\n'
