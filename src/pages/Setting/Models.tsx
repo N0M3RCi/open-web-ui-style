@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/select';
 import { INIT_PROVODERS } from '@/lib/llm';
 import { fetchProviderModels } from '@/lib/providerModels';
+import { useAuthStore } from '@/store/authStore';
 import type { Provider } from '@/types';
 import {
   Check,
@@ -308,6 +309,9 @@ export default function Models() {
           });
         }
       }
+
+      // Set modelType to 'custom' so startTask uses the saved provider
+      useAuthStore.getState().setModelType('custom');
 
       toast.success('Model configuration saved successfully');
       await loadProviders();

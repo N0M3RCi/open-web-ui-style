@@ -445,6 +445,22 @@ export default function SettingGeneral() {
                         } else {
                           await proxyFetchPost('/api/v1/provider', data);
                         }
+
+                        // Reload provider list to find the saved provider ID
+                        const updatedRes =
+                          await proxyFetchGet('/api/v1/providers');
+                        const updatedList = Array.isArray(updatedRes)
+                          ? updatedRes
+                          : updatedRes.items || [];
+                        const savedProvider = updatedList.find(
+                          (p: any) =>
+                            p.provider_name === 'openai-compatible-model'
+                        );
+                        if (savedProvider?.id) {
+                          await proxyFetchPost('/api/v1/provider/prefer', {
+                            provider_id: savedProvider.id,
+                          });
+                        }
                       }
 
                       // Set modelType to 'custom' so startTask uses the custom provider
