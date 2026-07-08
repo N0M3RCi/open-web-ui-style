@@ -76,6 +76,21 @@ jobs:
             sudo nginx -s reload 2>&1
             echo "nginx configured"
 
+            echo "=== Rebuilding Docker images ==="
+            cd /opt/open-web-ui-style/server
+            if command -v docker-compose &> /dev/null; then
+              docker-compose build brain 2>&1 || echo "docker-compose build failed"
+              docker-compose build api 2>&1 || echo "docker-compose build api failed"
+            elif docker compose version &> /dev/null; then
+              docker compose build brain 2>&1 || echo "docker compose build failed"
+              docker compose build api 2>&1 || echo "docker compose build api failed"
+            else
+              echo "Docker Compose not found — building images manually"
+              cd /opt/open-web-ui-style
+              docker build -t merci_brain:latest -f backend/Dockerfile . 2>&1 || echo "docker build brain failed"
+              docker build -t merci_api:latest -f server/Dockerfile . 2>&1 || echo "docker build api failed"
+            fi
+
             echo "=== Restarting services ==="
             systemctl restart merci-api 2>&1 || echo "api restart failed (may already be running)"
             systemctl restart merci-brain 2>&1 || echo "brain restart failed, attempting to start..."
