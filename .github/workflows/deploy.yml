@@ -99,10 +99,7 @@ jobs:
             if [ "$PRIV_NET" = "yes" ]; then
               echo "!!! PrivateNetwork=yes detected — creating override to disable it"
               mkdir -p /etc/systemd/system/merci-brain.service.d
-              cat > /etc/systemd/system/merci-brain.service.d/override.conf << 'OVERRIDE'
-[Service]
-PrivateNetwork=no
-OVERRIDE
+              printf '[Service]\nPrivateNetwork=no\n' > /etc/systemd/system/merci-brain.service.d/override.conf
               systemctl daemon-reload 2>&1
               echo "Override applied. PrivateNetwork=no"
             else
