@@ -18,6 +18,7 @@ Configure nginx to proxy /brain/ requests to the Brain service (localhost:5001).
 Idempotent: removes any existing /brain/ location block and re-adds it.
 """
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -61,39 +62,52 @@ def main() -> int:
         return 1
 
     print(f"Using nginx config: {conf_path}")
-    conf_str = str(conf_path)
 
-    # Remove existing /brain/ location block (idempotent)
-    result = os.system(
-        f"sudo sed -i '/^[[:space:]]*location \\/brain\\/ {{/,/^[[:space:]]*}}/d' {conf_str} 2>&1"
-    )
-    if result != 0:
-        print("Warning: failed to remove existing brain location block", file=sys.stderr)
-
-    # Insert brain location block before the first "location / {"
-    brain_block = (
-        r"    location /brain/ {"
-        r"\n        proxy_pass http://localhost:5001/;"
-        r"\n        proxy_http_version 1.1;"
-        r"\n        proxy_set_header Upgrade $http_upgrade;"
-        r'\n        proxy_set_header Connection "upgrade";'
-        r"\n        proxy_set_header Host $host;"
-        r"\n        proxy_set_header X-Real-IP $remote_addr;"
-        r"\n        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;"
-        r"\n        proxy_set_header X-Forwarded-Proto $scheme;"
-        r"\n        proxy_cache_bypass $http_upgrade;"
-        r"\n        proxy_read_timeout 86400s;"
-        r"\n        proxy_send_timeout 86400s;"
-        r"\n    }"
-        r"\n\n"
-    )
-    sed_cmd = f"sudo sed -i 's|^[[:space:]]*location / {{|{brain_block}&|' {conf_str} 2>&1"
-    result = os.system(sed_cmd)
-    if result != 0:
-        print("ERROR: failed to insert brain location block", file=sys.stderr)
+    # Read config
+    try:
+        c = conf_path.read_text()
+    except PermissionError as e:
+        print(f"ERROR: cannot read config: {e}", file=sys.stderr)
         return 1
 
-    print(f"Added brain proxy location to {conf_path}")
+    # Remove existing /brain/ location block (idempotent)
+    c = re.sub(r"location\s+/brain/\s*\{.*?\n\s*\}", "", c, flags=re.DOTALL)
+
+    # Insert brain location block before the first "location / {"
+    brain = (
+        "    location /brain/ {\n"
+        "        proxy_pass http://localhost:5001/;\n"
+        "        proxy_http_version 1.1;\n"
+        "        proxy_set_header Upgrade $http_upgrade;\n"
+        '        proxy_set_header Connection "upgrade";\n'
+        "        proxy_set_header Host $host;\n"
+        "        proxy_set_header X-Real-IP $remote_addr;\n"
+        "        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+        "        proxy_set_header X-Forwarded-Proto $scheme;\n"
+        "        proxy_cache_bypass $http_upgrade;\n"
+        "        proxy_read_timeout 86400s;\n"
+        "        proxy_send_timeout 86400s;\n"
+        "    }"
+    )
+    c = re.sub(r"(location\s+/\s*\{)", brain + "\n\n" + r"\1", c, count=1)
+
+    # Write config using sudo tee
+    try:
+        proc = subprocess.Popen(
+            ["sudo", "tee", str(conf_path)],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+        )
+        stdout, stderr = proc.communicate(c.encode())
+        if proc.returncode != 0:
+            print(f"ERROR: failed to write config: {stderr.decode().strip()}", file=sys.stderr)
+            return 1
+    except FileNotFoundError:
+        print("ERROR: sudo command not found", file=sys.stderr)
+        return 1
+
+    print("Config modified")
 
     # Test nginx config
     print("Testing nginx config...")
