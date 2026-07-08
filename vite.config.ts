@@ -120,6 +120,7 @@ export default defineConfig(({ command, mode }) => {
               target: env.VITE_PROXY_URL,
               changeOrigin: true,
               ws: true,
+              pathRewrite: { '^/api': '' },
             },
           }
         : undefined,
