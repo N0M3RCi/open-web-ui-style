@@ -1,7 +1,7 @@
 {
   "startupCommands": [
-    "nohup bash /home/user/app/server/start-backend.sh > /tmp/backend-startup.log 2>&1 &",
-    "npm install; VITE_PROXY_URL=http://localhost:3001 npm run dev:web -- --port 3000 --host"
+    "cd /home/user/app/backend && uv sync --no-dev; nohup uv run uvicorn main:api --host 0.0.0.0 --port 5001 > /tmp/brain-service.log 2>&1 &",
+    "npm install; VITE_BRAIN_ENDPOINT=http://localhost:5001 VITE_PROXY_URL=http://localhost:3001 npm run dev:web -- --port 3000 --host"
   ],
   "projectId": "632594cf-dcbd-4a3a-a6f6-8c7e1dc176b8",
   "templateId": "any"
