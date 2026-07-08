@@ -121,8 +121,10 @@ services:
       dockerfile: backend/Dockerfile
     container_name: merci_brain
     restart: unless-stopped
-    ports:
-      - '5001:5001'
+    # Host networking: gives the brain direct internet access to reach LLM
+    # providers (OpenAI, near.ai, etc.). Docker bridge NAT may be blocked
+    # by the VPS firewall or Docker daemon iptables configuration.
+    network_mode: host
     env_file:
       - .env
     environment:
@@ -133,8 +135,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks:
-      - merci_network
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:5001/health']
       interval: 30s
