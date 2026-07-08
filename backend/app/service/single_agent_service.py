@@ -267,7 +267,7 @@ async def single_agent_solve(
                 turn_agent.astep(prompt),
                 timeout=_ASTEP_TIMEOUT_SECONDS,
             )
-        except asyncio.TimeoutError:
+        except TimeoutError:
             logger.error(
                 "Single Agent turn timed out after %d seconds",
                 _ASTEP_TIMEOUT_SECONDS,

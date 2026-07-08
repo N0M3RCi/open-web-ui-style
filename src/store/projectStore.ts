@@ -388,7 +388,8 @@ interface ProjectStore {
   appendInitChatStore: (
     projectId: string,
     customTaskId?: string,
-    chatName?: string
+    chatName?: string,
+    sessionMode?: string
   ) => { taskId: string; chatStore: VanillaChatStore } | null;
   setActiveChatStore: (projectId: string, chatId: string) => void;
   removeChatStore: (projectId: string, chatId: string) => void;
