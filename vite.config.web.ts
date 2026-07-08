@@ -84,6 +84,11 @@ export default defineConfig(({ mode }) => {
                 ? proxyHttpsAgent
                 : proxyHttpAgent,
             },
+            '/brain': {
+              target: 'http://localhost:5001',
+              changeOrigin: true,
+              rewrite: (path: string) => path.replace(/^\/brain/, ''),
+            },
           }
         : undefined,
     },
