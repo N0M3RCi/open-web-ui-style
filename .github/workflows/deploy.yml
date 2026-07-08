@@ -91,6 +91,24 @@ jobs:
               docker build -t merci_api:latest -f server/Dockerfile . 2>&1 || echo "docker build api failed"
             fi
 
+            echo "=== Checking merci-brain service network ==="
+            systemctl cat merci-brain 2>&1 || echo "cat failed"
+            echo "--- PrivateNetwork check ---"
+            systemctl show merci-brain -p PrivateNetwork 2>&1 || echo "show failed"
+            PRIV_NET=$(systemctl show merci-brain -p PrivateNetwork 2>/dev/null | cut -d= -f2)
+            if [ "$PRIV_NET" = "yes" ]; then
+              echo "!!! PrivateNetwork=yes detected — creating override to disable it"
+              mkdir -p /etc/systemd/system/merci-brain.service.d
+              cat > /etc/systemd/system/merci-brain.service.d/override.conf << 'OVERRIDE'
+[Service]
+PrivateNetwork=no
+OVERRIDE
+              systemctl daemon-reload 2>&1
+              echo "Override applied. PrivateNetwork=no"
+            else
+              echo "PrivateNetwork is not set to yes — OK"
+            fi
+
             echo "=== Restarting services ==="
             systemctl restart merci-api 2>&1 || echo "api restart failed (may already be running)"
             systemctl restart merci-brain 2>&1 || echo "brain restart failed, attempting to start..."
