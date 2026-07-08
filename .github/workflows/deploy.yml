@@ -79,7 +79,8 @@ jobs:
             echo "=== Installing/deploying Brain service on host ==="
             cd /opt/open-web-ui-style/backend
             if ! command -v uv &> /dev/null; then
-              pip install uv 2>&1 || echo "uv install failed"
+              curl -LsSf https://astral.sh/uv/install.sh | sh 2>&1 || echo "uv install failed"
+              export PATH="$HOME/.cargo/bin:$PATH"
             fi
             uv sync --no-dev 2>&1 || echo "uv sync failed"
 
