@@ -115,40 +115,15 @@ jobs:
             systemctl is-active merci-api merci-brain 2>&1 || true
 
             echo "=== Running diagnostics ==="
-            echo "--- Brain service user ---"
             systemctl show merci-brain -p User 2>&1
-            BRAIN_USER=$(systemctl show merci-brain -p User 2>/dev/null | cut -d= -f2)
-            echo "Brain user: $BRAIN_USER"
-            echo ""
-            echo "--- run-brain.py content ---"
-            cat /opt/open-web-ui-style/backend/run-brain.py 2>&1 || echo "run-brain.py not found"
-            echo ""
-            echo "--- Test connectivity as brain user ---"
-            if [ -n "$BRAIN_USER" ] && [ "$BRAIN_USER" != "root" ] && [ "$BRAIN_USER" != "***" ]; then
-              sudo -u "$BRAIN_USER" curl -sk --max-time 15 "https://cloud-api.near.ai/v1/models" \
-                -H "Authorization: Bearer sk-980e0cfe660f4bceb051c75962ca56f3" 2>&1 | python3 -c "import json,sys; d=json.load(sys.stdin); print(f'SUCCESS as $BRAIN_USER: {len(d[\"data\"])} models')" 2>&1 || echo "curl as $BRAIN_USER failed with exit code $?"
-            else
-              echo "Brain user is root/empty/masked, testing as root instead"
-              curl -sk --max-time 15 "https://cloud-api.near.ai/v1/models" \
-                -H "Authorization: Bearer sk-980e0cfe660f4bceb051c75962ca56f3" 2>&1 | python3 -c "import json,sys; d=json.load(sys.stdin); print(f'SUCCESS as root: {len(d[\"data\"])} models')" 2>&1 || echo "curl as root failed with exit code $?"
-            fi
-            echo ""
-            echo "--- Checking iptables ---"
-            sudo iptables -L -n 2>&1 | head -30 || echo "iptables failed"
-            echo ""
-            echo "--- Checking SELinux ---"
-            getenforce 2>&1 || echo "selinux not available"
-            echo ""
-            echo "--- Python SSL test (brain venv) ---"
-            /opt/open-web-ui-style/server/.venv/bin/python -c "
-import ssl
-print('SSL version:', ssl.OPENSSL_VERSION)
-import urllib.request
-req = urllib.request.Request('https://cloud-api.near.ai/v1/models', headers={'Authorization': 'Bearer sk-980e0cfe660f4bceb051c75962ca56f3'})
-r = urllib.request.urlopen(req, timeout=15)
-import json
-data = json.loads(r.read())
-print(f'Python SSL SUCCESS: {len(data[\"data\"])} models')
-" 2>&1 || echo "Brain venv Python SSL test failed"
-            echo ""
+            echo "--- run-brain.py ---"
+            head -30 /opt/open-web-ui-style/backend/run-brain.py 2>&1 || echo "not found"
+            echo "--- iptables ---"
+            iptables -L -n 2>&1 | head -20 || echo "iptables failed"
+            echo "--- selinux ---"
+            getenforce 2>&1 || echo "not available"
+            echo "--- python ssl ---"
+            /opt/open-web-ui-style/server/.venv/bin/python -c "import ssl; print(ssl.OPENSSL_VERSION)" 2>&1 || echo "python ssl failed"
+            echo "--- brain curl ---"
+            curl -sk --max-time 15 -H "Authorization: Bearer sk-980e0cfe660f4bceb051c75962ca56f3" "https://cloud-api.near.ai/v1/models" 2>&1 | head -1 || echo "curl failed"
             echo "Deploy finished at $(date)"
