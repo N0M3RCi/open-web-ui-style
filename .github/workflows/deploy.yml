@@ -71,43 +71,7 @@ jobs:
             rsync -a --delete dist-web/ /opt/open-web-ui-style/dist-web/ 2>&1 || true
 
             echo "=== Configuring nginx proxy for Brain service ==="
-            # Add location /brain/ block to the existing nginx server config
-            NGINX_CONF=$(find /etc/nginx -name "*.conf" -type f 2>/dev/null | xargs grep -l "try_files.*index.html" 2>/dev/null | head -1)
-            if [ -z "$NGINX_CONF" ]; then
-              NGINX_CONF="/etc/nginx/sites-enabled/default"
-            fi
-            if [ -f "$NGINX_CONF" ]; then
-              # Remove existing brain location block (idempotent)
-              python3 -c "
-import re
-with open('$NGINX_CONF') as f:
-    content = f.read()
-# Remove existing brain location block
-content = re.sub(r'location /brain/ \{.*?\n    \}', '', content, flags=re.DOTALL)
-# Add brain location block before the first location / block
-brain_block = '''    location /brain/ {
-        proxy_pass http://localhost:5001/;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection \"upgrade\";
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        proxy_cache_bypass \$http_upgrade;
-        proxy_read_timeout 86400s;
-        proxy_send_timeout 86400s;
-    }
-
-'''
-content = content.replace('location / {', brain_block + 'location / {')
-with open('$NGINX_CONF', 'w') as f:
-    f.write(content)
-" 2>&1 && echo "Added brain proxy location to $NGINX_CONF" || echo "Failed to modify nginx config"
-              sudo nginx -t 2>&1 && sudo nginx -s reload 2>&1 && echo "nginx reloaded" || echo "nginx reload failed"
-            else
-              echo "nginx config not found at $NGINX_CONF"
-            fi
+            python3 /opt/open-web-ui-style/scripts/configure-brain-proxy.py 2>&1 || echo "brain proxy config failed"
 
             echo "=== Restarting Docker services ==="
             cd /opt/open-web-ui-style/server && docker compose restart merci_api merci_celery_worker merci_celery_beat 2>&1 || echo "api/worker restart failed"
