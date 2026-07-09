@@ -1424,12 +1424,12 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
       const {
         token,
         language,
-        modelType,
         cloud_model_type,
         codex_model_type,
         email,
         user_id,
       } = getAuthStore();
+      let modelType = getAuthStore().modelType;
       const workerList = getWorkerList();
       const { getLastUserMessage: _getLastUserMessage } = get();
       let systemLanguage = language;
@@ -1476,6 +1476,27 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
               res.map((item: any) => [item.camel_task_id, item])
             ).values(),
           ];
+        }
+      }
+
+      // If modelType is 'cloud' but a custom provider exists, switch to
+      // custom mode automatically. This handles the case where the user
+      // saved a provider before modelType was set to 'custom'.
+      if (!type && modelType === 'cloud') {
+        try {
+          const detectRes = await proxyFetchGet('/api/v1/providers', {
+            prefer: true,
+          });
+          const detectList = detectRes.items || [];
+          if (detectList.length > 0) {
+            debug(
+              '[startTask] Detected custom provider, switching to custom mode'
+            );
+            getAuthStore().setModelType('custom');
+            modelType = 'custom';
+          }
+        } catch {
+          // Ignore — fall through to the cloud flow below
         }
       }
 
