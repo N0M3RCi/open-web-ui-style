@@ -22,6 +22,7 @@ from camel.toolkits.function_tool import FunctionTool
 from app.agent.toolkit.abstract_toolkit import AbstractToolkit
 from app.component.environment import env, env_not_empty
 from app.service.task import Agents
+from app.utils.cache import cache_get, cache_set, make_cache_key
 from app.utils.listen.toolkit_listen import auto_listen_toolkit, listen_toolkit
 
 logger = logging.getLogger("search_toolkit")
@@ -198,6 +199,31 @@ class SearchToolkit(BaseSearchToolkit, AbstractToolkit):
         start_page=1: f"with query '{query}', {search_type} type, {number_of_result_pages} result pages starting from page {start_page}",
     )
     def search_google(
+        self,
+        query: str,
+        search_type: str = "web",
+        number_of_result_pages: int = 10,
+        start_page: int = 1,
+    ) -> list[dict[str, Any]]:
+        # Cache basic web searches (5 min TTL) — skip image/custom-page searches
+        if search_type == "web" and start_page == 1:
+            cache_key = make_cache_key(
+                "search:google", query, str(number_of_result_pages)
+            )
+            cached = cache_get(cache_key)
+            if cached is not None:
+                return cached
+            result = self._do_search_google(
+                query, search_type, number_of_result_pages, start_page
+            )
+            cache_set(cache_key, result, ttl_seconds=300)
+            return result
+
+        return self._do_search_google(
+            query, search_type, number_of_result_pages, start_page
+        )
+
+    def _do_search_google(
         self,
         query: str,
         search_type: str = "web",
@@ -445,30 +471,53 @@ class SearchToolkit(BaseSearchToolkit, AbstractToolkit):
     #         enable_rerank,
     #     )
 
+    @listen_toolkit(
+        BaseSearchToolkit.search_duckduckgo,
+        lambda _,
+        query,
+        source="text",
+        max_results=5: f"Search DuckDuckGo with query '{query}', source '{source}', and max results {max_results}",
+        lambda result: f"Search DuckDuckGo returned {len(result)} results",
+    )
+    def search_duckduckgo(
+        self, query: str, source: str = "text", max_results: int = 5
+    ) -> list[dict[str, Any]]:
+        # Cache DuckDuckGo results (5 min TTL)
+        cache_key = make_cache_key(
+            "search:ddg", query, source, str(max_results)
+        )
+        cached = cache_get(cache_key)
+        if cached is not None:
+            return cached
+        result = super().search_duckduckgo(query, source, max_results)
+        cache_set(cache_key, result, ttl_seconds=300)
+        return result
+
     @classmethod
     def get_can_use_tools(
         cls, api_task_id: str, agent_name: str | None = None
     ) -> list[FunctionTool]:
         search_toolkit = SearchToolkit(api_task_id, agent_name=agent_name)
         tools = [
+            # DuckDuckGo — free, no API key required
+            FunctionTool(search_toolkit.search_duckduckgo),
             # FunctionTool(search_toolkit.search_wiki),
-            # FunctionTool(search_toolkit.search_duckduckgo),
             # FunctionTool(search_toolkit.search_baidu),
             # FunctionTool(search_toolkit.search_bing),
         ]
         # if env("LINKUP_API_KEY"):
         #     tools.append(FunctionTool(search_toolkit.search_linkup))
 
-        # if env("BRAVE_API_KEY"):
-        #     tools.append(FunctionTool(search_toolkit.search_brave))
+        if env("BRAVE_API_KEY"):
+            tools.append(FunctionTool(search_toolkit.search_brave))
 
         if (env("GOOGLE_API_KEY") and env("SEARCH_ENGINE_ID")) or env(
             "cloud_api_key"
         ):
             tools.append(FunctionTool(search_toolkit.search_google))
 
-        # if env("TAVILY_API_KEY"):
-        #     tools.append(FunctionTool(search_toolkit.tavily_search))
+        if env("TAVILY_API_KEY"):
+            tools.append(FunctionTool(search_toolkit.tavily_search))
 
         # if env("BOCHA_API_KEY"):
         #     tools.append(FunctionTool(search_toolkit.search_bocha))

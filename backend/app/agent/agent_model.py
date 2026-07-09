@@ -154,7 +154,12 @@ def agent_model(
                 ModelPlatformType.AWS_BEDROCK_CONVERSE,
             }:
                 model_config.setdefault("cache_control", "5m")
-            elif model_platform_enum == ModelPlatformType.OPENAI:
+            elif model_platform_enum in {
+                ModelPlatformType.OPENAI,
+                ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+                ModelPlatformType.LITELLM,
+                ModelPlatformType.OPENROUTER,
+            }:
                 model_config.setdefault(
                     "prompt_cache_key", str(options.project_id)
                 )
