@@ -42,7 +42,6 @@ import {
   LOCAL_MODEL_OPTIONS,
 } from '@/pages/Agents/localModels';
 import { useAuthStore, useWorkerList } from '@/store/authStore';
-import { useCloudModelStore } from '@/store/cloudModelStore';
 import { Bot, Edit, Eye, EyeOff } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -70,7 +69,7 @@ interface McpItem {
   mcp_name?: string;
 }
 
-type WorkerModelMode = 'merci' | 'custom' | 'local';
+type WorkerModelMode = 'custom' | 'local';
 
 interface WorkerModelOption {
   value: string;
@@ -124,7 +123,7 @@ export function AddWorker({
   // Model configuration state
   const [showModelConfig, setShowModelConfig] = useState(false);
   const [workerModelMode, setWorkerModelMode] =
-    useState<WorkerModelMode>('merci');
+    useState<WorkerModelMode>('custom');
   const [workerModelName, setWorkerModelName] = useState('');
   const [customModelOptions, setCustomModelOptions] = useState<
     WorkerModelOption[]
@@ -132,21 +131,7 @@ export function AddWorker({
   const [localModelOptions, setLocalModelOptions] = useState<
     WorkerModelOption[]
   >([]);
-  const cloudModels = useCloudModelStore((state) => state.models);
-  const fetchCloudModels = useCloudModelStore(
-    (state) => state.fetchCloudModels
-  );
-  const merciModelOptions = useMemo<WorkerModelOption[]>(
-    () =>
-      cloudModels.map((model) => ({
-        value: model.id,
-        label: model.display_name,
-        model_platform: model.model_platform,
-        model_type: model.model_type,
-      })),
-    [cloudModels]
-  );
-
+  
   const activeProjectId = projectStore?.activeProjectId;
   const activeTaskId = chatStore?.activeTaskId ?? null;
   const tasks = chatStore?.tasks ?? {};
@@ -309,11 +294,10 @@ export function AddWorker({
     Record<WorkerModelMode, WorkerModelOption[]>
   >(
     () => ({
-      merci: merciModelOptions,
       custom: customModelOptions,
       local: localModelOptions,
     }),
-    [customModelOptions, merciModelOptions, localModelOptions]
+    [customModelOptions, localModelOptions]
   );
 
   const activeWorkerModelOptions = workerModelOptions[workerModelMode];

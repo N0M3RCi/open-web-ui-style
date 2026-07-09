@@ -29,12 +29,10 @@ type InitState = 'carousel' | 'done';
 type ModelType = 'cloud' | 'local' | 'custom' | 'codex_subscription';
 type PreferredIDE = 'vscode' | 'cursor' | 'system';
 type AppearanceMode = Mode | 'system';
-const LEGACY_DEFAULT_CLOUD_MODEL_ID = 'gpt-5.5';
 
 /** Main workspace panel background (Workforce + Session tabs only). */
 export type WorkspaceMainBackground =
   'empty' | 'dots' | 'blocks' | 'ruled' | 'dotted' | 'dashed';
-export type CloudModelType = string;
 export type CodexSubscriptionModelType = string;
 
 // auth info interface
@@ -64,7 +62,6 @@ interface AuthState {
   isFirstLaunch: boolean;
   onboardingCompleted: boolean;
   modelType: ModelType;
-  cloud_model_type: CloudModelType;
   codex_model_type: CodexSubscriptionModelType;
   /**
    * Last known result of the model configuration check, persisted so that
@@ -116,7 +113,6 @@ interface AuthState {
   setLanguage: (language: string) => void;
   setInitState: (initState: InitState) => void;
   setModelType: (modelType: ModelType) => void;
-  setCloudModelType: (cloud_model_type: CloudModelType) => void;
   setCodexModelType: (codex_model_type: CodexSubscriptionModelType) => void;
   setHasModelConfigured: (hasModelConfigured: boolean) => void;
   setIsFirstLaunch: (isFirstLaunch: boolean) => void;
@@ -128,11 +124,6 @@ interface AuthState {
   setWorkerList: (workerList: Agent[]) => void;
   checkAgentTool: (tool: string) => void;
 }
-
-// random default model selection
-const getRandomDefaultModel = (): CloudModelType => {
-  return LEGACY_DEFAULT_CLOUD_MODEL_ID;
-};
 
 const hydrateSpacesForUser = (userId: number | string | null | undefined) => {
   if (!useSpaceStore?.getState) return;
@@ -200,7 +191,6 @@ const authStore = create<AuthState>()(
       isFirstLaunch: true,
       onboardingCompleted: false,
       modelType: 'custom',
-      cloud_model_type: getRandomDefaultModel(),
       codex_model_type: 'gpt-5.5',
       hasModelConfigured: false,
       preferredIDE: 'system',
@@ -323,8 +313,6 @@ const authStore = create<AuthState>()(
 
       setModelType: (modelType) => set({ modelType }),
 
-      setCloudModelType: (cloud_model_type) => set({ cloud_model_type }),
-
       setCodexModelType: (codex_model_type) => set({ codex_model_type }),
 
       setHasModelConfigured: (hasModelConfigured) =>
@@ -401,7 +389,6 @@ const authStore = create<AuthState>()(
               appearanceMode?: AppearanceMode;
               customThemeCatalog?: Partial<ThemeCatalog>;
               workspaceMainBackground?: string;
-              cloud_model_type?: unknown;
               codex_model_type?: unknown;
             }
           | undefined;
@@ -420,11 +407,6 @@ const authStore = create<AuthState>()(
               localProxyValue: null,
             };
 
-        const sanitizedCloudModelType: CloudModelType =
-          typeof s.cloud_model_type === 'string' &&
-          s.cloud_model_type.length > 0
-            ? s.cloud_model_type
-            : getRandomDefaultModel();
         const sanitizedCodexModelType: CodexSubscriptionModelType =
           typeof s.codex_model_type === 'string' &&
           s.codex_model_type.length > 0
@@ -466,7 +448,6 @@ const authStore = create<AuthState>()(
             appearanceMode: 'light',
             customThemeCatalog: normalizedCustomCatalog,
             workspaceMainBackground,
-            cloud_model_type: sanitizedCloudModelType,
             codex_model_type: sanitizedCodexModelType,
             authEnvironmentKey: currentEnvironmentKey,
             modelType: 'custom',
@@ -479,7 +460,6 @@ const authStore = create<AuthState>()(
           appearanceMode: normalizedAppearanceMode,
           customThemeCatalog: normalizedCustomCatalog,
           workspaceMainBackground,
-          cloud_model_type: sanitizedCloudModelType,
           codex_model_type: sanitizedCodexModelType,
           authEnvironmentKey: currentEnvironmentKey,
           modelType: 'custom',
@@ -499,7 +479,6 @@ const authStore = create<AuthState>()(
         themeContrast: state.themeContrast,
         language: state.language,
         modelType: state.modelType,
-        cloud_model_type: state.cloud_model_type,
         codex_model_type: state.codex_model_type,
         initState: state.initState,
         isFirstLaunch: state.isFirstLaunch,

@@ -14,8 +14,7 @@
 
 import { proxyFetchGet } from '@/api/http';
 import { createHost } from '@/host/createHost';
-import { getAuthStore, useAuthStore } from '@/store/authStore';
-import { getCloudModelStore } from '@/store/cloudModelStore';
+import { useAuthStore } from '@/store/authStore';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -53,33 +52,7 @@ export function useModelConfigCheck(): {
 
   const checkModelConfig = useCallback(async () => {
     try {
-      if (modelType === 'cloud') {
-        const { token, cloud_model_type } = getAuthStore();
-        if (!token) {
-          setCloudUsageLimitReached(false);
-          setHasModelConfigured(false);
-          return;
-        }
-
-        await getCloudModelStore().fetchCloudModels();
-        const resolvedCloudModel =
-          getCloudModelStore().resolveCloudModel(cloud_model_type);
-        setHasModelConfigured(Boolean(resolvedCloudModel));
-
-        try {
-          const res = await proxyFetchGet('/api/v1/user/key');
-          setCloudUsageLimitReached(hasApiCode(res, API_CODE_TRIAL_LIMIT));
-        } catch (err: any) {
-          if (
-            hasApiCode(err?.response?.data, API_CODE_TRIAL_LIMIT) ||
-            hasApiCode(err, API_CODE_TRIAL_LIMIT)
-          ) {
-            setCloudUsageLimitReached(true);
-          } else {
-            console.error('Failed to check cloud usage limit:', err);
-          }
-        }
-      } else if (modelType === 'codex_subscription') {
+      if (modelType === 'codex_subscription') {
         setCloudUsageLimitReached(false);
         const { email } = getAuthStore();
         const status = email
@@ -97,14 +70,6 @@ export function useModelConfigCheck(): {
       }
     } catch (err: any) {
       console.error('Failed to check model config:', err);
-      if (
-        modelType === 'cloud' &&
-        (hasApiCode(err?.response?.data, API_CODE_TRIAL_LIMIT) ||
-          hasApiCode(err, API_CODE_TRIAL_LIMIT))
-      ) {
-        setCloudUsageLimitReached(true);
-        setHasModelConfigured(false);
-      }
     } finally {
       setIsConfigLoaded(true);
     }

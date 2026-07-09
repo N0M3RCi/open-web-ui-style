@@ -23,7 +23,7 @@ import type { TFunction } from 'i18next';
 import type { Dispatch, SetStateAction } from 'react';
 import { toast } from 'sonner';
 
-export type DefaultModelCategory = 'cloud' | 'custom' | 'local';
+export type DefaultModelCategory = 'custom' | 'local';
 
 export type DefaultModelFormRow = {
   provider_id?: number;
@@ -39,9 +39,6 @@ export function isDefaultModelConfigured(
     localProviderIds: Record<string, number | undefined>;
   }
 ): boolean {
-  if (category === 'cloud') {
-    return import.meta.env.VITE_USE_LOCAL_PROXY !== 'true';
-  }
   if (category === 'custom') {
     const idx = opts.items.findIndex((item) => item.id === modelId);
     return idx !== -1 && !!opts.form[idx]?.provider_id;
@@ -71,13 +68,11 @@ export interface ApplyDefaultModelSelectionParams {
   form: DefaultModelFormRow[];
   /** Full provider form state from UIs (BYOK + chat); we only read/update `prefer`. */
   setForm: Dispatch<SetStateAction<unknown[]>>;
-  setCloudPrefer: (v: boolean) => void;
   setLocalPrefer: (v: boolean) => void;
   setLocalPlatform: (p: string) => void;
   localProviderIds: Record<string, number | undefined>;
   localPlatform: string;
-  setModelType: (t: 'cloud' | 'local' | 'custom') => void;
-  setCloudModelType: (id: string) => void;
+  setModelType: (t: 'local' | 'custom') => void;
   t: TFunction;
 }
 
@@ -94,28 +89,15 @@ export async function applyDefaultModelSelection(
     items,
     form,
     setForm,
-    setCloudPrefer,
     setLocalPrefer,
     setLocalPlatform,
     localProviderIds,
     localPlatform,
     setModelType,
-    setCloudModelType,
     t,
   } = params;
 
   try {
-    if (category === 'cloud') {
-      setForm((f) => (f as object[]).map((fi) => ({ ...fi, prefer: false })));
-      setLocalPrefer(false);
-      setCloudPrefer(true);
-      setModelType('cloud');
-      if (modelId !== 'cloud') {
-        setCloudModelType(modelId);
-      }
-      return true;
-    }
-
     if (category === 'custom') {
       const idx = items.findIndex((item) => item.id === modelId);
       if (idx === -1) return false;
@@ -135,7 +117,6 @@ export async function applyDefaultModelSelection(
         provider_id: providerId,
       });
       setModelType('custom');
-      setCloudPrefer(false);
       setLocalPrefer(false);
       setForm((f) =>
         (f as object[]).map((fi, i) => ({ ...fi, prefer: i === idx }))
@@ -165,7 +146,6 @@ export async function applyDefaultModelSelection(
       setModelType('local');
       setForm((f) => (f as object[]).map((fi) => ({ ...fi, prefer: false })));
       setLocalPrefer(true);
-      setCloudPrefer(false);
       return true;
     }
   } catch (e) {
