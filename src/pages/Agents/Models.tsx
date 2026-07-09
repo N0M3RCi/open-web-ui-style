@@ -101,7 +101,6 @@ import {
 
 // Sidebar tab types
 type SidebarTab =
-  | 'cloud'
   | 'byok'
   | `byok-${string}`
   | 'local'
@@ -119,11 +118,9 @@ const PLAN_CREDITS_BY_KEY: Record<string, number> = {
 export default function SettingModels() {
   const {
     modelType,
-    cloud_model_type,
     codex_model_type,
     email,
     setModelType,
-    setCloudModelType,
     setCodexModelType,
     appearance,
   } = useAuthStore();
@@ -141,20 +138,6 @@ export default function SettingModels() {
   const [items, _setItems] = useState<Provider[]>(
     INIT_PROVODERS.filter((p) => p.id !== 'local')
   );
-  const cloudModels = useCloudModelStore((state) => state.models);
-  const fetchCloudModels = useCloudModelStore(
-    (state) => state.fetchCloudModels
-  );
-  const getCloudModelDisplayName = useCloudModelStore(
-    (state) => state.getModelDisplayName
-  );
-  const effectiveCloudModelId = useCloudModelStore((state) =>
-    state.getEffectiveModelId(cloud_model_type)
-  );
-  const cloudModelOptions = cloudModels.map((model) => ({
-    id: model.id,
-    name: model.display_name,
-  }));
   const [form, setForm] = useState(() =>
     INIT_PROVODERS.filter((p) => p.id !== 'local').map((p) => ({
       apiKey: p.apiKey,
@@ -206,10 +189,7 @@ export default function SettingModels() {
   );
   const [_collapsed, _setCollapsed] = useState(false);
 
-  // Sidebar selected tab - default to cloud
-  const [selectedTab, setSelectedTab] = useState<SidebarTab>(() =>
-    import.meta.env.VITE_USE_LOCAL_PROXY === 'true' ? 'byok-gemini' : 'cloud'
-  );
+  const [selectedTab, setSelectedTab] = useState<SidebarTab>('byok-gemini');
 
   // Subscription sub-accordion state (nested inside Custom Model)
   const [subscriptionCollapsed, setSubscriptionCollapsed] = useState(false);
@@ -220,8 +200,6 @@ export default function SettingModels() {
   // Local Model accordion state
   const [localCollapsed, setLocalCollapsed] = useState(false);
 
-  // Cloud Model
-  const [cloudPrefer, setCloudPrefer] = useState(false);
   const [codexBusy, setCodexBusy] = useState(false);
   const [codexStatus, setCodexStatus] = useState<{
     connected: boolean;
@@ -253,72 +231,6 @@ export default function SettingModels() {
   >({});
   const [ollamaEndpointAutoFixedOnce, setOllamaEndpointAutoFixedOnce] =
     useState(false);
-
-  // Per-cloud-provider model list state: { groups, loading, error } keyed by
-  // provider id. Populated for providers whose `INIT_PROVODERS` entry declares
-  // a `modelsEndpoint`.
-  const [cloudModelsState, setCloudModelsState] = useState<
-    Record<
-      string,
-      { groups: ProviderModelGroup[]; loading: boolean; error: string | null }
-    >
-  >(() => {
-    const initial: Record<
-      string,
-      { groups: ProviderModelGroup[]; loading: boolean; error: string | null }
-    > = {};
-    for (const p of INIT_PROVODERS) {
-      if (!p.modelsEndpoint) continue;
-      const cached = loadCachedModels(p.id);
-      if (cached) {
-        initial[p.id] = { groups: cached, loading: false, error: null };
-      }
-    }
-    return initial;
-  });
-
-  const fetchCloudProviderModels = useCallback(
-    async (idx: number) => {
-      const item = items[idx];
-      if (!item?.modelsEndpoint) return;
-      const apiKey = form[idx]?.apiKey;
-      const apiHost = form[idx]?.apiHost || item.apiHost;
-      if (!apiKey) return;
-      setCloudModelsState((prev) => ({
-        ...prev,
-        [item.id]: {
-          groups: prev[item.id]?.groups || [],
-          loading: true,
-          error: null,
-        },
-      }));
-      try {
-        const groups = await fetchProviderModels(
-          apiHost,
-          item.modelsEndpoint,
-          apiKey
-        );
-        setCloudModelsState((prev) => ({
-          ...prev,
-          [item.id]: { groups, loading: false, error: null },
-        }));
-        saveCachedModels(item.id, groups);
-      } catch (err: any) {
-        setCloudModelsState((prev) => ({
-          ...prev,
-          [item.id]: {
-            groups: prev[item.id]?.groups || [],
-            loading: false,
-            error:
-              typeof err?.message === 'string'
-                ? err.message
-                : 'Failed to fetch models.',
-          },
-        }));
-      }
-    },
-    [items, form]
-  );
 
   // Generic model fetcher driven by LOCAL_MODEL_OPTIONS config.
   // Only fetches for providers that define fetchPath and parseModels.
@@ -384,7 +296,7 @@ export default function SettingModels() {
 
   // Pending model to set as default after configuration
   const [pendingDefaultModel, setPendingDefaultModel] = useState<{
-    category: 'cloud' | 'custom' | 'local';
+    category: 'custom' | 'local';
     modelId: string;
   } | null>(null);
 
@@ -474,22 +386,15 @@ export default function SettingModels() {
           setLocalTypes(types);
           setLocalProviderIds(providerIds);
         }
-        if (modelType === 'cloud') {
-          setCloudPrefer(true);
-          setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
-          setLocalPrefer(false);
-        } else if (modelType === 'local') {
+        if (modelType === 'local') {
           setLocalEnabled(true);
           setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
           setLocalPrefer(true);
-          setCloudPrefer(false);
         } else if (modelType === 'codex_subscription') {
           setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
           setLocalPrefer(false);
-          setCloudPrefer(false);
         } else {
           setLocalPrefer(false);
-          setCloudPrefer(false);
         }
       } catch (e) {
         console.error('Error fetching providers:', e);
@@ -512,18 +417,8 @@ export default function SettingModels() {
     []
   );
 
-  useEffect(() => {
-    if (import.meta.env.VITE_USE_LOCAL_PROXY === 'true') return;
-    void fetchCloudModels();
-  }, [fetchCloudModels]);
-
   // Get current default model display text
   const getDefaultModelDisplayText = (): string => {
-    if (cloudPrefer) {
-      const modelName = getCloudModelDisplayName(cloud_model_type);
-      return `${t('setting.nova-cloud')} / ${modelName}`;
-    }
-
     if (modelType === 'codex_subscription') {
       return `${t('setting.custom-model')} / Codex Subscription${
         codex_model_type ? ` (${codex_model_type})` : ''
@@ -550,12 +445,9 @@ export default function SettingModels() {
 
   // Check if a model is configured
   const isModelConfigured = (
-    category: 'cloud' | 'custom' | 'local',
+    category: 'custom' | 'local',
     modelId: string
   ): boolean => {
-    if (category === 'cloud') {
-      return import.meta.env.VITE_USE_LOCAL_PROXY !== 'true';
-    }
     if (category === 'custom') {
       const idx = items.findIndex((item) => item.id === modelId);
       if (idx !== -1 && items[idx].authMode === 'oauth_subscription') {
@@ -571,7 +463,7 @@ export default function SettingModels() {
 
   // Handle model selection from dropdown
   const handleDefaultModelSelect = async (
-    category: 'cloud' | 'custom' | 'local',
+    category: 'custom' | 'local',
     modelId: string
   ) => {
     const configured = isModelConfigured(category, modelId);
@@ -581,9 +473,7 @@ export default function SettingModels() {
       setPendingDefaultModel({ category, modelId });
 
       // Navigate to the appropriate tab for configuration
-      if (category === 'cloud') {
-        setSelectedTab('cloud');
-      } else if (category === 'custom') {
+      if (category === 'custom') {
         setSelectedTab(`byok-${modelId}` as SidebarTab);
         // Expand the relevant Custom Model sub-accordion if collapsed
         const target = items.find((item) => item.id === modelId);
@@ -606,19 +496,10 @@ export default function SettingModels() {
 
   // Set a model as the default
   const setModelAsDefault = async (
-    category: 'cloud' | 'custom' | 'local',
+    category: 'custom' | 'local',
     modelId: string
   ) => {
-    if (category === 'cloud') {
-      setLocalPrefer(false);
-      setActiveModelIdx(null);
-      setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
-      setCloudPrefer(true);
-      setModelType('cloud');
-      if (modelId !== 'cloud') {
-        setCloudModelType(modelId);
-      }
-    } else if (category === 'custom') {
+    if (category === 'custom') {
       const idx = items.findIndex((item) => item.id === modelId);
       if (idx !== -1) {
         await handleSwitch(idx, true);
@@ -1044,7 +925,6 @@ export default function SettingModels() {
       setModelType('custom');
       setActiveModelIdx(idx);
       setLocalEnabled(false);
-      setCloudPrefer(false);
       setForm((f) => f.map((fi, i) => ({ ...fi, prefer: i === idx }))); // Only one prefer allowed
       setLocalPrefer(false);
     } catch (e) {
@@ -1080,7 +960,6 @@ export default function SettingModels() {
       setActiveModelIdx(null);
       setForm((f) => f.map((fi) => ({ ...fi, prefer: false }))); // Set all others' prefer to false
       setLocalPrefer(true);
-      setCloudPrefer(false);
     } catch (e) {
       console.error('Error switching local model:', e);
       // Optional: add error message
@@ -1483,7 +1362,6 @@ export default function SettingModels() {
   };
 
   const handleCodexSetDefault = () => {
-    setCloudPrefer(false);
     setLocalPrefer(false);
     setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
     setModelType('codex_subscription');
@@ -1491,221 +1369,6 @@ export default function SettingModels() {
 
   // Render content based on selected tab
   const renderContent = () => {
-    // Cloud version content
-    if (selectedTab === 'cloud') {
-      if (import.meta.env.VITE_USE_LOCAL_PROXY === 'true') {
-        return (
-          <div className="flex h-64 items-center justify-center text-ds-text-neutral-muted-default">
-            {t('setting.cloud-not-available-in-local-proxy')}
-          </div>
-        );
-      }
-      const isTrialing = Boolean(subscription?.is_trialing);
-      const selectedPlanCredits = getSelectedPlanCredits();
-      const trialDailyLimit =
-        Number(subscription?.trial_daily_credits_limit) || 300;
-      const trialTotalLimit =
-        Number(subscription?.trial_total_credits_limit) || 1000;
-      return (
-        <div className="flex w-full flex-col rounded-2xl bg-ds-bg-neutral-subtle-default">
-          <div className="mx-6 mb-4 flex flex-col justify-start self-stretch border-x-0 border-b-[0.5px] border-t-0 border-solid border-ds-border-neutral-default-default pb-4 pt-2">
-            <div className="inline-flex items-center justify-start gap-2 self-stretch">
-              <div className="text-body-base my-2 flex-1 justify-center font-bold text-ds-text-neutral-default-default">
-                {t('setting.nova-cloud')}
-              </div>
-              <div className="flex items-center gap-2">
-                {cloudPrefer ? (
-                  <Button
-                    variant="primary"
-                    tone="success"
-                    size="xs"
-                    buttonContent="text"
-                    textWeight="bold"
-                    buttonRadius="full"
-                    disabled
-                  >
-                    {t('setting.default')}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    tone="neutral"
-                    size="xs"
-                    buttonContent="text"
-                    textWeight="bold"
-                    buttonRadius="full"
-                    className="!text-ds-text-neutral-muted-default"
-                    onClick={() => {
-                      setLocalPrefer(false);
-                      setActiveModelIdx(null);
-                      setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
-                      setCloudPrefer(true);
-                      setModelType('cloud');
-                    }}
-                  >
-                    {t('setting.set-as-default')}
-                  </Button>
-                )}
-                {/* Connection dot: green = connected with credits,
-                    grey = server not connected, error = out of credits. */}
-                <div
-                  className={`h-2 w-2 shrink-0 rounded-full ${
-                    creditsError
-                      ? 'bg-ds-text-neutral-default-default opacity-10'
-                      : Number(credits) > 0
-                        ? 'bg-ds-text-success-default-default'
-                        : 'bg-ds-text-error-default-default'
-                  }`}
-                />
-              </div>
-            </div>
-            <div className="justify-center self-stretch">
-              <span className="text-body-sm text-ds-text-neutral-muted-default">
-                {t('setting.you-are-currently-subscribed-to-the')}{' '}
-                {getPlanName()}. {t('setting.discover-more-about-our')}{' '}
-              </span>
-              <span
-                onClick={() => {
-                  const isLocal =
-                    import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
-                  window.location.href = isLocal
-                    ? '/history?tab=settings'
-                    : `${SITE_URL}/pricing`;
-                }}
-                className="cursor-pointer text-body-sm text-ds-text-neutral-muted-default underline"
-              >
-                {t('setting.pricing-options')}
-              </span>
-              <span className="text-label-sm font-normal text-ds-text-neutral-default-default">
-                .
-              </span>
-            </div>
-          </div>
-          {/*Content Area*/}
-          <div className="flex w-full flex-row items-start justify-between gap-4 px-6 pb-4">
-            <div className="flex min-w-0 flex-1 flex-col gap-1">
-              <div className="flex items-center gap-1 text-body-sm text-text-body">
-                <span>{t('setting.credits')}:</span>
-                {loadingCredits ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <span>{formatCredits(credits)}</span>
-                )}
-              </div>
-              {isTrialing && (
-                <p className="m-0 max-w-[560px] text-label-sm leading-5 text-text-label">
-                  {t('setting.trial-plan-notice-before-upgrade', {
-                    defaultValue:
-                      "You're on a trial. Your {{planName}} plan includes {{planCredits}} credits; the trial unlocks {{daily}} credits/day (up to {{total}}) before you upgrade.",
-                    planName: getPlanName(),
-                    planCredits: formatCredits(selectedPlanCredits),
-                    daily: formatCredits(trialDailyLimit),
-                    total: formatCredits(trialTotalLimit),
-                  })}{' '}
-                  <button
-                    type="button"
-                    onClick={() => setTrialUpgradeDialogOpen(true)}
-                    className="cursor-pointer border-0 bg-transparent p-0 text-label-sm font-medium text-text-body underline"
-                  >
-                    {t('setting.upgrade', { defaultValue: 'Upgrade' })}
-                  </button>{' '}
-                  {t('setting.trial-plan-notice-after-upgrade', {
-                    defaultValue:
-                      'anytime to unlock the full plan credits and get the most out of your plan.',
-                  })}
-                </p>
-              )}
-            </div>
-            <Button
-              onClick={() => {
-                const isLocal = import.meta.env.VITE_USE_LOCAL_PROXY === 'true';
-                window.location.href = isLocal
-                  ? '/history?tab=settings'
-                  : `${SITE_URL}/dashboard`;
-              }}
-              variant="primary"
-              tone="neutral"
-              size="sm"
-              buttonContent="text"
-              textWeight="bold"
-              buttonRadius="lg"
-            >
-              {loadingCredits ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                getPlanName()
-              )}
-              <Settings />
-            </Button>
-          </div>
-          <Dialog
-            open={trialUpgradeDialogOpen}
-            onOpenChange={setTrialUpgradeDialogOpen}
-          >
-            <DialogContent
-              size="sm"
-              overlayVariant="dark"
-              onClose={() => setTrialUpgradeDialogOpen(false)}
-            >
-              <DialogHeader
-                title={t('setting.trial-upgrade-title', {
-                  defaultValue: 'Upgrade plan',
-                })}
-              />
-              <DialogContentSection className="px-4 py-4">
-                <p className="m-0 text-body-sm text-text-body">
-                  {t('setting.trial-upgrade-body', {
-                    defaultValue:
-                      'Upgrade now to unlock full credits instantly.',
-                  })}
-                </p>
-              </DialogContentSection>
-              <DialogFooter
-                showCancelButton
-                showConfirmButton
-                cancelButtonText={t('setting.not-now', {
-                  defaultValue: 'Not Now',
-                })}
-                confirmButtonText={
-                  upgradingTrial
-                    ? t('setting.upgrading', { defaultValue: 'Upgrading...' })
-                    : t('setting.upgrade', { defaultValue: 'Upgrade' })
-                }
-                onCancel={() => setTrialUpgradeDialogOpen(false)}
-                onConfirm={handleTrialUpgrade}
-                confirmButtonDisabled={upgradingTrial}
-                cancelButtonDisabled={upgradingTrial}
-              />
-            </DialogContent>
-          </Dialog>
-          <div className="flex w-full flex-1 items-center justify-between px-6 pb-4">
-            <div className="flex min-w-0 flex-1 items-center">
-              <span className="overflow-hidden text-ellipsis whitespace-nowrap text-body-sm">
-                {t('setting.select-model-type')}
-              </span>
-            </div>
-            <div className="ml-4 flex-shrink-0">
-              <Select
-                value={effectiveCloudModelId ?? cloud_model_type}
-                onValueChange={setCloudModelType}
-              >
-                <SelectTrigger size="sm">
-                  <SelectValue placeholder={t('setting.select-model-type')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {cloudModelOptions.map((model) => (
-                    <SelectItem key={model.id} value={model.id}>
-                      {model.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
     // BYOK (Bring Your Own Key) content - show specific model
     if (selectedTab.startsWith('byok-')) {
       const modelId = selectedTab.replace('byok-', '');
