@@ -184,22 +184,15 @@ def _candidate_ports(preferred_port: int):
 
 
 def _find_chrome_executable() -> str | None:
-    """Find Chrome or Chromium executable for launching with CDP."""
+    """Find Chrome or Chromium executable for launching with CDP.
+
+    Order: platform-specific paths → PATH → Playwright (last resort).
+    Playwright is checked last because ``sync_playwright()`` can hang
+    (e.g. when downloading browser binaries or checking for updates).
+    """
     system = platform.system()
 
-    # 1. Try Playwright's Chromium (most reliable, cross-platform)
-    try:
-        from playwright.sync_api import sync_playwright
-
-        with sync_playwright() as p:
-            path = p.chromium.executable_path
-            if path and Path(path).exists():
-                logger.debug(f"Using Playwright Chromium: {path}")
-                return path
-    except Exception as e:
-        logger.debug(f"Playwright Chromium not available: {e}")
-
-    # 2. Platform-specific paths
+    # 1. Platform-specific paths (fast, no imports)
     if system == "Darwin":
         candidates = [
             "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -230,11 +223,23 @@ def _find_chrome_executable() -> str | None:
             logger.debug(f"Using system Chrome: {path}")
             return path
 
-    # 3. Try executable from PATH
+    # 2. Try executable from PATH
     for name in ("google-chrome", "chromium", "chromium-browser", "chrome"):
         exe = _which(name)
         if exe:
             return exe
+
+    # 3. Try Playwright's Chromium (last resort — can hang on some systems)
+    try:
+        from playwright.sync_api import sync_playwright
+
+        with sync_playwright() as p:
+            path = p.chromium.executable_path
+            if path and Path(path).exists():
+                logger.debug(f"Using Playwright Chromium: {path}")
+                return path
+    except Exception as e:
+        logger.debug(f"Playwright Chromium not available: {e}")
 
     return None
 

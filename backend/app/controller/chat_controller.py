@@ -499,9 +499,29 @@ async def start_chat_stream(data: Chat, request: Request):
     )
 
 
+# Maximum time to wait for start_chat_stream setup (including CDP browser).
+# If the setup takes longer the client receives a 504 so the UI can retry
+# instead of hanging indefinitely.
+CHAT_SETUP_TIMEOUT = 25.0
+
+
 @router.post("/chat", name="start chat")
 async def post(data: Chat, request: Request):
-    stream = await start_chat_stream(data, request)
+    try:
+        stream = await asyncio.wait_for(
+            start_chat_stream(data, request),
+            timeout=CHAT_SETUP_TIMEOUT,
+        )
+    except TimeoutError:
+        chat_logger.error(
+            "Chat setup timed out after %ss",
+            CHAT_SETUP_TIMEOUT,
+            extra={"project_id": data.project_id, "task_id": data.task_id},
+        )
+        return Response(
+            status_code=504,
+            content="Chat initialization timed out. Please try again.",
+        )
     return StreamingResponse(
         stream,
         media_type="text/event-stream",
