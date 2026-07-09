@@ -1,6 +1,0 @@
-<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="80" height="80" rx="16" fill="#1D1D1D"/>
-  <path d="M20 58V20l10 15L40 20l10 15L60 20v38" stroke="#6dcac8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-  <rect x="42" y="16" width="18" height="18" rx="6" fill="#6dcac8"/>
-  <text x="51" y="28.5" text-anchor="middle" fill="#1D1D1D" font-family="system-ui,sans-serif" font-weight="800" font-size="14">3</text>
-</svg>

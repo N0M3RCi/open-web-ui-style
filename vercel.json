@@ -1,6 +1,0 @@
-{
-  "framework": "vite",
-  "buildCommand": "VITE_PROXY_URL=https://9f3a8276622f1049-67-213-124-131.serveousercontent.com VITE_BASE_URL=https://9f3a8276622f1049-67-213-124-131.serveousercontent.com VITE_BRAIN_ENDPOINT=https://9f3a8276622f1049-67-213-124-131.serveousercontent.com npm run build:web",
-  "outputDirectory": "dist-web",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
-}
