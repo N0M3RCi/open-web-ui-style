@@ -50,7 +50,6 @@ import { debug } from '@/lib/debug';
 import { INIT_PROVODERS } from '@/lib/llm';
 import { getProviderValid, toProviderValidStatus } from '@/lib/providerStatus';
 import { useAuthStore } from '@/store/authStore';
-import { useCloudModelStore } from '@/store/cloudModelStore';
 import { Provider } from '@/types';
 import {
   Check,
