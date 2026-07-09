@@ -48,7 +48,6 @@ import {
   needsInvertModelImage,
 } from '@/shared/modelProviderImages';
 import { useAuthStore } from '@/store/authStore';
-import { useCloudModelStore } from '@/store/cloudModelStore';
 import type { Provider } from '@/types';
 
 import {
@@ -90,31 +89,11 @@ export function ChatInputModelDropdown({
   const navigate = useNavigate();
   const {
     modelType,
-    cloud_model_type,
     codex_model_type,
     email,
     appearance,
     setModelType,
-    setCloudModelType,
   } = useAuthStore();
-  const cloudModels = useCloudModelStore((state) => state.models);
-  const fetchCloudModels = useCloudModelStore(
-    (state) => state.fetchCloudModels
-  );
-  const getCloudModelDisplayName = useCloudModelStore(
-    (state) => state.getModelDisplayName
-  );
-  const effectiveCloudModelId = useCloudModelStore((state) =>
-    state.getEffectiveModelId(cloud_model_type)
-  );
-  const cloudModelOptions = useMemo(
-    () =>
-      cloudModels.map((model) => ({
-        id: model.id,
-        name: model.display_name,
-      })),
-    [cloudModels]
-  );
 
   const [items] = useState<Provider[]>(
     INIT_PROVODERS.filter((p) => p.id !== 'local')
@@ -132,7 +111,6 @@ export function ChatInputModelDropdown({
       prefer: p.prefer ?? false,
     }))
   );
-  const [cloudPrefer, setCloudPrefer] = useState(false);
   const [localPrefer, setLocalPrefer] = useState(false);
   const [localPlatform, setLocalPlatform] = useState<string>('ollama');
   const [localTypes, setLocalTypes] = useState<Record<string, string>>({});
@@ -154,11 +132,6 @@ export function ChatInputModelDropdown({
   const [customModelInputs, setCustomModelInputs] = useState<
     Record<string, string>
   >({});
-
-  useEffect(() => {
-    if (import.meta.env.VITE_USE_LOCAL_PROXY === 'true') return;
-    void fetchCloudModels();
-  }, [fetchCloudModels]);
 
   useEffect(() => {
     (async () => {
@@ -235,21 +208,14 @@ export function ChatInputModelDropdown({
           setLocalProviderIds(nextIds);
         }
 
-        if (modelType === 'cloud') {
-          setCloudPrefer(true);
-          setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
-          setLocalPrefer(false);
-        } else if (modelType === 'local') {
+        if (modelType === 'local') {
           setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
           setLocalPrefer(true);
-          setCloudPrefer(false);
         } else if (modelType === 'codex_subscription') {
           setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
           setLocalPrefer(false);
-          setCloudPrefer(false);
         } else {
           setLocalPrefer(false);
-          setCloudPrefer(false);
         }
       } catch (e) {
         console.error('Error fetching providers:', e);
@@ -289,7 +255,6 @@ export function ChatInputModelDropdown({
   }, [refreshCodexStatus]);
 
   const handleCodexSetDefault = useCallback(() => {
-    setCloudPrefer(false);
     setLocalPrefer(false);
     setForm((f) => f.map((fi) => ({ ...fi, prefer: false })));
     setModelType('codex_subscription');
@@ -347,7 +312,6 @@ export function ChatInputModelDropdown({
             return { ...fi, prefer: false };
           })
         );
-        setCloudPrefer(false);
         setLocalPrefer(false);
         setModelType('custom');
         return true;
@@ -356,17 +320,13 @@ export function ChatInputModelDropdown({
         return false;
       }
     },
-    [items, setModelType, setCloudPrefer, setLocalPrefer]
+    [items, setModelType, setLocalPrefer]
   );
 
-  /** Model name only in the trigger (e.g. "Gemini 3.1 Pro Preview", no cloud/source prefix). */
+  /** Model name only in the trigger. */
   const triggerModelName = useMemo(() => {
     if (modelType === 'codex_subscription') {
       return `Codex Subscription${codex_model_type ? ` (${codex_model_type})` : ''}`;
-    }
-
-    if (cloudPrefer) {
-      return getCloudModelDisplayName(cloud_model_type);
     }
 
     const preferredIdx = form.findIndex((f) => f.prefer);
@@ -384,11 +344,8 @@ export function ChatInputModelDropdown({
 
     return t('setting.select-default-model');
   }, [
-    cloudPrefer,
-    cloud_model_type,
     codex_model_type,
     form,
-    getCloudModelDisplayName,
     items,
     localPrefer,
     localPlatform,
@@ -418,15 +375,11 @@ export function ChatInputModelDropdown({
         items,
         form,
         setForm: setForm as Dispatch<SetStateAction<unknown[]>>,
-        setCloudPrefer,
         setLocalPrefer,
         setLocalPlatform,
         localProviderIds,
         localPlatform,
         setModelType,
-        setCloudModelType: (id: string) => {
-          setCloudModelType(id);
-        },
         t,
       });
     },
@@ -437,7 +390,6 @@ export function ChatInputModelDropdown({
       localPlatform,
       navigate,
       setModelType,
-      setCloudModelType,
       t,
     ]
   );
@@ -482,11 +434,7 @@ export function ChatInputModelDropdown({
   }
 
   return (
-    <DropdownMenu
-      onOpenChange={(open) => {
-        if (open) void fetchCloudModels();
-      }}
-    >
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
@@ -528,41 +476,7 @@ export function ChatInputModelDropdown({
         avoidCollisions
         className="w-[180px]"
       >
-        {import.meta.env.VITE_USE_LOCAL_PROXY !== 'true' && (
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger
-              className="flex w-full min-w-0 items-center justify-start gap-2 [&>svg:first-child]:!h-4 [&>svg:first-child]:!min-h-4 [&>svg:first-child]:!w-4 [&>svg:first-child]:!min-w-4"
-              onPointerEnter={(e) => {
-                activeSubTriggerRef.current = e.currentTarget;
-              }}
-            >
-              <span className="mt-0.5 text-xs">🤖</span>
-              <span className="min-w-0 flex-1 text-left text-body-sm">
-                {t('setting.nova-cloud')}
-              </span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent
-              ref={subContentCallbackRef}
-              className="max-h-[300px] w-[200px] overflow-y-auto"
-            >
-              {cloudModelOptions.map((model) => (
-                <DropdownMenuItem
-                  key={model.id}
-                  onSelect={() => {
-                    void handleDefaultModelSelect('cloud', model.id);
-                  }}
-                  className="flex items-center justify-between"
-                >
-                  <span className="text-body-sm">{model.name}</span>
-                  {cloudPrefer && effectiveCloudModelId === model.id && (
-                    <Check className="h-4 w-4 text-ds-text-success-default-default" />
-                  )}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-        )}
-
+        
         <DropdownMenuSub>
           <DropdownMenuSubTrigger
             className="flex w-full min-w-0 items-center justify-start gap-2 [&>svg:first-child]:!h-5 [&>svg:first-child]:!min-h-4 [&>svg:first-child]:!w-4 [&>svg:first-child]:!min-w-4"

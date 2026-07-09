@@ -190,7 +190,6 @@ export default function Workspace({
   const directProjectStartRef = useRef(false);
   const [isStartingDirectProject, setIsStartingDirectProject] = useState(false);
   const { hasModel } = useModelConfigCheck();
-  const [useCloudModelInDev, setUseCloudModelInDev] = useState(false);
   const [addWorkerDialogOpen, setAddWorkerDialogOpen] = useState(false);
   const [editingWorkerAgent, setEditingWorkerAgent] = useState<Agent | null>(
     null
@@ -216,17 +215,6 @@ export default function Workspace({
     }, 180);
     return () => window.clearTimeout(focusTimer);
   }, [workspaceChatFocusRequestId, activeWorkspaceTab]);
-
-  useEffect(() => {
-    if (
-      import.meta.env.VITE_USE_LOCAL_PROXY === 'true' &&
-      modelType === 'cloud'
-    ) {
-      setUseCloudModelInDev(true);
-    } else {
-      setUseCloudModelInDev(false);
-    }
-  }, [modelType]);
 
   const handleSend = async () => {
     const trimmedMessage = message.trim();
@@ -352,7 +340,6 @@ export default function Workspace({
     disabled: !hasModel || isStartingDirectProject || isLegacyActiveSpace,
     textareaRef,
     allowDragDrop: true,
-    useCloudModelInDev,
     placeholder: isLegacyActiveSpace
       ? t('layout.spaces-legacy-readonly-hint', {
           defaultValue:

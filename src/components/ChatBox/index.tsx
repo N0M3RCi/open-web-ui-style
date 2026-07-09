@@ -340,19 +340,6 @@ export default function ChatBox(): JSX.Element {
     };
   }, [modelType, token, refreshUsageLimits]);
 
-  const [useCloudModelInDev, setUseCloudModelInDev] = useState(false);
-
-  useEffect(() => {
-    // Only show warning message, don't block functionality
-    if (
-      import.meta.env.VITE_USE_LOCAL_PROXY === 'true' &&
-      modelType === 'cloud'
-    ) {
-      setUseCloudModelInDev(true);
-    } else {
-      setUseCloudModelInDev(false);
-    }
-  }, [modelType]);
   useEffect(() => {
     if (workspaceChatFocusRequestId === 0) return;
     const focusTimer = window.setTimeout(() => {
@@ -504,7 +491,6 @@ export default function ChatBox(): JSX.Element {
     // Standard checks - check model
     if (isCloudUsageLimited) return true;
     if (!hasModel) return true;
-    if (useCloudModelInDev) return true;
     if (task.isContextExceeded) return true;
 
     return false;
@@ -513,7 +499,6 @@ export default function ChatBox(): JSX.Element {
     chatStore?.tasks,
     isCloudUsageLimited,
     hasModel,
-    useCloudModelInDev,
   ]);
 
   const handleSendShare = useCallback(

@@ -284,7 +284,7 @@ export function AddWorker({
     setSecretVisible({});
     setNameError('');
     setShowModelConfig(false);
-    setWorkerModelMode('merci');
+    setWorkerModelMode('custom');
     setWorkerModelName('');
     setCustomModelOptions([]);
     setLocalModelOptions([]);
@@ -323,9 +323,6 @@ export function AddWorker({
 
   useEffect(() => {
     if (!showModelConfig) return;
-    if (import.meta.env.VITE_USE_LOCAL_PROXY !== 'true') {
-      void fetchCloudModels();
-    }
     (async () => {
       try {
         const res = await proxyFetchGet('/api/v1/providers');
@@ -384,7 +381,7 @@ export function AddWorker({
         setLocalModelOptions([]);
       }
     })();
-  }, [fetchCloudModels, showModelConfig]);
+  }, [showModelConfig]);
 
   // tool function
   const getCategoryIcon = (categoryName?: string) => {
