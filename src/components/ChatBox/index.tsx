@@ -1279,7 +1279,6 @@ export default function ChatBox(): JSX.Element {
                     disabled: isInputDisabled,
                     textareaRef: textareaRef,
                     allowDragDrop: true,
-                    useCloudModelInDev: useCloudModelInDev,
                     sessionMode: effectiveSessionMode,
                     sessionModeSelectInteractive: false,
                   }}
@@ -1362,7 +1361,6 @@ export default function ChatBox(): JSX.Element {
                   disabled: isInputDisabled,
                   textareaRef: textareaRef,
                   allowDragDrop: true,
-                  useCloudModelInDev: useCloudModelInDev,
                   sessionMode: displaySessionMode,
                   sessionModeSelectInteractive: false,
                 }}

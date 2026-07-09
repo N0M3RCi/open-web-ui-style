@@ -85,8 +85,6 @@ export interface InputboxProps {
   allowDragDrop?: boolean;
   /** Privacy mode enabled */
   privacy?: boolean;
-  /** Use cloud model in dev */
-  useCloudModelInDev?: boolean;
   /** Session mode for the mode-select row; omit to hide it. */
   sessionMode?: SessionModeType;
   /** Called when the user changes mode (workspace only). */
@@ -152,7 +150,6 @@ export const Inputbox = ({
   textareaRef: externalTextareaRef,
   allowDragDrop = false,
   privacy = true,
-  useCloudModelInDev = false,
   sessionMode,
   onSessionModeChange,
   sessionModeSelectInteractive = false,
@@ -250,7 +247,7 @@ export const Inputbox = ({
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    if (!allowDragDrop || !privacy || useCloudModelInDev) return;
+    if (!allowDragDrop || !privacy ) return;
     if (!isFileDrag(e)) return;
     e.preventDefault();
     e.stopPropagation();
@@ -259,7 +256,7 @@ export const Inputbox = ({
   };
 
   const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
-    if (!allowDragDrop || !privacy || useCloudModelInDev) return;
+    if (!allowDragDrop || !privacy ) return;
     if (!isFileDrag(e)) return;
     e.preventDefault();
     e.stopPropagation();
@@ -279,7 +276,7 @@ export const Inputbox = ({
     e.stopPropagation();
     setIsDragging(false);
     dragCounter.current = 0;
-    if (!allowDragDrop || !privacy || useCloudModelInDev) return;
+    if (!allowDragDrop || !privacy ) return;
 
     try {
       const dropped = Array.from(e.dataTransfer?.files || []);
@@ -517,7 +514,6 @@ export const Inputbox = ({
               <DropdownMenuItem
                 disabled={
                   !privacy ||
-                  useCloudModelInDev ||
                   typeof onAddFile !== 'function'
                 }
                 onSelect={() => {
