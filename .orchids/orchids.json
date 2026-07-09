@@ -1,6 +1,7 @@
 {
   "startupCommands": [
-    "npm run clean-cache && npx vite build && /usr/bin/sshpass -p 'RexvRULTdNgk' scp -o StrictHostKeyChecking=no -r dist/* root@95.216.203.31:/var/www/html/ && /usr/bin/sshpass -p 'RexvRULTdNgk' ssh -o StrictHostKeyChecking=no root@95.216.203.31 'nginx -t && systemctl reload nginx'"
+    "cd /home/user/app/backend && python3 run_brain.py",
+    "cd /home/user/app && npm run dev:web"
   ],
   "projectId": "632594cf-dcbd-4a3a-a6f6-8c7e1dc176b8",
   "templateId": "any"
