@@ -386,7 +386,7 @@ const authStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      version: 10,
+      version: 11,
       migrate: (persistedState, _version) => {
         const s = persistedState as
           | {
@@ -469,6 +469,7 @@ const authStore = create<AuthState>()(
             cloud_model_type: sanitizedCloudModelType,
             codex_model_type: sanitizedCodexModelType,
             authEnvironmentKey: currentEnvironmentKey,
+            modelType: 'custom',
           };
         }
         return {
@@ -481,6 +482,7 @@ const authStore = create<AuthState>()(
           cloud_model_type: sanitizedCloudModelType,
           codex_model_type: sanitizedCodexModelType,
           authEnvironmentKey: currentEnvironmentKey,
+          modelType: 'custom',
         } as typeof persistedState;
       },
       partialize: (state) => ({
