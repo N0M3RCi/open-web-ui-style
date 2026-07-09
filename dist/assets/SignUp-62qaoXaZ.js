@@ -1,0 +1,1 @@
+import{u as s,r as t,j as r}from"./index-BfGGkEWP.js";function n(){const e=s();return t.useEffect(()=>{e("/",{replace:!0})},[e]),r.jsx("div",{className:"flex h-screen items-center justify-center",children:r.jsx("div",{className:"h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"})})}export{n as default};
