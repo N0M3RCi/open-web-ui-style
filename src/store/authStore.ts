@@ -199,7 +199,7 @@ const authStore = create<AuthState>()(
       language: 'system',
       isFirstLaunch: true,
       onboardingCompleted: false,
-      modelType: 'cloud',
+      modelType: 'custom',
       cloud_model_type: getRandomDefaultModel(),
       codex_model_type: 'gpt-5.5',
       hasModelConfigured: false,

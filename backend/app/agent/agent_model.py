@@ -24,10 +24,6 @@ from camel.types import ModelPlatformType
 
 from app.agent.listen_chat_agent import ListenChatAgent, logger
 from app.model.chat import AgentModelConfig, Chat
-from app.model.model_platform import (
-    patch_azure_cloud_config,
-    patch_bedrock_cloud_config,
-)
 from app.model.subscription_runtime import (
     apply_subscription_runtime,
     is_subscription_auth,
@@ -113,32 +109,6 @@ def agent_model(
                 force_refresh=force_refresh,
             )
 
-        # Cloud mode: inject default Bedrock region and adjust URL for proxy.
-        if (
-            effective_config.get("model_platform") == "aws-bedrock-converse"
-            and options.is_cloud()
-        ):
-            (
-                effective_config["api_url"],
-                extra_params,
-            ) = patch_bedrock_cloud_config(
-                effective_config["api_url"], extra_params
-            )
-        # Cloud mode: default api_version for Azure-backed models so AzureOpenAI
-        # construction does not blow up when the frontend omits extra_params.
-        if (
-            effective_config.get("model_platform") == "azure"
-            and options.is_cloud()
-        ):
-            extra_params = patch_azure_cloud_config(extra_params)
-
-        # When the frontend sends api_url='cloud' (cloud mode), the value is
-        # not a real URL — it is a marker.  Strip it so ModelFactory uses the
-        # default provider URL instead of trying to connect to a host named
-        # "cloud".
-        api_url = effective_config.get("api_url")
-        if api_url and api_url.strip() in ("cloud", ""):
-            effective_config["api_url"] = None
         init_param_keys = {
             "api_version",
             "azure_ad_token",
@@ -158,9 +128,6 @@ def agent_model(
 
         init_params = {}
         model_config: dict[str, Any] = {}
-
-        if options.is_cloud():
-            model_config["user"] = str(options.project_id)
 
         excluded_keys = {"model_platform", "model_type", "api_key", "url"}
 

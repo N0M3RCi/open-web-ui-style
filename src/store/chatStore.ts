@@ -25,7 +25,6 @@ import {
   waitForBackendReady,
 } from '@/api/http';
 import { showCreditsToast } from '@/components/Toast/creditsToast';
-import { showStorageToast } from '@/components/Toast/storageToast';
 import type { AppHost } from '@/host/types';
 import { generateUniqueId, uploadLog } from '@/lib';
 import { debug } from '@/lib/debug';
@@ -51,14 +50,11 @@ import { FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { createStore } from 'zustand';
 import { getAuthStore, getWorkerList } from './authStore';
-import { getCloudModelStore } from './cloudModelStore';
 import { usePageTabStore } from './pageTabStore';
 import { useProjectStore } from './projectStore';
 import { legacySpaceIdForUser, useSpaceStore } from './spaceStore';
 
 import {
-  API_CODE_TRIAL_LIMIT,
-  hasApiCode,
   PROJECT_CONTEXT_MAX_CHARS,
   PROJECT_CONTEXT_MAX_RUNS,
   resolveConfirmedUserMessageContent,
@@ -1421,14 +1417,8 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
         debug('[startTask] Backend is ready, proceeding with task...');
       }
 
-      const {
-        token,
-        language,
-        cloud_model_type,
-        codex_model_type,
-        email,
-        user_id,
-      } = getAuthStore();
+      const { token, language, codex_model_type, email, user_id } =
+        getAuthStore();
       let modelType = getAuthStore().modelType;
       const workerList = getWorkerList();
       const { getLastUserMessage: _getLastUserMessage } = get();
@@ -1479,27 +1469,6 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
         }
       }
 
-      // If modelType is 'cloud' but a custom provider exists, switch to
-      // custom mode automatically. This handles the case where the user
-      // saved a provider before modelType was set to 'custom'.
-      if (!type && modelType === 'cloud') {
-        try {
-          const detectRes = await proxyFetchGet('/api/v1/providers', {
-            prefer: true,
-          });
-          const detectList = detectRes.items || [];
-          if (detectList.length > 0) {
-            debug(
-              '[startTask] Detected custom provider, switching to custom mode'
-            );
-            getAuthStore().setModelType('custom');
-            modelType = 'custom';
-          }
-        } catch {
-          // Ignore — fall through to the cloud flow below
-        }
-      }
-
       // get current model
       let apiModel = {
         api_key: '',
@@ -1530,76 +1499,6 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
           model_platform: provider.provider_name,
           api_url: provider.endpoint_url || provider.api_url,
           extra_params: provider.encrypted_config,
-          auth_source: undefined,
-        };
-      } else if (!type && modelType === 'cloud') {
-        const cloudModelStore = getCloudModelStore();
-        let resolvedCloudModel =
-          cloudModelStore.resolveCloudModel(cloud_model_type);
-        if (!resolvedCloudModel || resolvedCloudModel.source !== 'selected') {
-          await cloudModelStore.fetchCloudModels(true);
-          resolvedCloudModel =
-            getCloudModelStore().resolveCloudModel(cloud_model_type);
-        }
-        if (!resolvedCloudModel) {
-          finishStartupFailure();
-          throw new Error(
-            'Failed to resolve cloud model. Please try again or choose another model in Settings > Models.'
-          );
-        }
-        if (
-          resolvedCloudModel.source === 'default' &&
-          resolvedCloudModel.requestedModelId
-        ) {
-          const message = `Model ${resolvedCloudModel.requestedModelId} is no longer available; switched to ${resolvedCloudModel.model.display_name}.`;
-          console.warn(message);
-          toast.warning(message);
-        }
-        if (resolvedCloudModel.model.id !== cloud_model_type) {
-          getAuthStore().setCloudModelType(resolvedCloudModel.model.id);
-        }
-
-        let res: any;
-        try {
-          res = await proxyFetchGet('/api/v1/user/key');
-        } catch (error: any) {
-          finishStartupFailure();
-          const responseData = error?.response?.data;
-          if (
-            hasApiCode(responseData, API_CODE_TRIAL_LIMIT) ||
-            hasApiCode(error, API_CODE_TRIAL_LIMIT)
-          ) {
-            throw new Error(
-              responseData?.text ||
-                error?.message ||
-                'Free trial usage limit reached. Switch to a local/custom model or use another API key to continue.'
-            );
-          }
-          throw error;
-        }
-        if (hasApiCode(res, API_CODE_TRIAL_LIMIT)) {
-          finishStartupFailure();
-          throw new Error(
-            res.text ||
-              'Free trial usage limit reached. Switch to a local/custom model or use another API key to continue.'
-          );
-        }
-        if (!res.value) {
-          finishStartupFailure();
-          throw new Error(
-            res.text ||
-              'Failed to get cloud model key. Please check your account or model settings.'
-          );
-        }
-        if (res.warning_code && res.warning_code === '21') {
-          showStorageToast();
-        }
-        apiModel = {
-          api_key: res.value,
-          model_type: resolvedCloudModel.model.model_type,
-          model_platform: resolvedCloudModel.model.model_platform,
-          api_url: res.api_url,
-          extra_params: {},
           auth_source: undefined,
         };
       } else if (!type && modelType === 'codex_subscription') {
@@ -1720,7 +1619,7 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
           language: systemLanguage,
           model_platform: apiModel.model_platform,
           model_type: apiModel.model_type,
-          api_url: modelType === 'cloud' ? 'cloud' : apiModel.api_url,
+          api_url: apiModel.api_url,
           max_retries: 3,
           file_save_path: 'string',
           installed_mcp: 'string',
@@ -2079,7 +1978,7 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
                     language: systemLanguage,
                     model_platform: apiModel.model_platform,
                     model_type: apiModel.model_type,
-                    api_url: modelType === 'cloud' ? 'cloud' : apiModel.api_url,
+                    api_url: apiModel.api_url,
                     max_retries: 3,
                     file_save_path: 'string',
                     installed_mcp: 'string',

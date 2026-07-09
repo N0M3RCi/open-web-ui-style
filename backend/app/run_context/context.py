@@ -41,7 +41,6 @@ class RunContext:
     cdp_url: str | None = None
     api_key: str | None = None
     api_base_url: str | None = None
-    cloud_api_key: str | None = None
     server_url: str | None = None
     auth_header: str | None = None
     search_config: dict[str, str] = field(default_factory=dict)
@@ -60,8 +59,6 @@ class RunContext:
             values["OPENAI_API_KEY"] = self.api_key
         if self.api_base_url:
             values["OPENAI_API_BASE_URL"] = self.api_base_url
-        if self.cloud_api_key:
-            values["cloud_api_key"] = self.cloud_api_key
         if self.server_url:
             values["SERVER_URL"] = self.server_url
         values.update(

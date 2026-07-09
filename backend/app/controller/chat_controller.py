@@ -226,7 +226,6 @@ def _build_run_context(
         cdp_url=cdp_url,
         api_key=data.api_key,
         api_base_url=api_base_url,
-        cloud_api_key=data.api_key if data.is_cloud() else None,
         server_url=data.server_url,
         auth_header=auth_header,
         search_config=data.search_config or {},

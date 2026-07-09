@@ -154,16 +154,9 @@ class Chat(BaseModel):
         )
 
     def is_cloud(self):
-        if self.api_url is None:
-            return False
-        # 'cloud' as a standalone marker value — not a substring match so that
-        # real URLs such as "https://cloud-api.near.ai/v1" are not mistaken.
-        if self.api_url.strip() == "cloud":
-            return True
-        return any(
-            marker in self.api_url
-            for marker in ("nova-proxy", "proxy.merci-unimind.ai")
-        )
+        # Cloud services are disabled — always return False.
+        # All API calls use the user's configured provider (NEAR.AI).
+        return False
 
     def file_save_path(self, path: str | None = None):
         legacy_owner_key = re.sub(
