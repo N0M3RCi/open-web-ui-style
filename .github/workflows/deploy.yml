@@ -86,23 +86,23 @@ jobs:
 
             echo "=== Creating systemd service for Brain service ==="
             cat > /etc/systemd/system/merci-brain.service << 'SERVICEEOF' 2>&1 || echo "writing service file failed"
-[Unit]
-Description=Merci Brain Service
-After=network.target
+            [Unit]
+            Description=Merci Brain Service
+            After=network.target
 
-[Service]
-Type=simple
-User=root
-WorkingDirectory=/opt/open-web-ui-style/backend
-ExecStart=/opt/open-web-ui-style/backend/.venv/bin/uvicorn main:api --host 0.0.0.0 --port 5001
-Restart=always
-RestartSec=5
-StandardOutput=append:/var/log/merci_brain.log
-StandardError=append:/var/log/merci_brain.log
+            [Service]
+            Type=simple
+            User=root
+            WorkingDirectory=/opt/open-web-ui-style/backend
+            ExecStart=/opt/open-web-ui-style/backend/.venv/bin/uvicorn main:api --host 0.0.0.0 --port 5001
+            Restart=always
+            RestartSec=5
+            StandardOutput=append:/var/log/merci_brain.log
+            StandardError=append:/var/log/merci_brain.log
 
-[Install]
-WantedBy=multi-user.target
-SERVICEEOF
+            [Install]
+            WantedBy=multi-user.target
+            SERVICEEOF
             systemctl daemon-reload 2>&1 || echo "daemon-reload failed"
             systemctl enable merci-brain 2>&1 || echo "enable failed"
             systemctl restart merci-brain 2>&1 || echo "brain service restart failed"
