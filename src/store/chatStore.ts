@@ -1104,6 +1104,14 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
             // File handles can't round-trip through JSON, so cached
             // attaches always come back empty.
             attaches: [],
+            // A cached snapshot represents a previous final state; if the
+            // snapshotted status was RUNNING / PAUSE (e.g. because the
+            // Brain was restarted mid-stream) reset it so the composer
+            // is not permanently locked.
+            status:
+              state.status === ChatTaskStatus.FINISHED
+                ? state.status
+                : ChatTaskStatus.FINISHED,
           },
         },
       }));
@@ -3796,6 +3804,13 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
               'Error cleaning up AbortController on SSE error:',
               cleanupError
             );
+          }
+
+          // Mark the task as finished so the user can send a new message
+          // instead of being stuck with a permanently "running" task.
+          const errTask = currentStore.tasks[currentTaskId];
+          if (errTask && errTask.status !== ChatTaskStatus.FINISHED) {
+            currentStore.setStatus(currentTaskId, ChatTaskStatus.FINISHED);
           }
           throw err;
         },
