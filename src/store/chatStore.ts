@@ -1444,9 +1444,8 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
       }
 
       // Replay/share APIs live on the server side, not Brain.
-      const serverBaseUrl = import.meta.env.DEV
-        ? window.location.origin
-        : import.meta.env.VITE_BASE_URL;
+      // Use absolute origin so sseTransport doesn't prepend VITE_BRAIN_ENDPOINT (/brain).
+      const serverBaseUrl = window.location.origin;
       const api =
         type == 'share'
           ? `${serverBaseUrl}/api/v1/chat/share/playback/${shareToken}?delay_time=${delayTime}`
