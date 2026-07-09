@@ -55,7 +55,6 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
-  Cloud,
   Eye,
   EyeOff,
   Key,
@@ -69,7 +68,6 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import merciImage from '@/assets/model/merci.svg';
 import {
   getModelImage,
   needsInvertModelImage,
@@ -224,6 +222,59 @@ export default function SettingModels() {
   const [localError, setLocalError] = useState<string | null>(null);
   const [localInputError, setLocalInputError] = useState(false);
   const [localPrefer, setLocalPrefer] = useState(false); // Local model prefer state (for current platform)
+
+  // Provider model listing state (fetched via OpenAI-compatible API)
+  const [providerModelGroups, setProviderModelGroups] = useState<
+    Record<string, ProviderModelGroup[]>
+  >({});
+  const [providerModelsLoading, setProviderModelsLoading] = useState<
+    Record<string, boolean>
+  >({});
+  const [providerModelsError, setProviderModelsError] = useState<
+    Record<string, string | null>
+  >({});
+
+  const handleFetchProviderModels = useCallback(
+    async (idx: number) => {
+      const item = items[idx];
+      const providerId = item.id;
+      const apiHost = form[idx].apiHost || item.apiHost;
+      const apiKey = form[idx].apiKey;
+      const modelsEndpoint = item.modelsEndpoint || '/models';
+
+      if (!apiKey) return;
+
+      setProviderModelsLoading((prev) => ({ ...prev, [providerId]: true }));
+      setProviderModelsError((prev) => ({ ...prev, [providerId]: null }));
+
+      // Show cached models immediately while fetching fresh ones
+      const cached = loadCachedModels(providerId);
+      if (cached) {
+        setProviderModelGroups((prev) => ({ ...prev, [providerId]: cached }));
+      }
+
+      try {
+        const groups = await fetchProviderModels(
+          apiHost,
+          modelsEndpoint,
+          apiKey
+        );
+        setProviderModelGroups((prev) => ({ ...prev, [providerId]: groups }));
+        saveCachedModels(providerId, groups);
+      } catch (err: any) {
+        setProviderModelsError((prev) => ({
+          ...prev,
+          [providerId]: err.message,
+        }));
+      } finally {
+        setProviderModelsLoading((prev) => ({
+          ...prev,
+          [providerId]: false,
+        }));
+      }
+    },
+    [items, form]
+  );
 
   // Per-platform model list state: { models, loading, error } keyed by platform ID.
   const [platformModelState, setPlatformModelState] = useState<
@@ -1171,9 +1222,7 @@ export default function SettingModels() {
   ) => {
     const modelImage = getModelImage(modelId);
     const fallbackIcon =
-      modelId === 'cloud' ? (
-        <Cloud className="h-5 w-5" />
-      ) : modelId?.startsWith('local') ? (
+      modelId?.startsWith('local') ? (
         <Server className="h-5 w-5" />
       ) : (
         <Key className="h-5 w-5" />
@@ -1346,7 +1395,7 @@ export default function SettingModels() {
       }
       await refreshCodexStatus();
       if (modelType === 'codex_subscription') {
-        setModelType('cloud');
+        setModelType('custom');
       }
       toast.success(
         t('setting.codex-disconnected', {
@@ -1653,16 +1702,16 @@ export default function SettingModels() {
                       )
                     );
                   }}
-                  groups={cloudModelsState[item.id]?.groups || []}
-                  loading={cloudModelsState[item.id]?.loading || false}
+                  groups={providerModelGroups[item.id] || []}
+                  loading={providerModelsLoading[item.id] || false}
                   error={
-                    cloudModelsState[item.id]?.error ??
+                    providerModelsError[item.id] ??
                     errors[idx]?.model_type ??
                     null
                   }
                   disabled={!form[idx].apiKey}
                   disabledReason="Enter API Key first."
-                  onRefresh={() => void fetchCloudProviderModels(idx)}
+                  onRefresh={() => void handleFetchProviderModels(idx)}
                   triggerPlaceholder={t('setting.select-model-type', {
                     defaultValue: 'Select model type',
                   })}
@@ -2109,11 +2158,7 @@ export default function SettingModels() {
               {t('setting.models-default-setting-description')}
             </div>
           </div>
-          <DropdownMenu
-            onOpenChange={(open) => {
-              if (open) void fetchCloudModels();
-            }}
-          >
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex w-fit items-center gap-2 rounded-lg border-[0.5px] border-solid border-ds-bg-brand-default-default bg-ds-bg-brand-default-default px-3 py-1 font-semibold text-ds-text-brand-inverse-default outline-none transition-colors hover:border-ds-bg-brand-default-hover hover:bg-ds-bg-brand-default-hover focus:outline-none focus-visible:outline-none active:border-ds-bg-brand-default-active active:bg-ds-bg-brand-default-active">
                 <span className="whitespace-nowrap text-body-sm leading-none">
@@ -2123,34 +2168,6 @@ export default function SettingModels() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[180px]">
-              {/* Cloud Category */}
-              {import.meta.env.VITE_USE_LOCAL_PROXY !== 'true' && (
-                <DropdownMenuSub>
-                  <DropdownMenuSubTrigger className="gap-2">
-                    <img src={merciImage} alt="Cloud" className="h-5 w-5" />
-                    <span className="text-body-sm">
-                      {t('setting.nova-cloud')}
-                    </span>
-                  </DropdownMenuSubTrigger>
-                  <DropdownMenuSubContent className="max-h-[300px] w-[200px] overflow-y-auto">
-                    {cloudModelOptions.map((model) => (
-                      <DropdownMenuItem
-                        key={model.id}
-                        onClick={() =>
-                          handleDefaultModelSelect('cloud', model.id)
-                        }
-                        className="flex items-center justify-between"
-                      >
-                        <span className="text-body-sm">{model.name}</span>
-                        {cloudPrefer && effectiveCloudModelId === model.id && (
-                          <Check className="h-4 w-4 text-ds-text-status-completed-strong-default" />
-                        )}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuSubContent>
-                </DropdownMenuSub>
-              )}
-
               {/* Custom Model Category */}
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className="gap-2">
@@ -2299,26 +2316,6 @@ export default function SettingModels() {
             {/* Sidebar */}
             <div className="-ml-2 mr-4 h-full w-[240px] rounded-2xl bg-ds-bg-neutral-default-default">
               <div className="flex flex-col gap-4">
-                {/* M3RCI - UniMind Cloud Section */}
-                <div className="flex flex-col gap-1">
-                  <div className="px-3 py-2 text-body-sm font-bold text-ds-text-neutral-default-default">
-                    {t('setting.nova-cloud')}
-                  </div>
-                  {import.meta.env.VITE_USE_LOCAL_PROXY !== 'true' &&
-                    renderSidebarItem(
-                      'cloud',
-                      t('setting.nova-cloud'),
-                      'cloud',
-                      selectedTab === 'cloud',
-                      false,
-                      cloudPrefer,
-                      creditsError
-                        ? 'muted'
-                        : Number(credits) > 0
-                          ? 'success'
-                          : 'error'
-                    )}
-                </div>
                 {/* Custom Model Section */}
                 <div className="flex flex-col gap-1">
                   <div className="px-3 py-2 text-body-sm font-bold text-ds-text-neutral-default-default">

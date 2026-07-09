@@ -49,7 +49,7 @@ const CUSTOM_PROVIDER: Provider = {
   apiKey: '',
   apiHost: '',
   description: 'Custom OpenAI-compatible API endpoint.',
-  hostPlaceHolder: 'e.g. https://api.near.ai/v1',
+  hostPlaceHolder: 'e.g. https://cloud-api.near.ai/v1',
   is_valid: false,
   model_type: '',
 };

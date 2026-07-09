@@ -29,6 +29,18 @@ const CODEX_SUBSCRIPTION_PROVIDER: Provider = {
 
 export const INIT_PROVODERS: Provider[] = [
   {
+    id: 'nearai',
+    name: 'NEAR AI',
+    apiKey: '',
+    apiHost: 'https://cloud-api.near.ai/v1',
+    description:
+      'NEAR AI Cloud — OpenAI-compatible endpoint with chat, image generation (FLUX), and more. Get your API key at https://cloud.near.ai',
+    modelsEndpoint: '/models',
+    is_valid: false,
+    model_type: '',
+    websiteUrl: 'https://cloud.near.ai',
+  },
+  {
     id: 'gemini',
     name: 'Gemini',
     apiKey: '',
@@ -257,8 +269,8 @@ export const INIT_PROVODERS: Provider[] = [
     name: 'OpenAI Compatible',
     apiKey: '',
     apiHost: '',
-    description: 'OpenAI-compatible API endpoint configuration.',
-    hostPlaceHolder: 'e.g. https://api.near.ai/v1',
+    description: 'OpenAI-compatible API endpoint configuration (e.g. NEAR AI).',
+    hostPlaceHolder: 'e.g. https://cloud-api.near.ai/v1',
     modelsEndpoint: '/models',
     is_valid: false,
     model_type: '',
