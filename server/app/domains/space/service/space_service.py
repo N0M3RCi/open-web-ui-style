@@ -158,10 +158,10 @@ class SpaceService:
         space = Space(
             id=space_id,
             user_id=canonical_user_id,
-            name="Legacy Space",
-            description="Projects migrated from the pre-Space app model.",
-            source_type=SpaceSourceType.LEGACY,
-            metadata_json={"legacy": True, "schemaVersion": 1},
+            name="My Workspace",
+            description="My default workspace",
+            source_type=SpaceSourceType.BLANK,
+            metadata_json={},
         )
         try:
             with s.begin_nested():

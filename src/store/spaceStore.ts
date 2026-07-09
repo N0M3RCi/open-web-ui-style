@@ -789,19 +789,17 @@ export const useSpaceStore = create<SpaceStore>()(
         const now = Date.now();
         const legacySpace: Space = {
           id: spaceId,
-          name: 'Legacy Space',
-          description: 'Projects created before the Space layer migration.',
+          name: 'My Workspace',
+          description: 'My default workspace',
           userId: ownerId,
-          sourceType: 'legacy',
+          sourceType: 'blank',
           rootPath: null,
           rootFingerprint: null,
           status: 'active',
           schemaVersion: SPACE_SCHEMA_VERSION,
           createdAt: now,
           updatedAt: now,
-          metadata: {
-            legacy: true,
-          },
+          metadata: {},
         };
 
         set((state) => ({
