@@ -1,29 +1,35 @@
-// Vite config for pure web (non-Electron) development
 import react from '@vitejs/plugin-react';
 import path from 'node:path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-  return {
-    resolve: {
-      alias: {
-        '@': path.join(__dirname, 'src'),
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.join(__dirname, 'src'),
+    },
+  },
+  plugins: [react()],
+  server: {
+    port: 5173,
+    open: false,
+    proxy: {
+      '/workspace': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
+      },
+      '/api/v1': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api\/v1/, '/v1'),
+      },
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api/, ''),
       },
     },
-    plugins: [react()],
-    server: {
-      port: 5173,
-      open: false,
-      proxy: {
-        '/workspace': {
-          target: 'http://localhost:5001',
-          changeOrigin: true,
-        },
-      },
-    },
-    build: {
-      assetsInlineLimit: 2048,
-    },
-  };
+  },
+  build: {
+    assetsInlineLimit: 2048,
+  },
 });
