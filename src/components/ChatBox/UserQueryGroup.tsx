@@ -415,68 +415,142 @@ export const UserQueryGroup: React.FC<UserQueryGroupProps> = ({
       )}
 
       {/* Other Messages */}
-      {queryGroup.otherMessages.map((message) => {
-        if (message.content.length > 0) {
-          if (message.step === AgentStep.END) {
-            return (
-              <motion.div
-                key={`end-${message.id}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex flex-col gap-4"
-                style={{
-                  contentVisibility: 'auto' as any,
-                  containIntrinsicSize: 'auto 120px' as any,
-                }}
-              >
-                <AgentMessageCard
-                  typewriter={shouldUseLiveAgentTypewriter(task, message.id)}
-                  id={message.id}
-                  content={message.content}
-                  onTyping={() => {}}
-                  deferredFooter={
-                    message.fileList?.length ? (
-                      <div className="my-2 flex flex-wrap gap-2">
-                        {message.fileList.map(
-                          (file: any, fileIndex: number) => (
-                            <motion.div
-                              key={`file-${message.id}-${file.name}-${fileIndex}`}
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ delay: 0.05 }}
-                              onClick={() => {
-                                openFilePreview(file);
-                              }}
-                              className="flex w-[140px] cursor-pointer items-center gap-2 rounded-lg bg-ds-bg-neutral-default-default px-3 py-2 transition-colors hover:bg-ds-bg-neutral-default-hover"
-                            >
-                              <FileText
-                                size={16}
-                                className="flex-shrink-0 text-ds-icon-neutral-default-default"
-                              />
-                              <div className="flex flex-col">
-                                <div className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-body-sm font-bold text-ds-text-neutral-default-default">
-                                  {file.name.split('.')[0]}
+      {queryGroup.otherMessages
+        .filter(
+          (message) =>
+            message.step !== AgentStep.ACTIVATE_AGENT &&
+            message.step !== AgentStep.DEACTIVATE_AGENT &&
+            message.step !== AgentStep.CREATE_AGENT
+        )
+        .map((message) => {
+          if (message.content.length > 0) {
+            if (message.step === AgentStep.END) {
+              return (
+                <motion.div
+                  key={`end-${message.id}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex flex-col gap-4"
+                  style={{
+                    contentVisibility: 'auto' as any,
+                    containIntrinsicSize: 'auto 120px' as any,
+                  }}
+                >
+                  <AgentMessageCard
+                    typewriter={shouldUseLiveAgentTypewriter(task, message.id)}
+                    id={message.id}
+                    content={message.content}
+                    onTyping={() => {}}
+                    deferredFooter={
+                      message.fileList?.length ? (
+                        <div className="my-2 flex flex-wrap gap-2">
+                          {message.fileList.map(
+                            (file: any, fileIndex: number) => (
+                              <motion.div
+                                key={`file-${message.id}-${file.name}-${fileIndex}`}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.05 }}
+                                onClick={() => {
+                                  openFilePreview(file);
+                                }}
+                                className="flex w-[140px] cursor-pointer items-center gap-2 rounded-lg bg-ds-bg-neutral-default-default px-3 py-2 transition-colors hover:bg-ds-bg-neutral-default-hover"
+                              >
+                                <FileText
+                                  size={16}
+                                  className="flex-shrink-0 text-ds-icon-neutral-default-default"
+                                />
+                                <div className="flex flex-col">
+                                  <div className="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap text-body-sm font-bold text-ds-text-neutral-default-default">
+                                    {file.name.split('.')[0]}
+                                  </div>
+                                  <div className="text-label-xs font-medium text-ds-text-neutral-muted-default">
+                                    {file.type}
+                                  </div>
                                 </div>
-                                <div className="text-label-xs font-medium text-ds-text-neutral-muted-default">
-                                  {file.type}
-                                </div>
-                              </div>
-                            </motion.div>
-                          )
-                        )}
-                      </div>
-                    ) : undefined
-                  }
-                />
-              </motion.div>
-            );
-          } else if (message.content === 'skip') {
+                              </motion.div>
+                            )
+                          )}
+                        </div>
+                      ) : undefined
+                    }
+                  />
+                </motion.div>
+              );
+            } else if (message.content === 'skip') {
+              return (
+                <motion.div
+                  key={`skip-${message.id}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex flex-col gap-4"
+                  style={{
+                    contentVisibility: 'auto' as any,
+                    containIntrinsicSize: 'auto 120px' as any,
+                  }}
+                >
+                  <AgentMessageCard
+                    key={message.id}
+                    id={message.id}
+                    content="No reply received, task continues..."
+                    onTyping={() => {}}
+                  />
+                </motion.div>
+              );
+            } else if (message.step === AgentStep.AGENT_END) {
+              return (
+                <motion.div
+                  key={`agent-end-${message.id}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="px-6"
+                  style={{
+                    contentVisibility: 'auto' as any,
+                    containIntrinsicSize: 'auto 120px' as any,
+                  }}
+                >
+                  <AgentResultCard
+                    id={message.id}
+                    agentName={message.agent_name}
+                    content={message.content}
+                    attaches={message.attaches}
+                    defaultOpen
+                  />
+                </motion.div>
+              );
+            } else {
+              return (
+                <motion.div
+                  key={`message-${message.id}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex flex-col gap-4"
+                  style={{
+                    contentVisibility: 'auto' as any,
+                    containIntrinsicSize: 'auto 120px' as any,
+                  }}
+                >
+                  <AgentMessageCard
+                    key={message.id}
+                    typewriter={shouldUseLiveAgentTypewriter(task, message.id)}
+                    id={message.id}
+                    content={message.content}
+                    onTyping={() => {}}
+                    attaches={message.attaches}
+                  />
+                </motion.div>
+              );
+            }
+          } else if (message.step === AgentStep.END && message.content === '') {
             return (
               <motion.div
-                key={`skip-${message.id}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                key={`end-empty-${message.id}`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
                 className="flex flex-col gap-4"
                 style={{
@@ -484,118 +558,51 @@ export const UserQueryGroup: React.FC<UserQueryGroupProps> = ({
                   containIntrinsicSize: 'auto 120px' as any,
                 }}
               >
-                <AgentMessageCard
-                  key={message.id}
-                  id={message.id}
-                  content="No reply received, task continues..."
-                  onTyping={() => {}}
-                />
-              </motion.div>
-            );
-          } else if (message.step === AgentStep.AGENT_END) {
-            return (
-              <motion.div
-                key={`agent-end-${message.id}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="px-6"
-                style={{
-                  contentVisibility: 'auto' as any,
-                  containIntrinsicSize: 'auto 120px' as any,
-                }}
-              >
-                <AgentResultCard
-                  id={message.id}
-                  agentName={message.agent_name}
-                  content={message.content}
-                  attaches={message.attaches}
-                  defaultOpen
-                />
-              </motion.div>
-            );
-          } else {
-            return (
-              <motion.div
-                key={`message-${message.id}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="flex flex-col gap-4"
-                style={{
-                  contentVisibility: 'auto' as any,
-                  containIntrinsicSize: 'auto 120px' as any,
-                }}
-              >
-                <AgentMessageCard
-                  key={message.id}
-                  typewriter={shouldUseLiveAgentTypewriter(task, message.id)}
-                  id={message.id}
-                  content={message.content}
-                  onTyping={() => {}}
-                  attaches={message.attaches}
-                />
+                {message.fileList && (
+                  <div className="flex flex-wrap gap-2">
+                    {message.fileList.map((file: any, fileIndex: number) => (
+                      <motion.div
+                        key={`file-${message.id}-${file.name}-${fileIndex}`}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        onClick={() => {
+                          openFilePreview(file);
+                        }}
+                        className="flex w-[120px] cursor-pointer items-center gap-2 rounded-2xl bg-ds-bg-neutral-default-default px-2 py-1 transition-colors hover:bg-ds-bg-neutral-default-hover"
+                      >
+                        <FileText
+                          size={16}
+                          className="flex-shrink-0 text-ds-icon-neutral-default-default"
+                        />
+                        <div className="flex flex-col">
+                          <div className="text-body max-w-48 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-bold text-ds-text-neutral-default-default">
+                            {file.name.split('.')[0]}
+                          </div>
+                          <div className="text-xs font-medium leading-29 text-ds-text-neutral-default-default">
+                            {file.type}
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             );
           }
-        } else if (message.step === AgentStep.END && message.content === '') {
-          return (
-            <motion.div
-              key={`end-empty-${message.id}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-col gap-4"
-              style={{
-                contentVisibility: 'auto' as any,
-                containIntrinsicSize: 'auto 120px' as any,
-              }}
-            >
-              {message.fileList && (
-                <div className="flex flex-wrap gap-2">
-                  {message.fileList.map((file: any, fileIndex: number) => (
-                    <motion.div
-                      key={`file-${message.id}-${file.name}-${fileIndex}`}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3 }}
-                      onClick={() => {
-                        openFilePreview(file);
-                      }}
-                      className="flex w-[120px] cursor-pointer items-center gap-2 rounded-2xl bg-ds-bg-neutral-default-default px-2 py-1 transition-colors hover:bg-ds-bg-neutral-default-hover"
-                    >
-                      <FileText
-                        size={16}
-                        className="flex-shrink-0 text-ds-icon-neutral-default-default"
-                      />
-                      <div className="flex flex-col">
-                        <div className="text-body max-w-48 overflow-hidden text-ellipsis whitespace-nowrap text-sm font-bold text-ds-text-neutral-default-default">
-                          {file.name.split('.')[0]}
-                        </div>
-                        <div className="text-xs font-medium leading-29 text-ds-text-neutral-default-default">
-                          {file.type}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          );
-        }
 
-        // Notice Card
-        if (
-          message.step === AgentStep.NOTICE_CARD &&
-          !task?.isTakeControl &&
-          task?.cotList &&
-          task.cotList.length > 0
-        ) {
-          return <NoticeCard key={`notice-${message.id}`} />;
-        }
+          // Notice Card
+          if (
+            message.step === AgentStep.NOTICE_CARD &&
+            !task?.isTakeControl &&
+            task?.cotList &&
+            task.cotList.length > 0
+          ) {
+            return <NoticeCard key={`notice-${message.id}`} />;
+          }
 
-        return null;
-      })}
+          return null;
+        })}
 
       {/* PlanTaskBox now owns streaming + skeleton splitting UI for the active task. */}
       {isSkeletonPhase && activeTaskId && (

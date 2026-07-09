@@ -314,11 +314,13 @@ async def timeout_stream_wrapper(
     timeout_seconds: int = SSE_TIMEOUT_SECONDS,
     task_lock=None,
 ):
-    """Wraps a stream generator with timeout handling.
+    """Wraps a stream generator with timeout handling and heartbeat.
 
-    Closes the SSE connection if no data is received within the timeout period.
-    Triggers cleanup if timeout occurs to prevent resource leaks.
+    Sends periodic heartbeat comments (every 15s) to keep the SSE connection
+    alive during idle periods. Closes the connection only if the overall
+    timeout is exceeded. Triggers cleanup if timeout occurs.
     """
+    HEARTBEAT_INTERVAL = 15
     last_data_time = time.time()
     generator = stream_generator.__aiter__()
     cleanup_triggered = False
@@ -326,15 +328,8 @@ async def timeout_stream_wrapper(
     try:
         while True:
             elapsed = time.time() - last_data_time
-            remaining_timeout = timeout_seconds - elapsed
 
-            try:
-                data = await asyncio.wait_for(
-                    generator.__anext__(), timeout=remaining_timeout
-                )
-                last_data_time = time.time()
-                yield data
-            except TimeoutError:
+            if elapsed >= timeout_seconds:
                 chat_logger.warning(
                     "SSE timeout: No data received, closing connection",
                     extra={"timeout_seconds": timeout_seconds},
@@ -352,6 +347,17 @@ async def timeout_stream_wrapper(
                     task_lock, "TIMEOUT"
                 )
                 break
+
+            try:
+                data = await asyncio.wait_for(
+                    generator.__anext__(), timeout=HEARTBEAT_INTERVAL
+                )
+                last_data_time = time.time()
+                yield data
+            except TimeoutError:
+                # Send heartbeat comment to keep the SSE connection alive
+                yield ": heartbeat\n\n"
+                continue
             except StopAsyncIteration:
                 break
 

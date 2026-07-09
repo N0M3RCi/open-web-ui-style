@@ -34,7 +34,7 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { formatSplittingElapsed } from './TokenUtils';
 
 const CONTENT_EASE: [number, number, number, number] = [0.32, 0.72, 0, 1];
@@ -1242,28 +1242,7 @@ export function TaskWorkLogAccordion({
         className="flex w-full min-w-0 items-center justify-start gap-1 px-0 py-2 text-left"
       >
         <span className="text-body-sm font-medium text-ds-text-neutral-muted-default">
-          {status === ChatTaskStatus.RUNNING ||
-          status === ChatTaskStatus.PAUSE ? (
-            <Trans
-              i18nKey="chat.working-on-tasks-for"
-              values={{ time: timeLabel }}
-              components={{
-                elapsed: (
-                  <span className="tabular-nums text-ds-text-neutral-subtle-default" />
-                ),
-              }}
-            />
-          ) : (
-            <Trans
-              i18nKey="chat.worked-for"
-              values={{ time: timeLabel }}
-              components={{
-                elapsed: (
-                  <span className="tabular-nums text-ds-text-neutral-subtle-default" />
-                ),
-              }}
-            />
-          )}
+          Tasks
         </span>
         {outerOpen ? (
           <ChevronDown
