@@ -1221,6 +1221,9 @@ export function TaskWorkLogAccordion({
     }
   }, [status]);
 
+  // Hide all internal agent processing details from the user view
+  return null;
+
   if (!taskId || !task) return null;
 
   const allowed =

@@ -27,7 +27,6 @@ import React, {
 } from 'react';
 import { AgentMessageCard } from './MessageItem/AgentMessageCard';
 import { NoticeCard } from './MessageItem/NoticeCard';
-import { PreparingToExecuteTasks } from './MessageItem/PreparingToExecuteTasks';
 import { TaskWorkLogAccordion } from './MessageItem/TaskWorkLogAccordion';
 import { UserMessageCard } from './MessageItem/UserMessageCard';
 import { PlanTaskBox } from './TaskBox/PlanTaskBox';
@@ -299,14 +298,6 @@ export const UserQueryGroup: React.FC<UserQueryGroupProps> = ({
       (m: any) => m.step === AgentStep.TO_SUB_TASKS && m.isConfirm
     )
   );
-  const showPreparingExecute =
-    Boolean(activeTaskId && task) &&
-    task!.status === ChatTaskStatus.PENDING &&
-    (isInitialTaskPreparation ||
-      // Workforce: after the user confirms the plan, before the work log.
-      (showTaskPlanCard && hasConfirmedSubTasks) ||
-      // Single agent: from submit until the first `todo_state` arrives.
-      shouldShowSingleAgentWorkLog);
   const shouldShowPlanTaskBox = Boolean(
     !hasConfirmedSubTasks && (isLastUserQuery || queryGroup.taskMessage)
   );
@@ -409,7 +400,6 @@ export const UserQueryGroup: React.FC<UserQueryGroupProps> = ({
           transition={{ duration: 0.25, delay: 0.05 }}
           className="px-6"
         >
-          {showPreparingExecute ? <PreparingToExecuteTasks /> : null}
           <TaskWorkLogAccordion chatStore={chatStore} taskId={activeTaskId} />
         </motion.div>
       )}
@@ -418,9 +408,8 @@ export const UserQueryGroup: React.FC<UserQueryGroupProps> = ({
       {queryGroup.otherMessages
         .filter(
           (message) =>
-            message.step !== AgentStep.ACTIVATE_AGENT &&
-            message.step !== AgentStep.DEACTIVATE_AGENT &&
-            message.step !== AgentStep.CREATE_AGENT
+            message.step === AgentStep.WAIT_CONFIRM ||
+            message.step === AgentStep.END
         )
         .map((message) => {
           if (message.content.length > 0) {
