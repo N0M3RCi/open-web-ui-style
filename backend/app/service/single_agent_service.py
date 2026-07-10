@@ -347,6 +347,10 @@ async def single_agent_solve(
                 turn_agent.astep(prompt),
                 timeout=_ASTEP_TIMEOUT_SECONDS,
             )
+            content, total_tokens = await asyncio.wait_for(
+                _response_content(response, task_lock=task_lock),
+                timeout=_ASTEP_TIMEOUT_SECONDS,
+            )
         except TimeoutError:
             logger.error(
                 "Single Agent turn timed out after %d seconds",
@@ -366,7 +370,6 @@ async def single_agent_solve(
                 "seconds. Please check your model configuration and try "
                 "again."
             )
-        content, total_tokens = await _response_content(response, task_lock=task_lock)
         record_agent_memory_snapshot(
             task_lock,
             turn_agent,

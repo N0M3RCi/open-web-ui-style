@@ -165,7 +165,7 @@ def agent_model(
                 exc_info=True,
             )
 
-        if agent_name == Agents.task_agent:
+        if agent_name in {Agents.task_agent, Agents.single_agent}:
             model_config["stream"] = True
         if agent_name == Agents.browser_agent:
             try:

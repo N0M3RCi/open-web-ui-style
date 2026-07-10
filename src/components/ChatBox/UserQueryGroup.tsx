@@ -162,6 +162,17 @@ export const UserQueryGroup: React.FC<UserQueryGroupProps> = ({
     streamingDecomposeText.length === 0 &&
     !activeTask.messages.some((m: any) => m.step === AgentStep.TO_SUB_TASKS)
   );
+  // When the confirmed event has been received but the first token hasn't
+  // arrived yet, show a "Generating..." indicator so the user knows the
+  // model is working on their request.
+  const isWaitingForResponse = Boolean(
+    isLastUserQuery &&
+    isSingleAgentTask &&
+    activeTask &&
+    !activeTask.isPending &&
+    activeTask.status === ChatTaskStatus.PENDING &&
+    !activeTask.streamingAgentContent
+  );
   // Single agent has no task-splitting/confirm step — it runs directly — so it
   // never has a planning phase. Skipping this avoids the splitting card
   // showing during the PENDING window after the backend `confirmed` event.
@@ -318,6 +329,39 @@ export const UserQueryGroup: React.FC<UserQueryGroupProps> = ({
           </span>
           <span className="text-body-sm text-ds-text-neutral-muted-default">
             Processing...
+          </span>
+        </motion.div>
+      )}
+
+      {/* "Generating..." indicator: shown after confirmed event but before the first token arrives */}
+      {isWaitingForResponse && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex items-center gap-2 px-sm py-2"
+          role="status"
+          aria-live="polite"
+        >
+          <span className="flex gap-1">
+            <motion.span
+              className="inline-block h-2 w-2 rounded-full bg-ds-icon-accent-default"
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.2, repeat: Infinity, delay: 0 }}
+            />
+            <motion.span
+              className="inline-block h-2 w-2 rounded-full bg-ds-icon-accent-default"
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.2, repeat: Infinity, delay: 0.2 }}
+            />
+            <motion.span
+              className="inline-block h-2 w-2 rounded-full bg-ds-icon-accent-default"
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
+            />
+          </span>
+          <span className="text-body-sm text-ds-text-accent-default">
+            Generating...
           </span>
         </motion.div>
       )}
