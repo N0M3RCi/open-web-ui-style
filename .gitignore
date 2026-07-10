@@ -8,3 +8,5 @@ __pycache__/
 .DS_Store
 .github/deploy_key
 .github/deploy_key.pub
+.github/healthcheck.sh
+.github/alert.sh
