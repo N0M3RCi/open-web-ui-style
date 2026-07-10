@@ -6,3 +6,5 @@ runtime/
 __pycache__/
 *.pyc
 .DS_Store
+.github/deploy_key
+.github/deploy_key.pub
