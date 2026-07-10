@@ -289,6 +289,54 @@ export const UserQueryGroup: React.FC<UserQueryGroupProps> = ({
 
       {/* Agent process execution details hidden from user view */}
 
+      {/* Typing indicator: shown while the single agent is processing (before any response token arrives) */}
+      {isInitialTaskPreparation && isSingleAgentTask && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="flex items-center gap-2 px-sm py-2"
+          role="status"
+          aria-live="polite"
+        >
+          <span className="flex gap-1">
+            <motion.span
+              className="inline-block h-2 w-2 rounded-full bg-ds-icon-neutral-muted-default"
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.2, repeat: Infinity, delay: 0 }}
+            />
+            <motion.span
+              className="inline-block h-2 w-2 rounded-full bg-ds-icon-neutral-muted-default"
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.2, repeat: Infinity, delay: 0.2 }}
+            />
+            <motion.span
+              className="inline-block h-2 w-2 rounded-full bg-ds-icon-neutral-muted-default"
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
+            />
+          </span>
+          <span className="text-body-sm text-ds-text-neutral-muted-default">
+            Processing...
+          </span>
+        </motion.div>
+      )}
+
+      {/* Live streaming token content from single-agent responses */}
+      {activeTask && activeTask.streamingAgentContent && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="px-sm py-2"
+        >
+          <AgentMessageCard
+            id="streaming-agent-content"
+            content={activeTask.streamingAgentContent}
+            onTyping={() => {}}
+          />
+        </motion.div>
+      )}
+
       {/* Task work log hidden from user view */}
 
       {/* Other Messages */}

@@ -36,6 +36,7 @@ from app.agent.toolkit.file_write_toolkit import FileToolkit
 from app.agent.toolkit.human_toolkit import HumanToolkit
 from app.agent.toolkit.hybrid_browser_toolkit import HybridBrowserToolkit
 from app.agent.toolkit.observable_todo_toolkit import ObservableTodoToolkit
+from app.agent.toolkit.openai_image_toolkit import OpenAIImageToolkit
 from app.agent.toolkit.screenshot_toolkit import ScreenshotToolkit
 from app.agent.toolkit.search_toolkit import SearchToolkit
 from app.agent.toolkit.skill_toolkit import SkillToolkit
@@ -63,6 +64,7 @@ DEFAULT_SINGLE_AGENT_TOOLKIT_CONFIG: dict[str, Any] = {
     "planning_worktree": {"enabled": True},
     "mcp": {"enabled": True},
     "agent": {"enabled": True},
+    "image": {"enabled": True},
 }
 
 
@@ -267,7 +269,20 @@ async def assemble_single_agent_toolkits(
             registered.get_tools(), ScreenshotToolkit.toolkit_name()
         )
 
-    if _enabled(config, "skill"):
+    if _enabled(config, "image"):
+        image_options = {
+            "api_task_id": options.project_id,
+            "model": options.model_type or "black-forest-labs/FLUX.2-klein-4B",
+            "api_key": options.api_key,
+            "url": options.api_url,
+            "working_directory": working_directory,
+            **_options(config, "image"),
+        }
+        toolkit = OpenAIImageToolkit(**image_options)
+        toolkit.agent_name = Agents.single_agent
+        assembly.add_tools(
+            toolkit.get_tools(), OpenAIImageToolkit.toolkit_name()
+        )
         skill_options = {
             "working_directory": working_directory,
             "user_id": options.skill_config_user_id(),

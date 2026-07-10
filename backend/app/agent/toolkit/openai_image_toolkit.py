@@ -12,7 +12,11 @@
 # limitations under the License.
 # ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import os
 from typing import Literal
+
+from openai import OpenAI
+from PIL import Image
 
 from camel.toolkits import OpenAIImageToolkit as BaseOpenAIImageToolkit
 
@@ -21,59 +25,60 @@ from app.service.task import Agents
 from app.utils.listen.toolkit_listen import auto_listen_toolkit, listen_toolkit
 
 
+_STANDARD_MODELS = frozenset({
+    "gpt-image-1", "dall-e-3", "dall-e-2",
+    "grok-2-image", "grok-2-image-latest", "grok-2-image-1212",
+})
+
+
 @auto_listen_toolkit(BaseOpenAIImageToolkit)
 class OpenAIImageToolkit(BaseOpenAIImageToolkit, AbstractToolkit):
-    agent_name: str = Agents.multi_modal_agent
+    agent_name: str = Agents.single_agent
 
     def __init__(
         self,
         api_task_id: str,
-        model: None
-        | Literal["gpt-image-1"]
-        | Literal["dall-e-3"]
-        | Literal["dall-e-2"] = "gpt-image-1",
+        model: str = "gpt-image-1",
         timeout: float | None = None,
         api_key: str | None = None,
         url: str | None = None,
-        size: None
-        | Literal["256x256"]
-        | Literal["512x512"]
-        | Literal["1024x1024"]
-        | Literal["1536x1024"]
-        | Literal["1024x1536"]
-        | Literal["1792x1024"]
-        | Literal["1024x1792"]
-        | Literal["auto"] = "1024x1024",
-        quality: None
-        | Literal["auto"]
-        | Literal["low"]
-        | Literal["medium"]
-        | Literal["high"]
-        | Literal["standard"]
-        | Literal["hd"] = "standard",
-        response_format: None
-        | Literal["url"]
-        | Literal["b64_json"] = "b64_json",
-        background: None
-        | Literal["transparent"]
-        | Literal["opaque"]
-        | Literal["auto"] = "auto",
-        style: None | Literal["vivid"] | Literal["natural"] = None,
+        size: str | None = "1024x1024",
+        quality: str | None = "standard",
+        response_format: str | None = "b64_json",
+        background: str | None = "auto",
+        style: str | None = None,
         working_directory: str | None = None,
     ):
         self.api_task_id = api_task_id
-        super().__init__(
-            model,
-            timeout,
-            api_key,
-            url,
-            size,
-            quality,
-            response_format,
-            background,
-            style,
-            working_directory,
-        )
+        self._is_standard_model = model in _STANDARD_MODELS
+
+        if self._is_standard_model:
+            # Standard model — use CAMEL parent init
+            super().__init__(
+                model,
+                timeout,
+                api_key,
+                url,
+                size,
+                quality,
+                response_format,
+                background,
+                style,
+                working_directory,
+            )
+        else:
+            # Custom model (e.g. FLUX via NEAR AI) — handle directly
+            super(BaseOpenAIImageToolkit, self).__init__(timeout=timeout)
+            resolved_key = api_key or os.getenv("OPENAI_API_KEY", "")
+            resolved_url = url or os.getenv("OPENAI_API_BASE_URL")
+            self.client = OpenAI(api_key=resolved_key, base_url=resolved_url)
+            self.model = model
+            self.size = size
+            self.quality = quality
+            self.response_format = response_format
+            self.background = background
+            self.style = style
+            self.working_directory = working_directory or "image_save"
 
     @listen_toolkit(BaseOpenAIImageToolkit.generate_image)
     def generate_image(

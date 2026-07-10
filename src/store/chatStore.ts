@@ -263,6 +263,8 @@ interface Task {
   isContextExceeded?: boolean;
   // Streaming decompose text - stored separately to avoid frequent re-renders
   streamingDecomposeText: string;
+  // Streaming single-agent response content (token-by-token)
+  streamingAgentContent: string;
   // Trigger execution ID for tracking trigger task completion
   executionId?: string;
   nextExecutionId?: string;
@@ -709,6 +711,7 @@ export interface ChatStore {
   setNextTaskId: (taskId: string | null) => void;
   setStreamingDecomposeText: (taskId: string, text: string) => void;
   clearStreamingDecomposeText: (taskId: string) => void;
+  setStreamingAgentContent: (taskId: string, content: string) => void;
   setExecutionId: (taskId: string, executionId: string | undefined) => void;
   setTaskSource: (taskId: string, source: 'user' | 'trigger') => void;
   setNextExecutionId: (
@@ -1101,6 +1104,7 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
             isPending: false,
             autoConfirmDeadline: null,
             streamingDecomposeText: '',
+            streamingAgentContent: '',
             // File handles can't round-trip through JSON, so cached
             // attaches always come back empty.
             attaches: [],
@@ -1157,6 +1161,7 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
             planDirty: false,
             autoConfirmDeadline: null,
             streamingDecomposeText: '',
+            streamingAgentContent: '',
             executionId: undefined,
             createdAt: Date.now(),
           },
@@ -2123,6 +2128,37 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
                 }
                 delete streamingDecomposeTextTimers[currentId];
               }, 16);
+            }
+            return;
+          }
+
+          // Handle token streaming from single-agent responses
+          if (agentMessages.step === AgentStep.TOKEN) {
+            const { content } = agentMessages.data;
+            const currentId = getCurrentTaskId();
+            const tokenText = content || '';
+
+            // Log TTFT on first token
+            if (
+              ttftTracking[currentId] &&
+              !ttftTracking[currentId].firstTokenLogged
+            ) {
+              ttftTracking[currentId].firstTokenLogged = true;
+              const ttft =
+                performance.now() - ttftTracking[currentId].confirmedAt;
+              debug(
+                `[TTFT] Time to First Token: ${ttft.toFixed(2)}ms - first streaming token for task ${currentId}`
+              );
+            }
+
+            // Accumulate into streaming token buffer
+            const currentStore = getCurrentChatStore();
+            const currentTask = currentStore.tasks[currentId];
+            if (currentTask) {
+              const prev = currentTask.streamingAgentContent || '';
+              const updated = prev + tokenText;
+              // Update throttled every ~50ms via the task's own state
+              getCurrentChatStore().setStreamingAgentContent(currentId, updated);
             }
             return;
           }
@@ -3385,6 +3421,10 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
           }
 
           if (agentMessages.step === AgentStep.END) {
+            // Clear streaming agent content when the final response arrives
+            if (currentTaskId && tasks[currentTaskId]) {
+              setStreamingAgentContent(currentTaskId, '');
+            }
             const endData: unknown = agentMessages.data;
             const endMessageText = extractEndPayloadText(endData);
             const endTokens =
@@ -4760,6 +4800,21 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
         };
       });
     },
+    setStreamingAgentContent: (taskId, content) => {
+      set((state) => {
+        if (!state.tasks[taskId]) return state;
+        return {
+          ...state,
+          tasks: {
+            ...state.tasks,
+            [taskId]: {
+              ...state.tasks[taskId],
+              streamingAgentContent: content,
+            },
+          },
+        };
+      });
+    },
     clearStreamingDecomposeText: (taskId) => {
       // Clear buffer and any pending timer
       delete streamingDecomposeTextBuffer[taskId];
@@ -4777,6 +4832,7 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
             [taskId]: {
               ...state.tasks[taskId],
               streamingDecomposeText: '',
+            streamingAgentContent: '',
             },
           },
         };
