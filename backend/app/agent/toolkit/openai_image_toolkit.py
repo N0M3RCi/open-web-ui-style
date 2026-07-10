@@ -12,11 +12,11 @@
 # limitations under the License.
 # ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import logging
 import os
 from typing import Literal
 
 from openai import OpenAI
-from PIL import Image
 
 from camel.toolkits import OpenAIImageToolkit as BaseOpenAIImageToolkit
 
@@ -24,6 +24,8 @@ from app.agent.toolkit.abstract_toolkit import AbstractToolkit
 from app.service.task import Agents
 from app.utils.listen.toolkit_listen import auto_listen_toolkit, listen_toolkit
 
+
+logger = logging.getLogger(__name__)
 
 _STANDARD_MODELS = frozenset({
     "gpt-image-1", "dall-e-3", "dall-e-2",
@@ -53,18 +55,9 @@ class OpenAIImageToolkit(BaseOpenAIImageToolkit, AbstractToolkit):
         self._is_standard_model = model in _STANDARD_MODELS
 
         if self._is_standard_model:
-            # Standard model — use CAMEL parent init
             super().__init__(
-                model,
-                timeout,
-                api_key,
-                url,
-                size,
-                quality,
-                response_format,
-                background,
-                style,
-                working_directory,
+                model, timeout, api_key, url, size, quality,
+                response_format, background, style, working_directory,
             )
         else:
             # Custom model (e.g. FLUX via NEAR AI) — handle directly
@@ -98,9 +91,24 @@ class OpenAIImageToolkit(BaseOpenAIImageToolkit, AbstractToolkit):
                 if not name.endswith(".png"):
                     return f"Error: All image names must end with .png, got: {name}"
 
-        return super().generate_image(prompt, image_name, n)
+        if self._is_standard_model:
+            return super().generate_image(prompt, image_name, n)
+
+        # Non-standard model (e.g. FLUX via NEAR AI).
+        # NEAR AI's /v1/images/generations doesn't support the 'size' param,
+        # so generate with minimal params, then save the result.
+        try:
+            params = {"prompt": prompt, "model": self.model}
+            if n > 1:
+                params["n"] = n
+            response = self.client.images.generate(**params)
+            return self._handle_api_response(response, image_name, "generated")
+        except Exception as e:
+            error_msg = f"An error occurred while generating image: {e}"
+            logger.error(error_msg)
+            return error_msg
 
     def _build_base_params(self, prompt: str, n: int | None = None) -> dict:
         params = super()._build_base_params(prompt, n)
-        params["user"] = self.api_task_id  # support cloud key billing
+        params["user"] = self.api_task_id
         return params
