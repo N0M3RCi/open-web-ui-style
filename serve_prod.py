@@ -30,6 +30,10 @@ class SPAHandler(http.server.SimpleHTTPRequestHandler):
         if path.startswith("/api/"):
             return self._proxy(STUB_TARGET, path.replace("/api", "", 1), qs)
 
+        # Proxy /chat/* → Brain service (SSE streaming, status, etc.)
+        if path.startswith("/chat"):
+            return self._proxy(BRAIN_TARGET, path, qs)
+
         # Health check proxy
         if path == "/health":
             return self._proxy(BRAIN_TARGET, path, qs)
@@ -47,6 +51,8 @@ class SPAHandler(http.server.SimpleHTTPRequestHandler):
         qs = parsed.query
         if path.startswith("/workspace/"):
             return self._proxy(BRAIN_TARGET, path, qs, method="POST")
+        if path.startswith("/chat"):
+            return self._proxy(BRAIN_TARGET, path, qs, method="POST")
         if path.startswith("/api/"):
             return self._proxy(STUB_TARGET, path.replace("/api", "", 1), qs, method="POST")
         self.send_error(404)
@@ -56,6 +62,8 @@ class SPAHandler(http.server.SimpleHTTPRequestHandler):
         path = parsed.path
         qs = parsed.query
         if path.startswith("/workspace/"):
+            return self._proxy(BRAIN_TARGET, path, qs, method="DELETE")
+        if path.startswith("/chat"):
             return self._proxy(BRAIN_TARGET, path, qs, method="DELETE")
         if path.startswith("/api/"):
             return self._proxy(STUB_TARGET, path.replace("/api", "", 1), qs, method="DELETE")

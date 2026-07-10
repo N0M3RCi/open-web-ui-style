@@ -12,13 +12,11 @@
 # limitations under the License.
 # ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 """
-Minimal standalone Brain service that serves workspace binding routes.
+Standalone Brain service that serves the full Brain API including workspace
+binding, chat SSE streaming, and all other controllers.
 
-The workspace controller (workspace_controller.py) provides endpoints for
-local folder-space binding (/workspace/capabilities, /workspace/current,
-/workspace/scratch, /workspace/bind, etc.).  In production environments
-where the full Brain cannot run, this lightweight entry point starts just
-the workspace API on the configured port (default 5001).
+The full Brain uses the same app and router registration as the production
+Brain binary, so all routes (chat, workspace, model, task, etc.) are available.
 
 Usage:
     python run_brain.py
@@ -36,39 +34,17 @@ if str(_project_root) not in sys.path:
     sys.path.insert(0, str(_project_root))
 
 import uvicorn
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
-from app.controller.workspace_controller import router as workspace_router
+from app import api
+from app.router import register_routers
 
-app = FastAPI(title="M3RCI - UniMind Workspace Service")
+# Register all controllers (chat, workspace, health, model, task, etc.)
+register_routers(api)
 
-# CORS — allow any origin (same as the full Brain __init__.py)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["X-Session-ID"],
-)
-
-# Register only the workspace router
-app.include_router(workspace_router)
-
-
-@app.get("/health")
-async def health():
-    return {"status": "ok", "service": "merci-brain-workspace"}
-
-
-@app.get("/")
-async def root():
-    return {"service": "merci-brain-workspace", "docs": "/docs", "health": "/health"}
-
+app = api
 
 if __name__ == "__main__":
     port = int(os.environ.get("MERCI_BRAIN_PORT", "5001"))
     host = os.environ.get("MERCI_BRAIN_HOST", "0.0.0.0")
-    print(f"Starting workspace service on {host}:{port}")
+    print(f"Starting full Brain service on {host}:{port}")
     uvicorn.run("run_brain:app", host=host, port=port, reload=True)
