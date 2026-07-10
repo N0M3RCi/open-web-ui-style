@@ -326,7 +326,7 @@ async def single_agent_solve(
 
     # Maximum time to wait for a single LLM response before timing out
     # and reporting an error to the user instead of hanging indefinitely.
-    _ASTEP_TIMEOUT_SECONDS = 300  # 5 minutes
+    _ASTEP_TIMEOUT_SECONDS = 120  # 2 minutes
 
     async def run_turn(
         question: str,
