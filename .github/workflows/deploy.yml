@@ -43,6 +43,12 @@ jobs:
             --exclude='node_modules' \
             backend/ root@${{ secrets.VPS_HOST }}:/opt/merci/
 
+      - name: Deploy nginx config to VPS
+        run: |
+          scp -i ~/.ssh/deploy_key deploy/nginx/merci.conf root@${{ secrets.VPS_HOST }}:/etc/nginx/conf.d/merci.conf
+          scp -i ~/.ssh/deploy_key deploy/nginx/ratelimit.conf root@${{ secrets.VPS_HOST }}:/etc/nginx/conf.d/ratelimit.conf
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.VPS_HOST }} 'nginx -t && systemctl reload nginx && echo "nginx reloaded"'
+
       - name: Restart brain service
         run: |
           ssh -i ~/.ssh/deploy_key root@${{ secrets.VPS_HOST }} 'systemctl daemon-reload && systemctl restart merci-brain'

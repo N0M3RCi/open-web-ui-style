@@ -10,3 +10,5 @@ __pycache__/
 .github/deploy_key.pub
 .github/healthcheck.sh
 .github/alert.sh
+.github/merci.conf
+.github/ratelimit.conf
