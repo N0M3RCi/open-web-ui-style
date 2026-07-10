@@ -475,13 +475,17 @@ async def step_solve(options: Chat, request: Request, task_lock: TaskLock):
         task_lock.summary_generated = False
 
     # Create or reuse persistent question_agent
-    if task_lock.question_agent is None:
-        task_lock.question_agent = question_confirm_agent(options)
-    else:
-        hist_len = len(task_lock.conversation_history)
-        logger.debug(
-            f"Reusing existing question_agent with {hist_len} history entries"
-        )
+    # NOTE: question_agent is only used in workforce/multi-agent mode.
+    # In single-agent mode it is never used (step_solve returns early at
+    # the single_agent_solve delegation), so skip creating it entirely.
+    if options.session_mode != "single-agent":
+        if task_lock.question_agent is None:
+            task_lock.question_agent = question_confirm_agent(options)
+        else:
+            hist_len = len(task_lock.conversation_history)
+            logger.debug(
+                f"Reusing existing question_agent with {hist_len} history entries"
+            )
 
     question_agent = task_lock.question_agent
 

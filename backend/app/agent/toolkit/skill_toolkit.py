@@ -270,6 +270,29 @@ class SkillToolkit(BaseSkillToolkit):
             timeout=timeout,
         )
 
+    def get_tools(self):
+        """Return skill tools with a minimal lazy description.
+
+        Instead of embedding the full skill listing (up to 30k tokens)
+        into the tool schema at agent creation time, the description
+        just tells the model to call ``list_skills`` to discover
+        available skills. This avoids wasting tokens on every request
+        when skills are rarely needed.
+        """
+        from camel.toolkits import FunctionTool
+
+        list_tool = FunctionTool(self.list_skills)
+        load_tool = FunctionTool(self.load_skill)
+        schema = load_tool.get_openai_tool_schema()
+        schema["function"]["description"] = (
+            "Load a skill to get detailed instructions for a specific "
+            "task. Skills provide specialized knowledge and step-by-step "
+            "guidance. Call ``list_skills`` first to see what skills "
+            "are available, then load the one you need."
+        )
+        load_tool.set_openai_tool_schema(schema)
+        return [list_tool, load_tool]
+
     def _skill_roots(self) -> list[tuple[str, Path]]:
         """Return skill roots with M3RCI - UniMind + CAMEL paths.
 

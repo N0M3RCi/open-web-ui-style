@@ -15,6 +15,8 @@
 import asyncio
 import logging
 import os
+import re
+from types import SimpleNamespace
 from typing import Any
 
 from camel.agents.chat_agent import AsyncStreamingChatAgentResponse
@@ -139,6 +141,7 @@ def _build_single_agent_prompt(
 
 async def _response_content(
     response: ChatAgentResponse | AsyncStreamingChatAgentResponse,
+    task_lock: TaskLock | None = None,
 ) -> tuple[str, int]:
     def extract_tokens(response_chunk: Any) -> int:
         if response_chunk is None:
@@ -153,7 +156,19 @@ async def _response_content(
         async for chunk in response:
             last_chunk = chunk
             if chunk.msg and chunk.msg.content:
-                content += chunk.msg.content
+                delta = chunk.msg.content
+                content += delta
+                # Stream each token chunk to the queue for real-time SSE
+                if task_lock is not None:
+                    try:
+                        await task_lock.put_queue(
+                            SimpleNamespace(
+                                action="token",
+                                data=delta,
+                            )
+                        )
+                    except Exception:
+                        pass
         return content, extract_tokens(last_chunk)
 
     msg = getattr(response, "msg", None)
@@ -228,15 +243,80 @@ async def single_agent_solve(
     running_turn: asyncio.Task[tuple[str, int]] | None = None
     current_task_id = options.task_id
 
+    # Simple chat question detection for lightweight mode
+    # Matches greetings, short Q&A, and conversational queries that
+    # don't need toolkits (file ops, browser, terminal, etc.)
+    _SIMPLE_CHAT_REGEX = re.compile(
+        r"^\s*(hi|hello|hey|howdy|greetings|good\s+(morning|afternoon|evening)|"
+        r"what'?s?\s+(up|new)|"
+        r"how\s+(are\s+you|is\s+it\s+going)|"
+        r"nice\s+to\s+(meet|see)\s+you|"
+        r"thanks?\s+(you)?|"
+        r"thank\s+you|"
+        r"bye|goodbye|see\s+(you|ya)|"
+        r"have\s+a\s+good\s+(day|one)|"
+        r"what\s+(is|are|can)\s+you\s+\w+|"
+        r"who\s+(are|made|created)\s+you|"
+        r"tell\s+me\s+(about\s+yourself|a\s+joke)|"
+        r"yes|no|ok|okay|sure|fine|great|"
+        r"what(\'s| is)\s+(your\s+)?name|"
+        r"where\s+(are\s+you\s+from|do\s+you\s+live)|"
+        r"how\s+(old|tall|far|big|small|many|much)\s+"
+        r"[-a-z]+|"
+        r"\w+\s+or\s+\w+\s*[?]?)$",
+        re.IGNORECASE,
+    )
+
+    def _is_simple_chat(question: str) -> bool:
+        """Check if a question is simple chat that doesn't need toolkits."""
+        q = question.strip()
+        if len(q) > 120:
+            return False
+        if _SIMPLE_CHAT_REGEX.match(q):
+            return True
+        return False
+
     async def ensure_agent(task_id: str):
         nonlocal agent
         if agent is None:
-            agent = await single_agent(
-                options,
-                task_id=task_id,
-                hands=hands,
-                pause_event=pause_event,
-            )
+            # Use lightweight mode for simple chat questions
+            if _is_simple_chat(options.question):
+                logger.info(
+                    "Single Agent: simple chat question detected, "
+                    "using lightweight mode (no toolkits)"
+                )
+                # Disable all toolkits except human for chat-only mode
+                lite_toolkit_config = {
+                    "human": {"enabled": True},
+                    "file": {"enabled": False},
+                    "web_deploy": {"enabled": False},
+                    "screenshot": {"enabled": False},
+                    "skill": {"enabled": False},
+                    "todo": {"enabled": False},
+                    "search": {"enabled": False},
+                    "browser": {"enabled": False},
+                    "terminal": {"enabled": False},
+                    "web_fetch": {"enabled": False},
+                    "planning_worktree": {"enabled": False},
+                    "mcp": {"enabled": False},
+                    "agent": {"enabled": False},
+                }
+                lite_options = options.model_copy(
+                    update={"toolkit_config": lite_toolkit_config}
+                )
+                agent = await single_agent(
+                    lite_options,
+                    task_id=task_id,
+                    hands=hands,
+                    pause_event=pause_event,
+                )
+            else:
+                agent = await single_agent(
+                    options,
+                    task_id=task_id,
+                    hands=hands,
+                    pause_event=pause_event,
+                )
         observable_todo = getattr(agent, "_observable_todo_toolkit", None)
         if observable_todo is not None:
             observable_todo.task_id = task_id
@@ -286,7 +366,7 @@ async def single_agent_solve(
                 "seconds. Please check your model configuration and try "
                 "again."
             )
-        content, total_tokens = await _response_content(response)
+        content, total_tokens = await _response_content(response, task_lock=task_lock)
         record_agent_memory_snapshot(
             task_lock,
             turn_agent,
@@ -435,6 +515,11 @@ async def single_agent_solve(
                         running_turn.cancel()
                     await delete_task_lock(task_lock.id)
                     break
+
+                # Stream LLM token chunks to the frontend in real time
+                if getattr(item, "action", None) == "token":
+                    yield sse_json("token", {"content": item.data})
+                    continue
 
                 payload = _action_to_sse(item)
                 if payload is not None:
