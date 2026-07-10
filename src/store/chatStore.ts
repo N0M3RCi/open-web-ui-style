@@ -1002,6 +1002,9 @@ const streamingDecomposeTextTimers: Record<
   string,
   ReturnType<typeof setTimeout>
 > = {};
+// Throttled buffer for single-agent token streaming (rAF-batched)
+const streamingTokenBuffer: Record<string, string> = {};
+const streamingTokenRAF: Record<string, number> = {};
 // TTFT (Time to First Token) tracking for task decomposition
 const ttftTracking: Record<
   string,
@@ -2151,14 +2154,28 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
               );
             }
 
-            // Accumulate into streaming token buffer
-            const currentStore = getCurrentChatStore();
-            const currentTask = currentStore.tasks[currentId];
-            if (currentTask) {
-              const prev = currentTask.streamingAgentContent || '';
-              const updated = prev + tokenText;
-              // Update throttled every ~50ms via the task's own state
-              getCurrentChatStore().setStreamingAgentContent(currentId, updated);
+            // Accumulate into buffer and throttle store updates via rAF
+            const prev = streamingTokenBuffer[currentId] ?? '';
+            streamingTokenBuffer[currentId] = prev + tokenText;
+
+            if (!streamingTokenRAF[currentId]) {
+              streamingTokenRAF[currentId] = requestAnimationFrame(() => {
+                const buffered = streamingTokenBuffer[currentId];
+                delete streamingTokenBuffer[currentId];
+                delete streamingTokenRAF[currentId];
+                if (buffered !== undefined) {
+                  const currentStore = getCurrentChatStore();
+                  const currentTask = currentStore.tasks[currentId];
+                  if (currentTask) {
+                    const prevContent =
+                      currentTask.streamingAgentContent || '';
+                    currentStore.setStreamingAgentContent(
+                      currentId,
+                      prevContent + buffered,
+                    );
+                  }
+                }
+              });
             }
             return;
           }
@@ -3423,8 +3440,17 @@ const createChatStoreFactory = (initial?: Partial<ChatStore>) =>
           if (agentMessages.step === AgentStep.END) {
             // Clear streaming agent content when the final response arrives
             if (currentTaskId && tasks[currentTaskId]) {
-              setStreamingAgentContent(currentTaskId, '');
+              getCurrentChatStore().setStreamingAgentContent(
+                currentTaskId,
+                '',
+              );
             }
+            // Clean up token streaming buffer and pending rAF
+            if (streamingTokenRAF[currentTaskId]) {
+              cancelAnimationFrame(streamingTokenRAF[currentTaskId]);
+              delete streamingTokenRAF[currentTaskId];
+            }
+            delete streamingTokenBuffer[currentTaskId];
             const endData: unknown = agentMessages.data;
             const endMessageText = extractEndPayloadText(endData);
             const endTokens =

@@ -142,6 +142,8 @@ def _build_single_agent_prompt(
 async def _response_content(
     response: ChatAgentResponse | AsyncStreamingChatAgentResponse,
     task_lock: TaskLock | None = None,
+    token_buffer: list[str] | None = None,
+    token_event: asyncio.Event | None = None,
 ) -> tuple[str, int]:
     def extract_tokens(response_chunk: Any) -> int:
         if response_chunk is None:
@@ -158,17 +160,11 @@ async def _response_content(
             if chunk.msg and chunk.msg.content:
                 delta = chunk.msg.content
                 content += delta
-                # Stream each token chunk to the queue for real-time SSE
-                if task_lock is not None:
-                    try:
-                        await task_lock.put_queue(
-                            SimpleNamespace(
-                                action="token",
-                                data=delta,
-                            )
-                        )
-                    except Exception:
-                        pass
+                # Write directly to the shared token buffer for immediate
+                # SSE delivery, bypassing the task lock queue.
+                if token_buffer is not None and token_event is not None:
+                    token_buffer.append(delta)
+                    token_event.set()
         return content, extract_tokens(last_chunk)
 
     msg = getattr(response, "msg", None)
@@ -243,9 +239,26 @@ async def single_agent_solve(
     running_turn: asyncio.Task[tuple[str, int]] | None = None
     current_task_id = options.task_id
 
-    # Simple chat question detection for lightweight mode
-    # Matches greetings, short Q&A, and conversational queries that
-    # don't need toolkits (file ops, browser, terminal, etc.)
+    # Shared token buffer for direct SSE streaming (bypasses the task lock
+    # queue, eliminating round-trip latency for token delivery).
+    _token_buffer: list[str] = []
+    _token_event = asyncio.Event()
+
+    # Fast model to use for simple chat questions.
+    _FAST_CHAT_MODEL = "claude-haiku-4-5"
+
+    # Keywords that indicate a question needs toolkits (file ops, browser,
+    # terminal, search, image generation, code execution, etc.).
+    _TOOL_KEYWORDS = re.compile(
+        r"\b(code|file|search|browser|terminal|image|picture|photo|draw|"
+        r"generate|create|build|make|deploy|run|execute|write|edit|update|"
+        r"delete|install|configure|setup|upload|download|find|search|lookup|"
+        r"scrape|crawl|navigate|click|type|scroll|open|save|compile|test|"
+        r"debug|commit|push|pull|merge|branch|docker|ssh|curl|api|endpoint|"
+        r"database|query|sql|migrate|convert|transform|parse|extract)\b",
+        re.IGNORECASE,
+    )
+
     _SIMPLE_CHAT_REGEX = re.compile(
         r"^\s*(hi|hello|hey|howdy|greetings|good\s+(morning|afternoon|evening)|"
         r"what'?s?\s+(up|new)|"
@@ -268,11 +281,21 @@ async def single_agent_solve(
     )
 
     def _is_simple_chat(question: str) -> bool:
-        """Check if a question is simple chat that doesn't need toolkits."""
+        """Check if a question is simple chat that doesn't need toolkits.
+
+        A question is considered "simple chat" if it is:
+        - Short (<= 200 chars)
+        - Doesn't contain tool-related keywords (code, file, search, etc.)
+        or matches the explicit greeting/chat regex.
+        """
         q = question.strip()
-        if len(q) > 120:
+        if len(q) > 200:
             return False
         if _SIMPLE_CHAT_REGEX.match(q):
+            return True
+        # Heuristic: if the question is short and has no tool-related
+        # keywords, treat it as a simple chat question.
+        if len(q) <= 200 and not _TOOL_KEYWORDS.search(q):
             return True
         return False
 
@@ -310,6 +333,39 @@ async def single_agent_solve(
                     hands=hands,
                     pause_event=pause_event,
                 )
+            elif _is_simple_chat(options.question):
+                logger.info(
+                    "Single Agent: simple chat question detected, "
+                    "using fast model with lightweight toolkits"
+                )
+                lite_toolkit_config = {
+                    "human": {"enabled": True},
+                    "file": {"enabled": False},
+                    "web_deploy": {"enabled": False},
+                    "screenshot": {"enabled": False},
+                    "skill": {"enabled": False},
+                    "todo": {"enabled": False},
+                    "search": {"enabled": False},
+                    "browser": {"enabled": False},
+                    "terminal": {"enabled": False},
+                    "web_fetch": {"enabled": False},
+                    "planning_worktree": {"enabled": False},
+                    "mcp": {"enabled": False},
+                    "agent": {"enabled": False},
+                    "image": {"enabled": False},
+                }
+                lite_options = options.model_copy(
+                    update={
+                        "toolkit_config": lite_toolkit_config,
+                        "model_type": _FAST_CHAT_MODEL,
+                    }
+                )
+                agent = await single_agent(
+                    lite_options,
+                    task_id=task_id,
+                    hands=hands,
+                    pause_event=pause_event,
+                )
             else:
                 agent = await single_agent(
                     options,
@@ -317,12 +373,57 @@ async def single_agent_solve(
                     hands=hands,
                     pause_event=pause_event,
                 )
+            # Pre-warm the model connection in the background so the
+            # first user request doesn't wait for TCP+TLS handshake.
+            _prewarm_model_connection(agent)
+
         observable_todo = getattr(agent, "_observable_todo_toolkit", None)
         if observable_todo is not None:
             observable_todo.task_id = task_id
             observable_todo.agent_id = agent.agent_id
             observable_todo.emit_todo_state()
         return agent
+
+    def _prewarm_model_connection(
+        agent_obj: Any,
+    ) -> None:
+        """Fire-and-forget model pre-warm to establish TCP+TLS connection.
+
+        Makes a minimal chat completion request (max_tokens=1) through the
+        model's async client so the connection is ready before the user's
+        first real request arrives.
+        """
+        try:
+            model = getattr(agent_obj, "model", None)
+            if model is None:
+                return
+            client = getattr(model, "_async_client", None)
+            if client is None:
+                return
+            model_type = getattr(model, "model_type", None)
+            if model_type is None:
+                return
+
+            async def _warmup():
+                try:
+                    await client.chat.completions.create(
+                        model=str(model_type),
+                        messages=[
+                            {
+                                "role": "user",
+                                "content": "warmup",
+                            }
+                        ],
+                        max_tokens=1,
+                    )
+                except Exception:
+                    # Swallow all errors — pre-warm is best-effort.
+                    pass
+
+            asyncio.create_task(_warmup())
+        except Exception:
+            # Swallow all errors — pre-warm is best-effort.
+            pass
 
     # Maximum time to wait for a single LLM response before timing out
     # and reporting an error to the user instead of hanging indefinitely.
@@ -348,7 +449,12 @@ async def single_agent_solve(
                 timeout=_ASTEP_TIMEOUT_SECONDS,
             )
             content, total_tokens = await asyncio.wait_for(
-                _response_content(response, task_lock=task_lock),
+                _response_content(
+                    response,
+                    task_lock=task_lock,
+                    token_buffer=_token_buffer,
+                    token_event=_token_event,
+                ),
                 timeout=_ASTEP_TIMEOUT_SECONDS,
             )
         except TimeoutError:
@@ -391,6 +497,7 @@ async def single_agent_solve(
     pending_queue_get: asyncio.Task[Any] = asyncio.create_task(
         task_lock.get_queue()
     )
+    pending_token_event: asyncio.Task | None = None
 
     try:
         while True:
@@ -408,6 +515,8 @@ async def single_agent_solve(
             wait_for = {pending_queue_get}
             if running_turn is not None:
                 wait_for.add(running_turn)
+            if pending_token_event is not None and not pending_token_event.done():
+                wait_for.add(pending_token_event)
 
             done, _ = await asyncio.wait(
                 wait_for,
@@ -415,6 +524,19 @@ async def single_agent_solve(
                 return_when=asyncio.FIRST_COMPLETED,
             )
             if not done:
+                continue
+
+            # Drain streaming token buffer directly (bypasses queue).
+            if pending_token_event is not None and pending_token_event in done:
+                tokens = list(_token_buffer)
+                _token_buffer.clear()
+                _token_event.clear()
+                # Re-create the watcher for next token batch.
+                pending_token_event = asyncio.create_task(
+                    _token_event.wait()
+                )
+                for token in tokens:
+                    yield sse_json("token", {"content": token})
                 continue
 
             if pending_queue_get in done:
@@ -455,6 +577,10 @@ async def single_agent_solve(
                         )
                     )
                     task_lock.add_background_task(running_turn)
+                    # Start watching for streaming token events (bypasses queue).
+                    pending_token_event = asyncio.create_task(
+                        _token_event.wait()
+                    )
                     continue
 
                 if item.action == Action.pause:
@@ -519,11 +645,6 @@ async def single_agent_solve(
                     await delete_task_lock(task_lock.id)
                     break
 
-                # Stream LLM token chunks to the frontend in real time
-                if getattr(item, "action", None) == "token":
-                    yield sse_json("token", {"content": item.data})
-                    continue
-
                 payload = _action_to_sse(item)
                 if payload is not None:
                     if item.action == Action.budget_not_enough:
@@ -538,6 +659,7 @@ async def single_agent_solve(
                 except asyncio.CancelledError:
                     final_result = "<summary>Task paused</summary>Task paused"
                     total_tokens = 0
+                    pending_token_event = None
                 except Exception as e:
                     logger.error(
                         "Single Agent turn failed",
@@ -554,10 +676,12 @@ async def single_agent_solve(
                     )
                     yield sse_json("error", {"message": str(e)})
                     running_turn = None
+                    pending_token_event = None
                     continue
 
                 task_lock.status = Status.done
                 running_turn = None
+                pending_token_event = None
                 _finalize_memory_for_turn(
                     task_lock,
                     state="done",
@@ -571,6 +695,8 @@ async def single_agent_solve(
     finally:
         if pending_queue_get is not None and not pending_queue_get.done():
             pending_queue_get.cancel()
+        if pending_token_event is not None and not pending_token_event.done():
+            pending_token_event.cancel()
         if running_turn is not None and not running_turn.done():
             pause_event.clear()
             task_lock.status = Status.confirming

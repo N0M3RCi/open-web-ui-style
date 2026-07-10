@@ -12,11 +12,13 @@
 # limitations under the License.
 # ========= Copyright 2025-2026 @ M3RCI - UniMind All Rights Reserved. =========
 
+import asyncio
 import logging
 import uuid
 from collections.abc import Callable
 from typing import Any
 
+import httpx
 from camel.messages import BaseMessage
 from camel.models import ModelFactory
 from camel.toolkits import FunctionTool, RegisteredAgentToolkit
@@ -30,6 +32,18 @@ from app.model.subscription_runtime import (
 )
 from app.service.task import ActionCreateAgentData, Agents, get_task_lock
 from app.utils.event_loop_utils import _schedule_async_task
+
+# Shared HTTP client with connection pooling for model API calls.
+# The keepalive_expiry is set to 30s so connections are reused across
+# requests, avoiding TCP/TLS handshake latency on follow-up turns.
+_SHARED_ASYNC_HTTP = httpx.AsyncClient(
+    limits=httpx.Limits(
+        max_keepalive_connections=10,
+        max_connections=20,
+        keepalive_expiry=30.0,
+    ),
+    timeout=httpx.Timeout(60.0, connect=10.0),
+)
 
 
 def agent_model(
@@ -191,6 +205,39 @@ def agent_model(
         if effective_config["model_platform"].lower() == "anthropic":
             if model_config.get("max_tokens") is None:
                 model_config["max_tokens"] = 128000
+
+        # Use shared HTTP client for connection pooling / keep-alive.
+        # This avoids TCP+TLS handshake latency on follow-up requests.
+        _inject_async_client = False
+        init_params.setdefault("max_retries", 0)
+        try:
+            model_platform_enum = ModelPlatformType(
+                effective_config["model_platform"].lower()
+            )
+            _inject_async_client = model_platform_enum in {
+                ModelPlatformType.OPENAI,
+                ModelPlatformType.OPENAI_COMPATIBLE_MODEL,
+                ModelPlatformType.AZURE,
+                ModelPlatformType.LITELLM,
+                ModelPlatformType.OPENROUTER,
+            }
+        except (ValueError, AttributeError):
+            pass
+        if _inject_async_client and "async_client" not in init_params:
+            try:
+                from openai import AsyncOpenAI
+
+                init_params["async_client"] = AsyncOpenAI(
+                    api_key=effective_config["api_key"],
+                    base_url=effective_config["api_url"],
+                    http_client=_SHARED_ASYNC_HTTP,
+                    max_retries=0,
+                )
+            except Exception:
+                logging.warning(
+                    "Failed to create shared async client, falling back",
+                    exc_info=True,
+                )
 
         return ModelFactory.create(
             model_platform=effective_config["model_platform"],
