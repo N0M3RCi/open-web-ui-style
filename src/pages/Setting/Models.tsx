@@ -79,9 +79,10 @@ async function tryFetchModels(
 
   // 1) Try backend proxy (works in production, avoids CORS)
   try {
-    const payload = await proxyFetchGet(
-      `/api/v1/providers/models/fetch?url=${encodeURIComponent(modelsUrl)}&api_key=${encodeURIComponent(apiKey)}`
-    );
+    const payload = await proxyFetchPost('/api/v1/providers/models/fetch', {
+      url: modelsUrl,
+      api_key: apiKey,
+    });
     const list: ModelInfo[] = Array.isArray(payload?.data)
       ? payload.data
       : Array.isArray(payload)

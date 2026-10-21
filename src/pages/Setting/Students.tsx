@@ -194,7 +194,7 @@ export default function Students() {
                   </td>
                   <td className="px-4 py-3">
                     <span className="font-mono tracking-wider text-purple-300">
-                      {student.passcode ? '••••••' : '—'}
+                      ••••••
                     </span>
                   </td>
                   <td className="text-white/60 px-4 py-3">

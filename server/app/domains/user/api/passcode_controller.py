@@ -14,21 +14,28 @@
 
 """Passcode-based student auto-login system."""
 
-import random
+import hashlib
+import hmac
+import secrets
 import string
+import time
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi_babel import _
 from pydantic import BaseModel
 from sqlmodel import Session, select
 
 from app.core import code
 from app.core.database import session
+from app.core.environment import env_not_empty
 from app.model.user.user import Role, Status, User
 from app.shared.auth import auth_must
 from app.shared.auth.user_auth import V1UserAuth, create_access_token
 from app.shared.exception import UserException
+from app.shared.middleware.rate_limit import login_rate_limiter
+
+_LOGIN_FAILURES: list[float] = []
 
 router = APIRouter(tags=["Passcode Auth"])
 
@@ -76,12 +83,31 @@ class StudentListResponse(BaseModel):
 # ─── Helper ───────────────────────────────────────────────────────────────────
 
 
+def _passcode_digest(plain: str) -> str:
+    """Deterministic hash so a passcode can be looked up without storing it."""
+    key = env_not_empty("secret_key").encode()
+    return hmac.new(key, plain.encode(), hashlib.sha256).hexdigest()
+
+
 def _generate_passcode() -> str:
-    """Generate a random 6-digit numeric passcode, ensuring it's unique."""
-    while True:
-        code = "".join(random.choices(string.digits, k=6))
-        # Check uniqueness (done in the caller within a session)
-        return code
+    """Generate a random 6-digit numeric passcode."""
+    return "".join(secrets.choice(string.digits) for _ in range(6))
+
+
+def _require_instructor(auth: V1UserAuth) -> None:
+    if auth.user.role != Role.Admin.value:
+        raise HTTPException(status_code=403, detail="Instructor access required")
+
+
+def _too_many_login_failures() -> bool:
+    now = time.time()
+    while _LOGIN_FAILURES and now - _LOGIN_FAILURES[0] > 60:
+        _LOGIN_FAILURES.pop(0)
+    return len(_LOGIN_FAILURES) >= 20
+
+
+def _note_login_failure() -> None:
+    _LOGIN_FAILURES.append(time.time())
 
 
 def _generate_email_from_name(name: str) -> str:
@@ -94,7 +120,7 @@ def _generate_email_from_name(name: str) -> str:
 # ─── Public endpoints (no auth required) ──────────────────────────────────────
 
 
-@router.post("/auth/passcode-register", name="register with passcode")
+@router.post("/auth/passcode-register", name="register with passcode", dependencies=[login_rate_limiter])
 async def passcode_register(
     data: PasscodeRegisterIn,
     db_session: Session = Depends(session),
@@ -105,10 +131,12 @@ async def passcode_register(
 
     name = data.name.strip()
 
-    # Generate unique passcode
     while True:
         passcode = _generate_passcode()
-        existing = db_session.exec(select(User).where(User.passcode == passcode)).first()
+        digest = _passcode_digest(passcode)
+        existing = db_session.exec(
+            select(User).where((User.passcode == digest) | (User.passcode == passcode))
+        ).first()
         if not existing:
             break
 
@@ -119,7 +147,7 @@ async def passcode_register(
         username=name,
         nickname=name,
         fullname=name,
-        passcode=passcode,
+        passcode=digest,
         status=Status.Normal,
         role=Role.Student.value,
     )
@@ -137,24 +165,44 @@ async def passcode_register(
     )
 
 
-@router.post("/auth/passcode-login", name="login with passcode")
+@router.post("/auth/passcode-login", name="login with passcode", dependencies=[login_rate_limiter])
 async def passcode_login(
     data: PasscodeLoginIn,
     db_session: Session = Depends(session),
 ):
     """Login with a 6-digit passcode. Returns JWT token."""
-    if not data.passcode or len(data.passcode) != 6:
+    if not data.passcode or len(data.passcode) != 6 or not data.passcode.isdigit():
         raise UserException(code.error, _("Invalid passcode"))
+    if _too_many_login_failures():
+        raise UserException(code.error, _("Too many attempts. Wait a minute and try again."))
 
+    digest = _passcode_digest(data.passcode)
     user = db_session.exec(
         select(User).where(
-            User.passcode == data.passcode,
+            User.passcode == digest,
             User.deleted_at.is_(None),
             User.status == Status.Normal.value,
         )
     ).first()
 
     if not user:
+        # Older accounts stored the passcode itself. Accept it once, then store only the hash.
+        user = db_session.exec(
+            select(User).where(
+                User.passcode == data.passcode,
+                User.deleted_at.is_(None),
+                User.status == Status.Normal.value,
+            )
+        ).first()
+        if user:
+            user.passcode = digest
+            try:
+                user.save(db_session)
+            except Exception:
+                db_session.rollback()
+
+    if not user:
+        _note_login_failure()
         raise UserException(code.not_found, _("Invalid passcode"))
 
     token = create_access_token(user.id)
@@ -177,6 +225,7 @@ async def list_students(
     auth: V1UserAuth = Depends(auth_must),
 ):
     """List all student accounts (users with passcodes)."""
+    _require_instructor(auth)
     conditions = [
         User.deleted_at.is_(None),
         User.passcode.isnot(None),
@@ -197,7 +246,7 @@ async def list_students(
             id=u.id,
             email=u.email,
             name=u.nickname or u.username,
-            passcode=u.passcode,
+            passcode=None,
             created_at=u.created_at,
             last_active=u.updated_at,
         )
@@ -218,6 +267,7 @@ async def reset_student_passcode(
     auth: V1UserAuth = Depends(auth_must),
 ):
     """Reset a student's passcode to a new random 6-digit code."""
+    _require_instructor(auth)
     user = db_session.get(User, student_id)
     if not user or user.deleted_at is not None or user.passcode is None:
         raise UserException(code.not_found, _("Student not found"))
@@ -225,11 +275,14 @@ async def reset_student_passcode(
     # Generate unique passcode
     while True:
         new_passcode = _generate_passcode()
-        existing = db_session.exec(select(User).where(User.passcode == new_passcode)).first()
+        digest = _passcode_digest(new_passcode)
+        existing = db_session.exec(
+            select(User).where((User.passcode == digest) | (User.passcode == new_passcode))
+        ).first()
         if not existing:
             break
 
-    user.passcode = new_passcode
+    user.passcode = digest
     user.save(db_session)
     db_session.refresh(user)
 
@@ -243,6 +296,7 @@ async def delete_student(
     auth: V1UserAuth = Depends(auth_must),
 ):
     """Soft-delete a student account."""
+    _require_instructor(auth)
     user = db_session.get(User, student_id)
     if not user or user.deleted_at is not None or user.passcode is None:
         raise UserException(code.not_found, _("Student not found"))
