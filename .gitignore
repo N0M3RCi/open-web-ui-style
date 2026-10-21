@@ -1,6 +1,9 @@
 node_modules/
 dist/
-# .env # Removed by Orchids to allow .env files
+.env
+**/.env
+!.env.example
+!**/.env.example
 *.log
 runtime/
 __pycache__/

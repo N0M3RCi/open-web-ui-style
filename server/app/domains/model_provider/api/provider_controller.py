@@ -84,26 +84,57 @@ async def invalidate(id: int, auth: V1UserAuth = Depends(auth_must)):
     return {"success": True}
 
 
-@router.get("/providers/models/fetch", name="fetch models from provider API")
-async def fetch_models(
-    url: str = Query(..., description="Full models endpoint URL to fetch from"),
-    api_key: str = Query(..., description="API key for Bearer auth"),
-    auth: V1UserAuth = Depends(auth_must),
-):
-    """Proxy: fetch model list from an external OpenAI-compatible /models endpoint.
-    Avoids CORS issues by routing the request through the backend server.
-    """
+class FetchModelsIn(BaseModel):
+    url: str
+    api_key: str
+
+
+def _assert_public_http_url(url: str) -> None:
+    """Reject loopback, private, and link-local addresses so this proxy cannot scan the server."""
+    import ipaddress
+    import socket
+    from urllib.parse import urlparse
+
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        raise HTTPException(status_code=400, detail="Model URL must be an http(s) address")
+    host = parsed.hostname.strip("[]")
+    try:
+        addresses = socket.getaddrinfo(host, None)
+    except socket.gaierror:
+        raise HTTPException(status_code=400, detail="Could not resolve model URL")
+    for info in addresses:
+        ip = ipaddress.ip_address(info[4][0])
+        if (
+            ip.is_private
+            or ip.is_loopback
+            or ip.is_link_local
+            or ip.is_reserved
+            or ip.is_multicast
+            or ip.is_unspecified
+        ):
+            raise HTTPException(status_code=400, detail="That model URL is not allowed")
+
+
+async def _fetch_provider_models(url: str, api_key: str):
     import httpx
 
+    _assert_public_http_url(url)
     headers = {"Authorization": f"Bearer {api_key}", "Accept": "application/json"}
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=30.0, follow_redirects=False) as client:
         resp = await client.get(url, headers=headers)
     if not resp.is_success:
         raise HTTPException(
             status_code=resp.status_code,
-            detail=f"Upstream returned {resp.status_code}: {resp.text[:500]}",
+            detail=f"Upstream returned {resp.status_code}",
         )
     return resp.json()
+
+
+@router.post("/providers/models/fetch", name="fetch models from provider API")
+async def fetch_models(data: FetchModelsIn, auth: V1UserAuth = Depends(auth_must)):
+    """Proxy a model list request. The API key stays in the request body, not the URL."""
+    return await _fetch_provider_models(data.url, data.api_key)
 
 
 @router.post("/provider/prefer", name="set provider prefer")

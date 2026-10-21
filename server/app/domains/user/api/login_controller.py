@@ -46,7 +46,9 @@ async def dev_login(username: str | None = Form(default=None), password: str | N
 
 @router.post("/auto-login", name="auto login for local mode")
 async def auto_login(db_session: Session = Depends(session)) -> LoginResponse:
-    """Auto login for fully local mode. Prefers an admin user, otherwise returns the most recently active user, or creates a default admin."""
+    """Auto login for fully local mode. Off unless ALLOW_AUTO_LOGIN is explicitly enabled."""
+    if str(env("ALLOW_AUTO_LOGIN", "false")).lower() not in {"1", "true", "yes", "on"}:
+        raise HTTPException(status_code=404, detail="Not found")
     from app.model.user.user import Role
 
     # Prefer the most recently active admin user (not soft-deleted)

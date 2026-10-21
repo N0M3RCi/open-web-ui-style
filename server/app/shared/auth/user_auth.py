@@ -249,6 +249,6 @@ async def key_must(headers: ApiKey = Header(), db_session: Session = Depends(ses
     if model is None:
         raise TokenException(
             code.token_invalid,
-            _message(f"Could not validate key credentials: {headers.api_key}"),
+            _message("Could not validate key credentials"),
         )
     return model
